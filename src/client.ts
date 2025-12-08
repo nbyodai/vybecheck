@@ -1,7 +1,7 @@
 // Connect to WebSocket server
 const ws = new WebSocket('ws://localhost:3000');
 
-const statusDiv = document.getElementById('status');
+const statusDiv = document.getElementById('status')!;
 
 // Connection opened
 ws.addEventListener('open', (event) => {
