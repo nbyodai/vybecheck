@@ -76,3 +76,52 @@ Contributions are welcome! Please ensure all tests pass before submitting a pull
 ## License
 
 MIT
+
+
+# Development Setup
+
+The application now uses **Vite + React + TypeScript** for the client and requires running two separate servers during development.
+
+## Running the Application
+
+### Terminal 1: WebSocket Server (Backend)
+```bash
+npm run dev:server
+```
+This starts the WebSocket server on `http://localhost:3000`
+
+### Terminal 2: Vite Dev Server (Frontend)
+```bash
+npm run dev
+```
+This starts the Vite development server on `http://localhost:5173`
+
+## Accessing the App
+
+Open your browser to: **http://localhost:5173**
+
+The Vite dev server will proxy WebSocket connections to the backend server running on port 3000.
+
+## Available Scripts
+
+- `npm run dev` - Start Vite dev server (client only)
+- `npm run dev:server` - Build and start WebSocket server (backend only)
+- `npm run build` - Build client for production
+- `npm run build:server` - Build server for production
+- `npm run preview` - Preview production build
+- `npm test` - Run tests with Vitest
+
+## Architecture
+
+- **Client**: React app with TypeScript, bundled by Vite
+  - Entry point: `src/main.tsx`
+  - Main component: `src/App.tsx`
+
+- **Server**: Node.js WebSocket server
+  - Entry point: `src/server.ts`
+  - Compiled with `tsconfig.server.json`
+
+## Why Two Servers?
+
+- **Vite Dev Server (5173)**: Provides hot module replacement (HMR) for React components
+- **WebSocket Server (3000)**: Handles real-time communication for the quiz application
