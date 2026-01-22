@@ -45,58 +45,136 @@ After running `npm run dev`, access the app at `http://localhost:3000`
 - Establish WebSocket connection between client and server
 - Test basic message passing (ping/pong)
 
-### Phase 2: Quiz Session & Participant Management
-Build the multiplayer foundation to track quiz participants and synchronize quiz state.
+### Phase 2: Quiz Session & Participant Management ✅
+**Status: COMPLETED** - Backend implementation with 96 passing tests
 
-#### Server Changes
-- Create QuizSession class to hold quiz data (participants, current question, collected responses, status, expirationDate)
-- Add quiz session states: live (during Twitter Space), active (open for new participants), expired (2-3 months passed)
-- Create Participant interface with properties: id, username, connection, responses (map of questionId to boolean), completedAt timestamp
-- Replace single WebSocket handler with participant management system using Map<string, Participant>
-- Implement broadcastQuizState() function to send quiz state to all connected participants
-- Handle participant join/leave events and update quiz state accordingly
-- Allow new participants to join and take quiz even after Twitter Space ends
-- Assign unique participant IDs using UUID or timestamp-based generation
-- Later: tie participant IDs to Twitter handles once sign-in with Twitter is completed
+Built using vertical slicing approach (Slices 1-6):
 
-#### Client Changes
-- Parse incoming quiz state messages and update local state
-- Display participant count and the user's own participant ID
-- Show list of active participants
+#### Slice 1: Session Creation with Owner ✅
+- QuizSession class with unique session IDs (timestamp-based)
+- Owner participant tracking with `isOwner` flag
+- Session lifecycle: `live` → `active` → `expired` (3-month duration)
+- Owner permission validation (`canAddQuestion`)
+- 19 unit tests
 
-### Phase 3: Quiz Question System
-Implement the core quiz functionality with true/false Yes/No Agree/Disagree essentially boolean style response-questions.
+#### Slice 2: Dynamic Question Addition ✅
+- Question model: id, prompt, options (exactly 2), timer (optional), addedAt
+- Question validation: exactly 2 options enforced, no duplicates, non-empty fields
+- Questions stored in order (`quiz` array tracks question IDs)
+- Owner-only question addition with server-side validation
+- 19 unit tests
 
-#### Question Data Model
-- Create Question interface: id, text, correctAnswer (boolean), speaker, topic, timestamp
-- Create PlayerAnswer interface: playerId, questionId, answer, responseTime
-- Build question queue system on server
+#### Slice 3: Multiple Participants Join ✅
+- Participant model: id, username, connection, isOwner, joinedAt, lastActiveAt, isActive
+- Participant management: add, remove, retrieve by ID, count
+- Active/inactive participant tracking
+- Multiple owners prevented (validation enforced)
+- 15 integration tests
 
-#### Quiz Flow Logic
-- Implement question lifecycle states: waiting, active, revealing, completed
-- Add 5-10 second countdown timer per question
-- Broadcast current question to all players
-- Collect player answers within time limit
-- Calculate and broadcast results (correct answer, player scores)
-- Track answer streaks and response times
+#### Slice 4: Response Submission ✅
+- Response model: id, participantId, questionId, sessionId, optionChosen, answeredAt
+- Flat array storage (not nested) for efficient querying
+- Comprehensive validation:
+  - Participant must exist
+  - Question must exist
+  - Option must be valid for that question
+  - No duplicate responses (one answer per question per participant)
+- Response retrieval by participant with question ordering
+- Completion tracking (`hasParticipantCompletedQuiz`)
+- 20 unit tests
 
-#### Client Quiz UI
-- Display current question text prominently
-- Show countdown timer with visual indicator
-- Add True/False answer buttons
-- Implement answer submission and lock-in
-- Display immediate feedback (correct/incorrect)
-- Show updated scores after each question
-- Animate transitions between questions
-- Focus on clean, minimal UI suitable for Twitter Spaces context
+#### Slice 5: Match Calculation ✅
+- MatchingService with agreement-based matching algorithm
+- `getResponseValues()`: Extract responses in question order
+- `calculateMatch()`: Calculate percentage agreement between participants
+- `getMatchesForParticipant()`: Get all matches sorted by similarity (highest first)
+- Handles partial responses (participants with different completion levels)
+- Ignores unanswered questions in calculations
+- 16 unit tests
 
-### Phase 4: AI Question Generation
+#### Slice 6: Dynamic Match Updates ✅
+- Questions can be added after participants have answered
+- Matches automatically recalculate with new responses
+- Rankings update when new questions change relative percentages
+- Example: 0% match (0/3) → 25% match (1/4) when both answer new question
+- 7 integration tests
+
+#### Implementation Notes
+- **96 total tests passing** across all slices
+- Participant IDs: timestamp + random string generation
+- Strict TypeScript: no `any` types
+- ES2022 modules throughout
+- Models in `src/server/models/`
+- Services in `src/server/services/`
+- Tests in `tests/unit/` and `tests/integration/`
+
+### Phase 3: UI & WebSocket Integration
+**Status: PENDING** - Backend complete, need to build UI layer
+
+#### Backend Complete ✅
+- Question system with exactly 2 options per question
+- Response submission and validation
+- Match calculation between participants
+- Dynamic question addition support
+
+#### Client UI (TODO)
+- WebSocket client connection
+- Session creation/joining interface
+- Owner controls for adding questions
+- Question display with answer buttons (2 options)
+- Participant list with real-time updates
+- Response submission interface
+- Match results display (basic percentages)
+- Connection status indicators
+
+#### WebSocket Message Protocol (TODO)
+Define messages in `src/shared/types.ts`:
+
+**Client → Server:**
+- `session:create` - Owner creates new quiz
+- `session:join` - Participant joins with sessionId
+- `question:add` - Owner adds new question
+- `response:submit` - Submit answer to question
+- `matches:get` - Request match results
+
+**Server → Client:**
+- `session:created` - Returns sessionId and participantId
+- `session:joined` - Confirms join with participant info
+- `quiz:state` - Full quiz state sync
+- `question:added` - New question notification
+- `participant:joined/left` - Participant updates
+- `matches:result` - Match calculation results
+
+#### Notes
+- No countdown timer initially (can add later)
+- No "correct/incorrect" answers - matching only
+- Focus on minimal, functional UI first
+- Real-time updates via WebSocket broadcasts
+
+### Phase 4: Results Visualization & Matching
+**Status: Backend COMPLETE, UI PENDING**
+
+#### Participant Matching Algorithm ✅
+- Calculate response agreement percentage between all participant pairs (number of matching responses / total questions)
+- Rank matches from highest to lowest similarity (highest agreement = best match)
+- Matches work across participants who completed at different times
+- Handles partial responses (participants who haven't answered all questions)
+- Implemented in `MatchingService` with full test coverage
+
+#### Results UI (TODO)
+- Display match results to participants
+- Show match percentages and rankings
+- Later: add tiered visualization modes (free/standard/premium)
+
+### Phase 5: AI Question Generation
+**Status: NOT STARTED**
+
 Integrate AI to generate questions from Twitter Spaces audio.
 
 #### Question Generation Service
 - Create src/services/questionGenerator.ts
 - Integrate OpenAI API or similar high-quality LLM
-- Design prompt template: analyze transcript → generate true/false questions about speakers' stances
+- Design prompt template: analyze transcript → generate questions with exactly 2 options
 - Implement question validation and quality filtering
 - Add human review workflow for generated questions before going live
 
@@ -113,16 +191,9 @@ Integrate AI to generate questions from Twitter Spaces audio.
 - Build reviewed question database/storage
 - Use approved questions for initial launch
 
-### Phase 5: Results Visualization & Matching
-Implement multiple display modes for participant matching with tiered access.
+### Phase 6: Tiered Results Display System
+**Status: NOT STARTED**
 
-#### Participant Matching Algorithm
-- Calculate response agreement percentage between all participant pairs (number of matching responses / total questions)
-- Rank matches from highest to lowest similarity (highest agreement = best match)
-- Store match results for future reference
-- Calculate matches for all participants in quiz, regardless of when they completed it
-
-#### Tiered Results Display System
 Implement multiple visualization modes with credit-gated access:
 
 **Free Tier (No credits required):**
@@ -148,7 +219,7 @@ Implement multiple visualization modes with credit-gated access:
 - Create locked/preview state for premium features
 - Add "Unlock with X credits" buttons for gated content
 
-### Phase 6: Authentication & Twitter Integration
+### Phase 7: Authentication & Twitter Integration
 Add user authentication with Twitter OAuth.
 
 #### Twitter OAuth Setup
@@ -170,7 +241,7 @@ Add user authentication with Twitter OAuth.
 - Require Twitter auth for quiz participation
 - Implement credit check before revealing closest match
 
-### Phase 7: Payment & Monetization
+### Phase 8: Payment & Monetization
 Integrate payment processing for credit purchases.
 
 #### Payment Integration
@@ -196,7 +267,7 @@ Integrate payment processing for credit purchases.
 - Charge credits for quiz entry
 - Display pricing information clearly
 
-### Phase 8: Public Statistics Dashboard
+### Phase 9: Public Statistics Dashboard
 Build analytics dashboard for non-authenticated users.
 Non-signed-in users can view general platform statistics including:
 - Total participation numbers
@@ -217,7 +288,7 @@ Non-signed-in users can view general platform statistics including:
 - Add real-time participant count
 - Make stats publicly accessible without login
 
-### Phase 9: Database & Persistence
+### Phase 10: Database & Persistence
 Add database layer for data persistence.
 
 #### Database Setup
@@ -236,7 +307,7 @@ Add database layer for data persistence.
 - Add database migrations system
 - Implement efficient queries for matching participants across different completion times
 
-### Phase 10: Production Readiness
+### Phase 11: Production Readiness
 Prepare for deployment and scale.
 
 #### Infrastructure
@@ -267,6 +338,13 @@ Prepare for deployment and scale.
 - Add contributing guidelines
 
 ## Important Implementation Notes
+
+### Question Constraints
+**CRITICAL:** Quiz questions must have **exactly 2 options**. No more, no less.
+- Type system enforces: `options: [string, string]` (tuple type)
+- Runtime validation: Rejects questions with < 2 or > 2 options
+- Error message: "Question must have exactly 2 options"
+- Examples: Yes/No, Agree/Disagree, A/B, True/False
 
 ### Owner Permission Validation
 Always validate owner permissions **server-side** for sensitive operations:
