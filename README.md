@@ -115,7 +115,7 @@ The Vite dev server will proxy WebSocket connections to the backend server runni
 
 - **Client**: React app with TypeScript, bundled by Vite
   - Entry point: `src/main.tsx`
-  - Main component: `src/App.tsx`
+  - Main component: `src/frontend/App.tsx`
 
 - **Server**: Node.js WebSocket server
   - Entry point: `src/server.ts`

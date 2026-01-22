@@ -8,5 +8,5 @@
     "allowImportingTsExtensions": false
   },
   "include": ["src/server.ts"],
-  "exclude": ["src/**/*.tsx", "src/main.tsx", "src/App.tsx"]
+  "exclude": ["src/**/*.tsx", "src/main.tsx", "src/frontend/App.tsx"]
 }
