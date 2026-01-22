@@ -13,7 +13,7 @@ Build the multiplayer foundation to track quiz participants and synchronize quiz
 ## Folder Structure
 
 ```
-rushsquad/
+vybecheck/
 ├── src/
 │   ├── server/
 │   │   ├── index.ts                    # Main server entry point (refactored from server.ts)

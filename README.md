@@ -1,4 +1,4 @@
-# RushSquad
+# VybeCheck
 
 A web-based multiplayer quiz app for Twitter Spaces built with WebSockets.
 

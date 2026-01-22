@@ -16,7 +16,7 @@ wss.on('connection', (ws) => {
   console.log('Client connected');
 
   // Send welcome message
-  ws.send(JSON.stringify({ type: 'welcome', message: 'Connected to RushSquad server' }));
+  ws.send(JSON.stringify({ type: 'welcome', message: 'Connected to VybeCheck server' }));
 
   // Handle incoming messages
   ws.on('message', (data) => {
