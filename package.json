@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "build:server": "tsc -p tsconfig.server.json",
+    "build:server": "vite build -c vite.server.config.ts",
     "start": "node dist/server.js",
     "dev": "vite",
     "dev:server": "npm run build:server && node dist/server.js",

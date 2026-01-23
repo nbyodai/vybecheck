@@ -1,19 +1,277 @@
 .app {
-  text-align: center;
-  padding: 2rem;
-  font-family: system-ui, -apple-system, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
-h1 {
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #eee;
+}
+
+header h1 {
+  margin: 0;
   color: #333;
-  margin-bottom: 2rem;
 }
 
-#status {
-  font-size: 1.2rem;
-  padding: 1rem;
+.session-info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.badge {
+  background: #4CAF50;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.inactive {
+  color: #999;
+  font-style: italic;
+}
+
+/* Start screen */
+.start-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 60px 20px;
+}
+
+.separator {
+  color: #999;
+  margin: 10px 0;
+}
+
+.join-form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.join-form input {
+  flex: 1;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #2196F3;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1976D2;
+}
+
+.btn-secondary {
+  background: #757575;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #616161;
+}
+
+.btn-option {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.btn-option:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.btn-selected {
+  background: #4CAF50;
+  color: white;
+}
+
+/* Notifications */
+.notification {
+  background: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error {
+  background: #f44336;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Owner controls */
+.owner-controls {
+  background: #f5f5f5;
+  padding: 20px;
   border-radius: 8px;
-  background-color: #f5f5f5;
-  display: inline-block;
-  min-width: 200px;
+  margin-bottom: 30px;
+}
+
+.owner-controls h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.owner-controls input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Questions section */
+.questions-section {
+  margin-bottom: 30px;
+}
+
+.questions-section h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.question-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.question-card h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.options {
+  display: flex;
+  gap: 10px;
+}
+
+.options .btn {
+  flex: 1;
+}
+
+/* Matches section */
+.matches-section {
+  margin-bottom: 30px;
+}
+
+.matches-section h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.matches-list {
+  margin-top: 20px;
+}
+
+.match-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.match-rank {
+  font-weight: bold;
+  color: #2196F3;
+  min-width: 40px;
+}
+
+.match-name {
+  flex: 1;
+  color: #333;
+}
+
+.match-percentage {
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+/* Participants section */
+.participants-section {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.participants-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.participants-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.participants-section li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.participants-section li:last-child {
+  border-bottom: none;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
 }
