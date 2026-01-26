@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "npm run build:frontend && npm run build:server",
+    "build:frontend": "vite build",
     "build:server": "vite build -c vite.server.config.ts",
     "start": "node dist/server.js",
     "dev": "vite",
