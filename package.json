@@ -8,7 +8,7 @@
     "build:server": "vite build -c vite.server.config.ts",
     "start": "node dist/server.js",
     "dev": "vite",
-    "dev:server": "npm run build:server && node dist/server.js",
+    "dev:server": "tsx watch src/server.ts",
     "preview": "vite preview",
     "test": "vitest"
   },
@@ -25,6 +25,7 @@
     "@types/node": "^20.10.0",
     "@types/ws": "^8.5.10",
     "@vitejs/plugin-react": "^4.7.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.3.3",
     "vite": "^6.4.1",
     "vitest": "^1.0.4"

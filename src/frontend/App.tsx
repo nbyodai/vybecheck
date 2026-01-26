@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import './App.css';
 import type { ServerMessage, QuizState, MatchResult } from '../shared/types';
 
@@ -28,6 +28,7 @@ function App() {
     websocket.addEventListener('open', () => {
       console.log('Connected to server');
       setConnected(true);
+      setError('');
     });
 
     websocket.addEventListener('message', (event) => {
@@ -75,7 +76,49 @@ function App() {
         break;
 
       case 'question:added':
+        console.log('New question added client', message.data);
+        setQuizState((prev) => {
+          if (!prev) return null;
+
+          return {
+            ...prev,
+            // 1. Add the new question to the list
+            questions: [...prev.questions, message.data.question],
+            // 2. CRITICAL: Add an empty response slot for this new question
+            // If you miss this, `myResponses[index]` will be undefined,
+            // and `undefined !== ''` is true, making the question look answered!
+            myResponses: [...prev.myResponses, ""] // Not sure about this yet
+          };
+        });
         showNotification('New question added!');
+        break;
+
+      case 'participant:joined':
+        console.log('Participant joined:', message.data);
+        setQuizState((prev) => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            participants: [...prev.participants, message.data],
+            participantCount: prev.participantCount + 1,
+            activeParticipantCount: prev.activeParticipantCount + 1
+          };
+        });
+        showNotification(`${message.data.username || 'New participant'} joined!`);
+        break;
+
+      case 'participant:left':
+        console.log('Participant left:', message.data);
+        setQuizState((prev) => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            participants: prev.participants.map(p =>
+              p.id === message.data.participantId ? { ...p, isActive: false } : p
+            ),
+            activeParticipantCount: prev.activeParticipantCount - 1
+          };
+        });
         break;
 
       case 'matches:result':
