@@ -23,7 +23,8 @@ function App() {
   const [option2, setOption2] = useState('');
 
   useEffect(() => {
-    const websocket = new WebSocket('ws://localhost:3000');
+    const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:3000';
+    const websocket = new WebSocket(wsUrl);
 
     websocket.addEventListener('open', () => {
       console.log('Connected to server');

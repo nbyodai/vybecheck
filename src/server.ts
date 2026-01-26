@@ -2,16 +2,26 @@ import express from 'express';
 import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import { WebSocketHandler } from './server/services/WebSocketHandler';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 const wsHandler = new WebSocketHandler();
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Serve static files
-app.use(express.static('.'));
+// Serve static files from dist directory (for production)
+app.use(express.static(path.join(__dirname)));
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 // WebSocket connection handler
 wss.on('connection', (ws) => {
@@ -19,6 +29,6 @@ wss.on('connection', (ws) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
   console.log(`WebSocket server ready`);
 });
