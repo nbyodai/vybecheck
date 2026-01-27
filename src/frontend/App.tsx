@@ -23,7 +23,7 @@ function App() {
   const [option2, setOption2] = useState('');
 
   useEffect(() => {
-    const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:3000';
+    const wsUrl = import.meta.env.VITE_WS_URL;
     const websocket = new WebSocket(wsUrl);
 
     websocket.addEventListener('open', () => {

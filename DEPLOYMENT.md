@@ -122,15 +122,8 @@ flyctl deploy
 
 ## Environment Variables
 
-### Local Development (.env)
-```
-VITE_WS_URL=ws://localhost:3000
-```
-
-### Production (.env.production)
-```
-VITE_WS_URL=wss://vybecheck.fly.dev
-```
+### target the right one for local
+### Local Development (.env) Production (.env.production)
 
 ---
 

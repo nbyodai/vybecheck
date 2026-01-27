@@ -28,7 +28,7 @@ wss.on('connection', (ws) => {
   wsHandler.handleConnection(ws);
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on 0.0.0.0:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
   console.log(`WebSocket server ready`);
 });
