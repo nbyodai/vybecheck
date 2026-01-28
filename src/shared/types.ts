@@ -53,3 +53,47 @@ export interface MatchResult {
   username: string | null;
   matchPercentage: number;
 }
+
+// Vybes Monetization Types
+export type UnlockableFeature = 
+  | 'MATCH_PREVIEW'
+  | 'MATCH_TOP3'
+  | 'MATCH_ALL'
+  | 'QUESTION_LIMIT_10';
+
+export type TransactionReason =
+  | 'INITIAL_VYBES'
+  | 'PURCHASE_VYBES'
+  | 'UNLOCK_MATCH_TOP3'
+  | 'UNLOCK_MATCH_ALL'
+  | 'UNLOCK_QUESTION_LIMIT';
+
+export interface VybeTransaction {
+  participantId: string;
+  amount: number;
+  reason: TransactionReason;
+  timestamp: Date;
+}
+
+export interface LedgerEntry {
+  id: string;
+  participantId: string;
+  amount: number;
+  reason: TransactionReason;
+  createdAt: Date;
+}
+
+export interface FeatureUnlock {
+  id: string;
+  participantId: string;
+  resourceId: string; // Format: "session:{sessionId}"
+  feature: UnlockableFeature;
+  createdAt: Date;
+}
+
+export interface PurchaseResult {
+  granted: boolean;
+  charged: boolean;
+  balance: number;
+  error?: 'INSUFFICIENT_VYBES' | 'NOT_OWNER' | 'ALREADY_UNLOCKED';
+}
