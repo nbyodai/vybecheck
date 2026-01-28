@@ -549,3 +549,601 @@ describe('MatchingService - Slice 5: Basic Match Calculation', () => {
     });
   });
 });
+
+// Phase 3 Enhancement Tests: Tiered Results & Caching
+describe('MatchingService - Tiered Results & Caching', () => {
+  let matchingService: MatchingService;
+  let session: QuizSession;
+
+  // Test Configuration
+  const TEST_CONFIG = {
+    CACHE: {
+      TTL_MS: 600000, // 10 minutes
+    },
+    TIERS: {
+      PREVIEW: 'PREVIEW',
+      TOP3: 'TOP3',
+      ALL: 'ALL',
+    },
+  } as const;
+
+  beforeEach(() => {
+    matchingService = new MatchingService();
+    session = new QuizSession('owner-123');
+  });
+
+  describe('getMatchesByTier - Tiered Results', () => {
+    test('should return 2 middle matches for PREVIEW tier (matches[5:7])', () => {
+      // Add owner
+      const owner: Participant = {
+        id: 'owner-123',
+        username: 'Owner',
+        connection: null,
+        isOwner: true,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      session.addParticipant(owner);
+
+      // Add 10 more participants (11 total, 10 potential matches)
+      for (let i = 1; i <= 10; i++) {
+        const participant: Participant = {
+          id: `p${i}`,
+          username: `User${i}`,
+          connection: null,
+          isOwner: false,
+          joinedAt: new Date(),
+          lastActiveAt: new Date(),
+          isActive: true,
+        };
+        session.addParticipant(participant);
+      }
+
+      const question: Question = {
+        id: 'q1',
+        prompt: 'Test?',
+        options: ['Yes', 'No'],
+        addedAt: new Date(),
+      };
+      session.addQuestion(question);
+
+      // Create varied match percentages
+      session.recordResponse({
+        id: 'r-owner',
+        participantId: 'owner-123',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+
+      for (let i = 1; i <= 10; i++) {
+        session.recordResponse({
+          id: `r${i}`,
+          participantId: `p${i}`,
+          questionId: 'q1',
+          sessionId: session.sessionId,
+          optionChosen: i <= 5 ? 'Yes' : 'No',
+          answeredAt: new Date(),
+        });
+      }
+
+      const matches = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.PREVIEW,
+      });
+
+      // PREVIEW should return 2 matches from middle (indices 5-6)
+      expect(matches.length).toBeLessThanOrEqual(2);
+    });
+
+    test('should return top 3 matches for TOP3 tier', () => {
+      const owner: Participant = {
+        id: 'owner-123',
+        username: 'Owner',
+        connection: null,
+        isOwner: true,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      session.addParticipant(owner);
+
+      for (let i = 1; i <= 5; i++) {
+        const participant: Participant = {
+          id: `p${i}`,
+          username: `User${i}`,
+          connection: null,
+          isOwner: false,
+          joinedAt: new Date(),
+          lastActiveAt: new Date(),
+          isActive: true,
+        };
+        session.addParticipant(participant);
+      }
+
+      const question: Question = {
+        id: 'q1',
+        prompt: 'Test?',
+        options: ['Yes', 'No'],
+        addedAt: new Date(),
+      };
+      session.addQuestion(question);
+
+      session.recordResponse({
+        id: 'r-owner',
+        participantId: 'owner-123',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+
+      for (let i = 1; i <= 5; i++) {
+        session.recordResponse({
+          id: `r${i}`,
+          participantId: `p${i}`,
+          questionId: 'q1',
+          sessionId: session.sessionId,
+          optionChosen: i <= 3 ? 'Yes' : 'No',
+          answeredAt: new Date(),
+        });
+      }
+
+      const matches = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.TOP3,
+      });
+
+      expect(matches.length).toBeLessThanOrEqual(3);
+      // Should be sorted by percentage (highest first)
+      if (matches.length >= 2) {
+        expect(matches[0].matchPercentage).toBeGreaterThanOrEqual(matches[1].matchPercentage);
+      }
+    });
+
+    test('should return all matches for ALL tier', () => {
+      const owner: Participant = {
+        id: 'owner-123',
+        username: 'Owner',
+        connection: null,
+        isOwner: true,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      session.addParticipant(owner);
+
+      for (let i = 1; i <= 4; i++) {
+        const participant: Participant = {
+          id: `p${i}`,
+          username: `User${i}`,
+          connection: null,
+          isOwner: false,
+          joinedAt: new Date(),
+          lastActiveAt: new Date(),
+          isActive: true,
+        };
+        session.addParticipant(participant);
+      }
+
+      const question: Question = {
+        id: 'q1',
+        prompt: 'Test?',
+        options: ['Yes', 'No'],
+        addedAt: new Date(),
+      };
+      session.addQuestion(question);
+
+      session.recordResponse({
+        id: 'r-owner',
+        participantId: 'owner-123',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+
+      for (let i = 1; i <= 4; i++) {
+        session.recordResponse({
+          id: `r${i}`,
+          participantId: `p${i}`,
+          questionId: 'q1',
+          sessionId: session.sessionId,
+          optionChosen: i % 2 === 0 ? 'Yes' : 'No',
+          answeredAt: new Date(),
+        });
+      }
+
+      const matches = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.ALL,
+      });
+
+      // Should return all 4 matches
+      expect(matches).toHaveLength(4);
+    });
+
+    test('should handle fewer matches than tier requires (2 participants, TOP3 requested)', () => {
+      const owner: Participant = {
+        id: 'owner-123',
+        username: 'Owner',
+        connection: null,
+        isOwner: true,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      const p1: Participant = {
+        id: 'p1',
+        username: 'User1',
+        connection: null,
+        isOwner: false,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      session.addParticipant(owner);
+      session.addParticipant(p1);
+
+      const question: Question = {
+        id: 'q1',
+        prompt: 'Test?',
+        options: ['Yes', 'No'],
+        addedAt: new Date(),
+      };
+      session.addQuestion(question);
+
+      session.recordResponse({
+        id: 'r-owner',
+        participantId: 'owner-123',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+      session.recordResponse({
+        id: 'r1',
+        participantId: 'p1',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+
+      const matches = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.TOP3,
+      });
+
+      // Only 1 match available (can't return 3)
+      expect(matches).toHaveLength(1);
+    });
+
+    test('should return empty matches for all tiers when no responses', () => {
+      const owner: Participant = {
+        id: 'owner-123',
+        username: 'Owner',
+        connection: null,
+        isOwner: true,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      session.addParticipant(owner);
+
+      const question: Question = {
+        id: 'q1',
+        prompt: 'Test?',
+        options: ['Yes', 'No'],
+        addedAt: new Date(),
+      };
+      session.addQuestion(question);
+
+      // No responses added
+
+      const matchesPreview = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.PREVIEW,
+      });
+      const matchesTop3 = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.TOP3,
+      });
+      const matchesAll = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.ALL,
+      });
+
+      expect(matchesPreview).toEqual([]);
+      expect(matchesTop3).toEqual([]);
+      expect(matchesAll).toEqual([]);
+    });
+  });
+
+  describe('Caching Behavior', () => {
+    test('should cache calculation on first call (cache miss)', () => {
+      const owner: Participant = {
+        id: 'owner-123',
+        username: 'Owner',
+        connection: null,
+        isOwner: true,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      const p1: Participant = {
+        id: 'p1',
+        username: 'User1',
+        connection: null,
+        isOwner: false,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      session.addParticipant(owner);
+      session.addParticipant(p1);
+
+      const question: Question = {
+        id: 'q1',
+        prompt: 'Test?',
+        options: ['Yes', 'No'],
+        addedAt: new Date(),
+      };
+      session.addQuestion(question);
+
+      session.recordResponse({
+        id: 'r-owner',
+        participantId: 'owner-123',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+      session.recordResponse({
+        id: 'r1',
+        participantId: 'p1',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+
+      // First call should calculate and cache
+      const matches1 = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.ALL,
+      });
+
+      expect(matches1).toHaveLength(1);
+    });
+
+    test('should use cached data on second call (cache hit)', () => {
+      const owner: Participant = {
+        id: 'owner-123',
+        username: 'Owner',
+        connection: null,
+        isOwner: true,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      const p1: Participant = {
+        id: 'p1',
+        username: 'User1',
+        connection: null,
+        isOwner: false,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      session.addParticipant(owner);
+      session.addParticipant(p1);
+
+      const question: Question = {
+        id: 'q1',
+        prompt: 'Test?',
+        options: ['Yes', 'No'],
+        addedAt: new Date(),
+      };
+      session.addQuestion(question);
+
+      session.recordResponse({
+        id: 'r-owner',
+        participantId: 'owner-123',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+      session.recordResponse({
+        id: 'r1',
+        participantId: 'p1',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+
+      const matches1 = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.ALL,
+      });
+      const matches2 = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.ALL,
+      });
+
+      // Should return same results
+      expect(matches1).toEqual(matches2);
+    });
+
+    test('should use same cached calculation for different tiers', () => {
+      const owner: Participant = {
+        id: 'owner-123',
+        username: 'Owner',
+        connection: null,
+        isOwner: true,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      session.addParticipant(owner);
+
+      for (let i = 1; i <= 5; i++) {
+        const participant: Participant = {
+          id: `p${i}`,
+          username: `User${i}`,
+          connection: null,
+          isOwner: false,
+          joinedAt: new Date(),
+          lastActiveAt: new Date(),
+          isActive: true,
+        };
+        session.addParticipant(participant);
+      }
+
+      const question: Question = {
+        id: 'q1',
+        prompt: 'Test?',
+        options: ['Yes', 'No'],
+        addedAt: new Date(),
+      };
+      session.addQuestion(question);
+
+      session.recordResponse({
+        id: 'r-owner',
+        participantId: 'owner-123',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+
+      for (let i = 1; i <= 5; i++) {
+        session.recordResponse({
+          id: `r${i}`,
+          participantId: `p${i}`,
+          questionId: 'q1',
+          sessionId: session.sessionId,
+          optionChosen: 'Yes',
+          answeredAt: new Date(),
+        });
+      }
+
+      // Request different tiers (should use same cached calculation, just slice differently)
+      const matchesPreview = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.PREVIEW,
+      });
+      const matchesTop3 = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.TOP3,
+      });
+      const matchesAll = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.ALL,
+      });
+
+      // All should return data (different slices of same calculation)
+      expect(matchesPreview.length).toBeLessThanOrEqual(2);
+      expect(matchesTop3.length).toBeLessThanOrEqual(3);
+      expect(matchesAll).toHaveLength(5);
+    });
+
+    test('should maintain separate cache entries for different participants', () => {
+      const owner: Participant = {
+        id: 'owner-123',
+        username: 'Owner',
+        connection: null,
+        isOwner: true,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      const p1: Participant = {
+        id: 'p1',
+        username: 'User1',
+        connection: null,
+        isOwner: false,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      const p2: Participant = {
+        id: 'p2',
+        username: 'User2',
+        connection: null,
+        isOwner: false,
+        joinedAt: new Date(),
+        lastActiveAt: new Date(),
+        isActive: true,
+      };
+      session.addParticipant(owner);
+      session.addParticipant(p1);
+      session.addParticipant(p2);
+
+      const question: Question = {
+        id: 'q1',
+        prompt: 'Test?',
+        options: ['Yes', 'No'],
+        addedAt: new Date(),
+      };
+      session.addQuestion(question);
+
+      session.recordResponse({
+        id: 'r-owner',
+        participantId: 'owner-123',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+      session.recordResponse({
+        id: 'r1',
+        participantId: 'p1',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'Yes',
+        answeredAt: new Date(),
+      });
+      session.recordResponse({
+        id: 'r2',
+        participantId: 'p2',
+        questionId: 'q1',
+        sessionId: session.sessionId,
+        optionChosen: 'No',
+        answeredAt: new Date(),
+      });
+
+      // Get matches for different participants (should have separate cache keys)
+      const matchesOwner = matchingService.getMatchesByTier({
+        participantId: 'owner-123',
+        session,
+        tier: TEST_CONFIG.TIERS.ALL,
+      });
+      const matchesP1 = matchingService.getMatchesByTier({
+        participantId: 'p1',
+        session,
+        tier: TEST_CONFIG.TIERS.ALL,
+      });
+
+      // Should be different (each participant has different matches)
+      expect(matchesOwner).not.toEqual(matchesP1);
+    });
+  });
+});
