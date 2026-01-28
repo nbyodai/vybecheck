@@ -1,10 +1,10 @@
-import type { VybeLedger } from '../models/VybeLedger.js';
-import type { ParticipantUnlockManager } from '../models/ParticipantUnlock.js';
-import type { UnlockableFeature, TransactionReason, LedgerEntry } from '../../shared/types.js';
+import type { VybeLedger } from '../models/VybeLedger';
+import type { ParticipantUnlockManager } from '../models/ParticipantUnlock';
+import type { UnlockableFeature, TransactionReason, LedgerEntry } from '../../shared/types';
 
 /**
  * BillingService - Core monetization service
- * 
+ *
  * Orchestrates purchases, balance checks, and access verification.
  * Implements idempotent purchase logic (no double-charging).
  */
@@ -57,7 +57,7 @@ export class BillingService {
   /**
    * Purchase or verify access to a feature
    * Idempotent: Will not charge twice for the same feature
-   * 
+   *
    * @param params - Purchase parameters
    * @returns Promise<true> if access granted (purchased or already owned)
    * @throws Error if insufficient balance

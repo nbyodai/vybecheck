@@ -1,10 +1,10 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { QuizSession } from '../../src/server/models/QuizSession.js';
-import { BillingService } from '../../src/server/services/BillingService.js';
-import { VybeLedger } from '../../src/server/models/VybeLedger.js';
-import { ParticipantUnlock } from '../../src/server/models/ParticipantUnlock.js';
-import { QuotaManager } from '../../src/server/services/QuotaManager.js';
-import type { Participant, Question, UnlockableFeature } from '../../src/shared/types.js';
+import { QuizSession } from '../../src/server/models/QuizSession';
+import { BillingService } from '../../src/server/services/BillingService';
+import { VybeLedger } from '../../src/server/models/VybeLedger';
+import { ParticipantUnlock } from '../../src/server/models/ParticipantUnlock';
+import { QuotaManager } from '../../src/server/services/QuotaManager';
+import type { Participant, Question, UnlockableFeature } from '../../src/shared/types';
 
 // Test Configuration
 const TEST_CONFIG = {

@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
-import { QuizSession } from '../../src/server/models/QuizSession.js';
-import { MatchingService } from '../../src/server/services/MatchingService.js';
-import type { Participant, Question } from '../../src/shared/types.js';
+import { QuizSession } from '../../src/server/models/QuizSession';
+import { MatchingService } from '../../src/server/services/MatchingService';
+import type { Participant, Question } from '../../src/shared/types';
 
 // Test Configuration
 const TEST_CONFIG = {

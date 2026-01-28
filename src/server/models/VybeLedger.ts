@@ -1,8 +1,8 @@
-import type { LedgerEntry, TransactionReason } from '../../shared/types.js';
+import type { LedgerEntry, TransactionReason } from '../../shared/types';
 
 /**
  * VybeLedger - Manages Vybes transactions and balance calculation
- * 
+ *
  * Stores all transactions in a ledger format (append-only).
  * Balance is calculated by summing all transactions for a participant.
  */
@@ -93,7 +93,7 @@ export class VybeLedger {
         // Sort by timestamp first (newest first)
         const timeDiff = b.createdAt.getTime() - a.createdAt.getTime();
         if (timeDiff !== 0) return timeDiff;
-        
+
         // If timestamps are identical, sort by ID (higher ID = newer)
         const idA = parseInt(a.id.replace('txn-', ''));
         const idB = parseInt(b.id.replace('txn-', ''));
@@ -120,7 +120,7 @@ export class VybeLedger {
         // Sort by timestamp first (newest first)
         const timeDiff = b.createdAt.getTime() - a.createdAt.getTime();
         if (timeDiff !== 0) return timeDiff;
-        
+
         // If timestamps are identical, sort by ID (higher ID = newer)
         const idA = parseInt(a.id.replace('txn-', ''));
         const idB = parseInt(b.id.replace('txn-', ''));

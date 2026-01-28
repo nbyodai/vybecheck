@@ -1,8 +1,8 @@
-import type { FeatureUnlock, UnlockableFeature } from '../../shared/types.js';
+import type { FeatureUnlock, UnlockableFeature } from '../../shared/types';
 
 /**
  * ParticipantUnlockManager - Manages feature unlocks per participant per resource
- * 
+ *
  * Tracks which features have been unlocked by participants.
  * Implements tier hierarchy: MATCH_ALL > MATCH_TOP3 > MATCH_PREVIEW
  */

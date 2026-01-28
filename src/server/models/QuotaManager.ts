@@ -1,8 +1,8 @@
-import type { ParticipantUnlock } from '../models/ParticipantUnlock.js';
+import type { ParticipantUnlock } from '../models/ParticipantUnlock';
 
 /**
  * QuotaManager - Manages question limits for quiz owners
- * 
+ *
  * Default: 3 free questions
  * With upgrade: 10 questions
  * Only owners can add questions
