@@ -3,7 +3,7 @@ import { QuizSession } from '../../src/server/models/QuizSession';
 import { BillingService } from '../../src/server/services/BillingService';
 import { VybeLedger } from '../../src/server/models/VybeLedger';
 import { ParticipantUnlock } from '../../src/server/models/ParticipantUnlock';
-import { QuotaManager } from '../../src/server/services/QuotaManager';
+import { QuotaManager } from '../../src/server/models/QuotaManager';
 import type { Participant, Question, UnlockableFeature } from '../../src/shared/types';
 
 // Test Configuration
@@ -39,7 +39,7 @@ describe('PurchaseFlow - Integration Tests', () => {
     session = new QuizSession('owner-123');
     vybeLedger = new VybeLedger();
     participantUnlock = new ParticipantUnlock();
-    quotaManager = new QuotaManager();
+    quotaManager = new QuotaManager(participantUnlock);
     billingService = new BillingService({
       vybeLedger,
       participantUnlock,
@@ -244,6 +244,7 @@ describe('PurchaseFlow - Integration Tests', () => {
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
         cost: TEST_CONFIG.PRICING.QUESTION_LIMIT_10,
+        isOwner: true,
       });
 
       expect(purchaseResult.granted).toBe(true);
@@ -305,6 +306,7 @@ describe('PurchaseFlow - Integration Tests', () => {
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
         cost: TEST_CONFIG.PRICING.QUESTION_LIMIT_10,
+        isOwner: false,
       });
 
       expect(purchaseResult.granted).toBe(false);

@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { describe, test, expect, beforeEach, vi, afterEach } from 'vitest';
 import { QuizSession } from '../../src/server/models/QuizSession';
 import { MatchingService } from '../../src/server/services/MatchingService';
 import type { Participant, Question } from '../../src/shared/types';

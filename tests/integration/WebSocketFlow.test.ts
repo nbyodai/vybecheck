@@ -3,7 +3,7 @@ import { QuizSession } from '../../src/server/models/QuizSession';
 import { BillingService } from '../../src/server/services/BillingService';
 import { VybeLedger } from '../../src/server/models/VybeLedger';
 import { ParticipantUnlock } from '../../src/server/models/ParticipantUnlock';
-import { QuotaManager } from '../../src/server/services/QuotaManager';
+import { QuotaManager } from '../../src/server/models/QuotaManager';
 import { MatchingService } from '../../src/server/services/MatchingService';
 import type { Participant, Question, UnlockableFeature } from '../../src/shared/types';
 
@@ -42,7 +42,7 @@ describe('WebSocketFlow - Integration Tests', () => {
     session = new QuizSession('owner-123');
     vybeLedger = new VybeLedger();
     participantUnlock = new ParticipantUnlock();
-    quotaManager = new QuotaManager();
+    quotaManager = new QuotaManager(participantUnlock);
     matchingService = new MatchingService();
     billingService = new BillingService({
       vybeLedger,
@@ -578,6 +578,7 @@ describe('WebSocketFlow - Integration Tests', () => {
         participantId: ownerId,
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
+        isOwner: true,
         cost: TEST_CONFIG.PRICING.QUESTION_LIMIT_10,
       });
 
@@ -709,6 +710,7 @@ describe('WebSocketFlow - Integration Tests', () => {
         participantId: ownerId,
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
+        isOwner: true,
         cost: TEST_CONFIG.PRICING.QUESTION_LIMIT_10,
       });
 
@@ -718,6 +720,7 @@ describe('WebSocketFlow - Integration Tests', () => {
         participantId: ownerId,
         newLimit: 10,
         feature: FEATURE.QUESTION_LIMIT_10,
+        isOwner: true,
       };
     });
   });

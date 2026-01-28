@@ -40,7 +40,10 @@ describe('BillingService', () => {
   beforeEach(() => {
     ledger = new VybeLedger();
     unlockManager = new ParticipantUnlockManager();
-    billingService = new BillingService(ledger, unlockManager);
+    billingService = new BillingService({
+      vybeLedger: ledger,
+      participantUnlock: unlockManager,
+    });
   });
 
   describe('Balance Management', () => {
@@ -179,7 +182,7 @@ describe('BillingService', () => {
   });
 
   describe('Purchase or Verify Access', () => {
-    it('should purchase when feature not owned and sufficient balance (purchaseOrVerifyAccess)', async () => {
+    it('should purchase when feature not owned and sufficient balance (purchaseOrVerifyAccess)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -189,14 +192,15 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.INITIAL_VYBES,
       });
 
-      const result = await billingService.purchaseOrVerifyAccess({
+      const result = billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
         cost: TEST_CONFIG.PRICING.MATCH_TOP3,
       });
 
-      expect(result).toBe(true);
+      expect(result.granted).toBe(true);
+      expect(result.charged).toBe(true);
       expect(billingService.getBalance(participantId)).toBe(8); // 10 - 2
       expect(billingService.hasFeatureAccess({
         participantId,
@@ -205,7 +209,7 @@ describe('BillingService', () => {
       })).toBe(true);
     });
 
-    it('should not re-charge when feature already owned (purchaseOrVerifyAccess)', async () => {
+    it('should not re-charge when feature already owned (purchaseOrVerifyAccess)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -216,18 +220,19 @@ describe('BillingService', () => {
       });
       unlockManager.createUnlock(participantId, resourceId, FEATURE.MATCH_TOP3);
 
-      const result = await billingService.purchaseOrVerifyAccess({
+      const result = billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
         cost: TEST_CONFIG.PRICING.MATCH_TOP3,
       });
 
-      expect(result).toBe(true);
+      expect(result.granted).toBe(true);
+      expect(result.charged).toBe(false);
       expect(billingService.getBalance(participantId)).toBe(10); // No charge
     });
 
-    it('should throw error when insufficient balance (purchaseOrVerifyAccess)', async () => {
+    it('should return error when insufficient balance (purchaseOrVerifyAccess)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -237,17 +242,19 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.INITIAL_VYBES,
       });
 
-      await expect(
-        billingService.purchaseOrVerifyAccess({
-          participantId,
-          resourceId,
-          feature: FEATURE.MATCH_ALL,
-          cost: TEST_CONFIG.PRICING.MATCH_ALL,
-        })
-      ).rejects.toThrow('Insufficient Vybes');
+      const result = billingService.purchaseOrVerifyAccess({
+        participantId,
+        resourceId,
+        feature: FEATURE.MATCH_ALL,
+        cost: TEST_CONFIG.PRICING.MATCH_ALL,
+      });
+
+      expect(result.granted).toBe(false);
+      expect(result.charged).toBe(false);
+      expect(result.error).toBe('INSUFFICIENT_VYBES');
     });
 
-    it('should create unlock record when purchasing (purchaseOrVerifyAccess)', async () => {
+    it('should create unlock record when purchasing (purchaseOrVerifyAccess)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -257,7 +264,7 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.INITIAL_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
@@ -267,7 +274,7 @@ describe('BillingService', () => {
       expect(unlockManager.hasUnlock(participantId, resourceId, FEATURE.MATCH_TOP3)).toBe(true);
     });
 
-    it('should deduct correct amount when purchasing (purchaseOrVerifyAccess)', async () => {
+    it('should deduct correct amount when purchasing (purchaseOrVerifyAccess)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -277,7 +284,7 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_ALL,
@@ -287,7 +294,7 @@ describe('BillingService', () => {
       expect(billingService.getBalance(participantId)).toBe(15);
     });
 
-    it('should be idempotent - multiple calls should not double-charge (purchaseOrVerifyAccess)', async () => {
+    it('should be idempotent - multiple calls should not double-charge (purchaseOrVerifyAccess)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -297,19 +304,19 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.INITIAL_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
         cost: TEST_CONFIG.PRICING.MATCH_TOP3,
       });
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
         cost: TEST_CONFIG.PRICING.MATCH_TOP3,
       });
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
@@ -322,7 +329,7 @@ describe('BillingService', () => {
   });
 
   describe('Match Tier Hierarchy', () => {
-    it('should enforce hierarchy: MATCH_ALL > MATCH_TOP3 > MATCH_PREVIEW', async () => {
+    it('should enforce hierarchy: MATCH_ALL > MATCH_TOP3 > MATCH_PREVIEW', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -333,7 +340,7 @@ describe('BillingService', () => {
       });
 
       // Purchase MATCH_ALL
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_ALL,
@@ -358,7 +365,7 @@ describe('BillingService', () => {
       })).toBe(true);
     });
 
-    it('should not grant higher tier from lower tier purchase', async () => {
+    it('should not grant higher tier from lower tier purchase', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -369,7 +376,7 @@ describe('BillingService', () => {
       });
 
       // Purchase MATCH_TOP3
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
@@ -390,7 +397,7 @@ describe('BillingService', () => {
   });
 
   describe('Feature Costs', () => {
-    it('should correctly price MATCH_PREVIEW (0 Vybes)', async () => {
+    it('should correctly price MATCH_PREVIEW (0 Vybes)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -401,18 +408,18 @@ describe('BillingService', () => {
       });
 
       // MATCH_PREVIEW should be free
-      const result = await billingService.purchaseOrVerifyAccess({
+      const result = billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_PREVIEW,
         cost: TEST_CONFIG.PRICING.MATCH_PREVIEW,
       });
 
-      expect(result).toBe(true);
+      expect(result.granted).toBe(true);
       expect(billingService.getBalance(participantId)).toBe(0);
     });
 
-    it('should correctly price MATCH_TOP3 (2 Vybes)', async () => {
+    it('should correctly price MATCH_TOP3 (2 Vybes)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -422,7 +429,7 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
@@ -432,7 +439,7 @@ describe('BillingService', () => {
       expect(billingService.getBalance(participantId)).toBe(8);
     });
 
-    it('should correctly price MATCH_ALL (5 Vybes)', async () => {
+    it('should correctly price MATCH_ALL (5 Vybes)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -442,7 +449,7 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_ALL,
@@ -452,7 +459,7 @@ describe('BillingService', () => {
       expect(billingService.getBalance(participantId)).toBe(5);
     });
 
-    it('should correctly price QUESTION_LIMIT_10 (3 Vybes)', async () => {
+    it('should correctly price QUESTION_LIMIT_10 (3 Vybes)', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -462,10 +469,11 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
+        isOwner: true,
         cost: TEST_CONFIG.PRICING.QUESTION_LIMIT_10,
       });
 
@@ -495,7 +503,7 @@ describe('BillingService', () => {
       expect(history[1].amount).toBe(10);
     });
 
-    it('should include purchase transactions in history', async () => {
+    it('should include purchase transactions in history', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -504,7 +512,7 @@ describe('BillingService', () => {
         amount: 10,
         reason: TRANSACTION_REASON.INITIAL_VYBES,
       });
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
@@ -526,7 +534,7 @@ describe('BillingService', () => {
   });
 
   describe('Multiple Feature Purchases', () => {
-    it('should handle QUESTION_LIMIT_10 unlock persisting for session', async () => {
+    it('should handle QUESTION_LIMIT_10 unlock persisting for session', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -536,10 +544,11 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
+        isOwner: true,
         cost: TEST_CONFIG.PRICING.QUESTION_LIMIT_10,
       });
 
@@ -547,6 +556,7 @@ describe('BillingService', () => {
         participantId,
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
+        isOwner: true,
       })).toBe(true);
       expect(billingService.getBalance(participantId)).toBe(7);
     });
@@ -565,7 +575,7 @@ describe('BillingService', () => {
       expect(billingService.getBalance(participantId)).toBe(TEST_CONFIG.INITIAL_PROMO_VYBES);
     });
 
-    it('should handle multiple feature purchases in same session', async () => {
+    it('should handle multiple feature purchases in same session', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -575,16 +585,17 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
         cost: TEST_CONFIG.PRICING.MATCH_TOP3,
       });
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
+        isOwner: true,
         cost: TEST_CONFIG.PRICING.QUESTION_LIMIT_10,
       });
 
@@ -599,12 +610,13 @@ describe('BillingService', () => {
         participantId,
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
+        isOwner: true,
       })).toBe(true);
     });
   });
 
   describe('Edge Cases', () => {
-    it('should handle exact balance for purchase', async () => {
+    it('should handle exact balance for purchase', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -614,7 +626,7 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
@@ -629,7 +641,7 @@ describe('BillingService', () => {
       })).toBe(true);
     });
 
-    it('should handle purchase with balance 1 Vybe short', async () => {
+    it('should handle purchase with balance 1 Vybe short', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -639,17 +651,18 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await expect(
-        billingService.purchaseOrVerifyAccess({
-          participantId,
-          resourceId,
-          feature: FEATURE.MATCH_TOP3,
-          cost: TEST_CONFIG.PRICING.MATCH_TOP3,
-        })
-      ).rejects.toThrow('Insufficient Vybes');
+      const result = billingService.purchaseOrVerifyAccess({
+        participantId,
+        resourceId,
+        feature: FEATURE.MATCH_TOP3,
+        cost: TEST_CONFIG.PRICING.MATCH_TOP3,
+      });
+
+      expect(result.granted).toBe(false);
+      expect(result.error).toBe('INSUFFICIENT_VYBES');
     });
 
-    it('should handle zero-cost features', async () => {
+    it('should handle zero-cost features', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -659,7 +672,7 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.INITIAL_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_PREVIEW,
@@ -674,7 +687,7 @@ describe('BillingService', () => {
       })).toBe(true);
     });
 
-    it('should handle purchasing all features in sequence', async () => {
+    it('should handle purchasing all features in sequence', () => {
       const participantId = 'participant-123';
       const resourceId = 'session:abc123';
 
@@ -684,28 +697,29 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_PREVIEW,
         cost: TEST_CONFIG.PRICING.MATCH_PREVIEW,
       });
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_TOP3,
         cost: TEST_CONFIG.PRICING.MATCH_TOP3,
       });
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.MATCH_ALL,
         cost: TEST_CONFIG.PRICING.MATCH_ALL,
       });
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId,
         feature: FEATURE.QUESTION_LIMIT_10,
+        isOwner: true,
         cost: TEST_CONFIG.PRICING.QUESTION_LIMIT_10,
       });
 
@@ -717,7 +731,7 @@ describe('BillingService', () => {
       expect(billingService.getBalance(participantId)).toBe(100 - totalCost);
     });
 
-    it('should handle resource-specific unlocks', async () => {
+    it('should handle resource-specific unlocks', () => {
       const participantId = 'participant-123';
       const resourceId1 = 'session:abc123';
       const resourceId2 = 'session:def456';
@@ -728,7 +742,7 @@ describe('BillingService', () => {
         reason: TRANSACTION_REASON.PURCHASE_VYBES,
       });
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId: resourceId1,
         feature: FEATURE.MATCH_TOP3,
@@ -742,7 +756,7 @@ describe('BillingService', () => {
         feature: FEATURE.MATCH_TOP3,
       })).toBe(false);
 
-      await billingService.purchaseOrVerifyAccess({
+      billingService.purchaseOrVerifyAccess({
         participantId,
         resourceId: resourceId2,
         feature: FEATURE.MATCH_TOP3,

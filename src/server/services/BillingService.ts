@@ -1,6 +1,14 @@
 import type { VybeLedger } from '../models/VybeLedger';
 import type { ParticipantUnlockManager } from '../models/ParticipantUnlock';
+import type { QuotaManager } from '../models/QuotaManager';
 import type { UnlockableFeature, TransactionReason, LedgerEntry } from '../../shared/types';
+
+export interface PurchaseResult {
+  granted: boolean;
+  charged: boolean;
+  balance: number;
+  error?: 'INSUFFICIENT_VYBES' | 'PERMISSION_DENIED' | 'NOT_OWNER' | 'UNKNOWN';
+}
 
 /**
  * BillingService - Core monetization service
@@ -11,13 +19,16 @@ import type { UnlockableFeature, TransactionReason, LedgerEntry } from '../../sh
 export class BillingService {
   private vybeLedger: VybeLedger;
   private participantUnlock: ParticipantUnlockManager;
+  private quotaManager?: QuotaManager;
 
-  constructor(
-    vybeLedger: VybeLedger,
-    participantUnlock: ParticipantUnlockManager
-  ) {
-    this.vybeLedger = vybeLedger;
-    this.participantUnlock = participantUnlock;
+  constructor(params: {
+    vybeLedger: VybeLedger;
+    participantUnlock: ParticipantUnlockManager;
+    quotaManager?: QuotaManager;
+  }) {
+    this.vybeLedger = params.vybeLedger;
+    this.participantUnlock = params.participantUnlock;
+    this.quotaManager = params.quotaManager;
   }
 
   /**
@@ -59,16 +70,28 @@ export class BillingService {
    * Idempotent: Will not charge twice for the same feature
    *
    * @param params - Purchase parameters
-   * @returns Promise<true> if access granted (purchased or already owned)
-   * @throws Error if insufficient balance
+   * @returns PurchaseResult with grant status, charge status, and balance
    */
-  async purchaseOrVerifyAccess(params: {
+  purchaseOrVerifyAccess(params: {
     participantId: string;
     resourceId: string;
     feature: UnlockableFeature;
     cost: number;
-  }): Promise<boolean> {
-    const { participantId, resourceId, feature, cost } = params;
+    isOwner?: boolean; // Optional, required for QUESTION_LIMIT_10
+  }): PurchaseResult {
+    const { participantId, resourceId, feature, cost, isOwner } = params;
+
+    // For QUESTION_LIMIT_10, validate ownership
+    if (feature === 'QUESTION_LIMIT_10') {
+      if (isOwner === undefined || !isOwner) {
+        return {
+          granted: false,
+          charged: false,
+          balance: this.vybeLedger.getBalance(participantId),
+          error: 'NOT_OWNER',
+        };
+      }
+    }
 
     // Check if already unlocked (idempotent)
     const alreadyHasAccess = this.participantUnlock.hasFeatureAccess({
@@ -78,7 +101,11 @@ export class BillingService {
     });
 
     if (alreadyHasAccess) {
-      return true; // Already have access
+      return {
+        granted: true,
+        charged: false,
+        balance: this.vybeLedger.getBalance(participantId),
+      };
     }
 
     // Free feature (cost = 0)
@@ -88,7 +115,11 @@ export class BillingService {
         resourceId,
         feature,
       });
-      return true;
+      return {
+        granted: true,
+        charged: false,
+        balance: this.vybeLedger.getBalance(participantId),
+      };
     }
 
     // Check sufficient balance
@@ -98,7 +129,12 @@ export class BillingService {
     });
 
     if (!hasSufficientBalance) {
-      throw new Error('Insufficient Vybes');
+      return {
+        granted: false,
+        charged: false,
+        balance: this.vybeLedger.getBalance(participantId),
+        error: 'INSUFFICIENT_VYBES',
+      };
     }
 
     // Deduct Vybes
@@ -116,7 +152,11 @@ export class BillingService {
       feature,
     });
 
-    return true; // Purchase successful
+    return {
+      granted: true,
+      charged: true,
+      balance: this.vybeLedger.getBalance(participantId),
+    };
   }
 
   /**

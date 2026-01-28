@@ -1,4 +1,4 @@
-import type { ParticipantUnlock } from '../models/ParticipantUnlock';
+import type { ParticipantUnlockManager } from '../models/ParticipantUnlock';
 
 /**
  * QuotaManager - Manages question limits for quiz owners
@@ -36,25 +36,41 @@ export class QuotaManager {
 
   /**
    * Check if participant can add another question
-   * @param participantId - Participant ID
-   * @param sessionId - Session ID
-   * @param currentCount - Current question count
-   * @param isOwner - Whether participant is owner
+   * @param params - Parameters object or individual params
    * @returns True if participant can add question
    */
   canAddQuestion(
-    participantId: string,
-    sessionId: string,
-    currentCount: number,
-    isOwner: boolean
+    params: {
+      participantId: string;
+      sessionId: string;
+      currentCount: number;
+      isOwner: boolean;
+    } | string,
+    sessionId?: string,
+    currentCount?: number,
+    isOwner?: boolean
   ): boolean {
-    // Only owners can add questions
+    // Handle object parameter
+    if (typeof params === 'object') {
+      const { participantId, sessionId: sid, currentCount: count, isOwner: owner } = params;
+      
+      // Only owners can add questions
+      if (!owner) {
+        return false;
+      }
+
+      const limit = this.getQuestionLimit(participantId, sid);
+      return count < limit;
+    }
+    
+    // Handle individual parameters
+    const participantId = params;
     if (!isOwner) {
       return false;
     }
 
-    const limit = this.getQuestionLimit(participantId, sessionId);
-    return currentCount < limit;
+    const limit = this.getQuestionLimit(participantId, sessionId!);
+    return currentCount! < limit;
   }
 
   /**

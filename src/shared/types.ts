@@ -55,7 +55,7 @@ export interface MatchResult {
 }
 
 // Vybes Monetization Types
-export type UnlockableFeature = 
+export type UnlockableFeature =
   | 'MATCH_PREVIEW'
   | 'MATCH_TOP3'
   | 'MATCH_ALL'
@@ -96,4 +96,9 @@ export interface PurchaseResult {
   charged: boolean;
   balance: number;
   error?: 'INSUFFICIENT_VYBES' | 'NOT_OWNER' | 'ALREADY_UNLOCKED';
+}
+
+export type {
+  Participant,
+  Question
 }
