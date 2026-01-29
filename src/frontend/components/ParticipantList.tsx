@@ -11,7 +11,7 @@ export function ParticipantList({ participants }: ParticipantListProps) {
       <ul>
         {participants.map((p) => (
           <li key={p.id}>
-            {p.username || `Participant ${p.id.slice(0, 8)}`}
+            {p.username || `${p.id.slice(0, 8)}`}
             {p.isOwner && <span className="badge">Owner</span>}
             {!p.isActive && <span className="inactive"> (offline)</span>}
           </li>

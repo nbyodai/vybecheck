@@ -26,9 +26,11 @@ function App() {
   useEffect(() => {
     const wsUrl = import.meta.env.VITE_WS_URL;
     const websocket = new WebSocket(wsUrl);
+    let hasConnected = false;
 
     websocket.addEventListener('open', () => {
       console.log('Connected to server');
+      hasConnected = true;
       setConnected(true);
       setWebSocket(websocket);
     });
@@ -41,11 +43,18 @@ function App() {
     websocket.addEventListener('close', () => {
       console.log('Disconnected from server');
       setConnected(false);
+      // Only show error if we were previously connected
+      if (hasConnected) {
+        showError('Connection lost', 3000);
+      }
     });
 
     websocket.addEventListener('error', (error) => {
       console.error('WebSocket error:', error);
-      showError('Connection error');
+      // Only show error if we were previously connected (not on initial load)
+      if (hasConnected) {
+        showError('Connection error', 3000);
+      }
     });
 
     return () => {

@@ -10,7 +10,7 @@ export function MatchCard({ match, rank }: MatchCardProps) {
     <div className="match-card">
       <span className="match-rank">#{rank}</span>
       <span className="match-name">
-        {match.username || `Participant ${match.participantId.slice(0, 8)}`}
+        {match.username || `${match.participantId.slice(0, 8)}`}
       </span>
       <span className="match-percentage">
         {match.matchPercentage.toFixed(1)}%
