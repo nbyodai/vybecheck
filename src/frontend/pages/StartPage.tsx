@@ -1,0 +1,93 @@
+import { useState } from 'react';
+import { useAuthStore } from '../store/authStore';
+import { useWebSocketStore } from '../store/websocketStore';
+import { useUIStore } from '../store/uiStore';
+
+export function StartPage() {
+  const { isSignedIn, isSigningIn, twitterUsername, signInWithTwitter } = useAuthStore();
+  const { send } = useWebSocketStore();
+  const { error, notification, showError } = useUIStore();
+
+  const [joinSessionId, setJoinSessionId] = useState('');
+
+  const createSession = () => {
+    if (!isSignedIn) {
+      showError('Please sign in with Twitter to create a session');
+      return;
+    }
+    send({ type: 'session:create', data: {} });
+  };
+
+  const joinSession = () => {
+    if (!joinSessionId.trim()) {
+      showError('Please enter a session ID');
+      return;
+    }
+    send({ type: 'session:join', data: { sessionId: joinSessionId } });
+  };
+
+  return (
+    <div className="start-screen">
+      <h1 style={{ fontSize: '48px', fontWeight: '800', color: '#1F2937', marginBottom: '8px' }}>VybeCheck</h1>
+      <p style={{ color: '#6B7280', marginBottom: '40px', fontSize: '16px' }}>Your Vybes on real-time debates</p>
+      {error && <div className="error">{error}</div>}
+      {notification && <div className="notification">{notification}</div>}
+
+      {/* Sign in section */}
+      {!isSignedIn ? (
+        <>
+          <button
+            onClick={signInWithTwitter}
+            disabled={isSigningIn}
+            className="btn btn-twitter"
+            style={{ width: '100%', maxWidth: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+          >
+            {isSigningIn ? (
+              <>
+                <div className="spinner-small"></div>
+                <span>Signing in...</span>
+              </>
+            ) : (
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                <span>Sign in with Twitter</span>
+              </>
+            )}
+          </button>
+          <p style={{ color: '#9CA3AF', fontSize: '13px', marginTop: '12px', maxWidth: '320px', textAlign: 'center' }}>
+            Sign in to create sessions and view matches
+          </p>
+        </>
+      ) : (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: '#10B981', fontSize: '14px', fontWeight: '600' }}>
+            <span>✓</span>
+            <span>Signed in as {twitterUsername}</span>
+          </div>
+          <button onClick={createSession} className="btn btn-primary" style={{ width: '100%', maxWidth: '320px' }}>
+            Create New Session
+          </button>
+        </>
+      )}
+
+      <div className="separator">or join existing</div>
+      <div className="join-form" style={{ width: '100%', maxWidth: '320px' }}>
+        <input
+          type="text"
+          placeholder="Enter Session ID"
+          value={joinSessionId}
+          onChange={(e) => setJoinSessionId(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && joinSession()}
+        />
+        <button onClick={joinSession} className="btn btn-secondary">
+          Join Session
+        </button>
+      </div>
+      <p style={{ color: '#9CA3AF', fontSize: '13px', marginTop: '12px', maxWidth: '320px', textAlign: 'center' }}>
+        {isSignedIn ? 'Join any session with the ID' : 'No sign-in required to join, but needed to participate'}
+      </p>
+    </div>
+  );
+}
