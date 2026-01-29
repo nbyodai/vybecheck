@@ -267,7 +267,7 @@ function App() {
       <div className="app">
         <div className="start-screen">
           <h1 style={{ fontSize: '48px', fontWeight: '800', color: '#1F2937', marginBottom: '8px' }}>VybeCheck</h1>
-          <p style={{ color: '#6B7280', marginBottom: '40px', fontSize: '16px' }}>Your Vybes on real-time debates</p>
+          <p style={{ color: '#6B7280', marginBottom: '40px', fontSize: '16px' }}>Your vibes on real-time debates</p>
           {error && <div className="error">{error}</div>}
           {notification && <div className="notification">{notification}</div>}
 
