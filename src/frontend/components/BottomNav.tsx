@@ -18,11 +18,11 @@ export function BottomNav({ activePage, onNavigate, isOwner, draftCount }: Botto
       icon: '🧪',
       badge: draftCount > 0 ? draftCount : undefined,
     }] : []),
-    {
+    ...(!isOwner ? [{
       id: 'quiz' as PageType,
       label: 'Quiz',
       icon: '✓',
-    },
+    }] : []),
     {
       id: 'lobby' as PageType,
       label: 'Lobby',

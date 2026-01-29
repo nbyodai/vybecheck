@@ -70,14 +70,15 @@ function App() {
         setSessionId(message.data.sessionId);
         setParticipantId(message.data.participantId);
         setIsOwner(true);
-        setActivePage('quiz'); // Navigate to quiz page
+        setActivePage('lab'); // Navigate to lab page for owner
         break;
 
       case 'session:joined':
         setSessionId(message.data.sessionId);
         setParticipantId(message.data.participantId);
         setIsOwner(message.data.isOwner);
-        setActivePage('quiz'); // Navigate to quiz page
+        // Navigate to lab if owner, quiz if participant
+        setActivePage(message.data.isOwner ? 'lab' : 'quiz');
         break;
 
       case 'quiz:state':

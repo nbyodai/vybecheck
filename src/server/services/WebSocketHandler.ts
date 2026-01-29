@@ -120,6 +120,7 @@ export class WebSocketHandler {
   }
 
   private handleQuestionAdd(ws: WebSocket, data: { prompt: string; options: [string, string]; timer?: number }) {
+    console.log('')
     const connectionInfo = this.connections.get(ws);
     if (!connectionInfo) {
       this.sendError(ws, 'Not in a session');

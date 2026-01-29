@@ -6,13 +6,14 @@ import { DraftQuestionCard } from '../components/DraftQuestionCard';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 
 export function LabPage() {
-  const { draftQuestions, addDraft, removeDraft, clearDrafts } = useDraftStore();
+  const { draftQuestions, addDraft, removeDraft, clearDrafts, setOwnerResponse } = useDraftStore();
   const { send } = useWebSocketStore();
   const { showNotification, showError } = useUIStore();
   
   const [questionPrompt, setQuestionPrompt] = useState('');
   const [option1, setOption1] = useState('');
   const [option2, setOption2] = useState('');
+  const [ownerResponse, setOwnerResponseState] = useState<string>('');
   const [showPublishDialog, setShowPublishDialog] = useState(false);
 
   const addQuestionToDraft = () => {
@@ -21,32 +22,51 @@ export function LabPage() {
       return;
     }
     
-    addDraft(questionPrompt, [option1, option2]);
+    if (!ownerResponse) {
+      showError('Please select your answer to this question');
+      return;
+    }
+    
+    addDraft(questionPrompt, [option1, option2], ownerResponse);
     setQuestionPrompt('');
     setOption1('');
     setOption2('');
+    setOwnerResponseState('');
     showNotification('Question added to drafts');
   };
 
   const publishDraftQuestions = () => {
+    // Check if all drafts have owner responses
+    const unansweredDrafts = draftQuestions.filter(q => !q.ownerResponse);
+    if (unansweredDrafts.length > 0) {
+      showError(`Please answer all questions before publishing (${unansweredDrafts.length} unanswered)`);
+      return;
+    }
     setShowPublishDialog(true);
   };
 
   const confirmPublish = () => {
+    // Store draft questions with responses before clearing
+    const questionsToPublish = [...draftQuestions];
+    
+    // Clear drafts and close dialog immediately for better UX
+    clearDrafts();
+    setShowPublishDialog(false);
+    showNotification(`Publishing ${questionsToPublish.length} question${questionsToPublish.length !== 1 ? 's' : ''}...`);
+    
     // Send all draft questions to server
-    draftQuestions.forEach(draft => {
+    // The owner responses will be submitted when we receive question:added events
+    questionsToPublish.forEach(draft => {
       send({
         type: 'question:add',
         data: {
           prompt: draft.prompt,
-          options: draft.options
+          options: draft.options,
+          // Include owner response in metadata so we can auto-submit it
+          ownerResponse: draft.ownerResponse
         }
       });
     });
-    
-    clearDrafts();
-    setShowPublishDialog(false);
-    showNotification(`Published ${draftQuestions.length} question${draftQuestions.length !== 1 ? 's' : ''}!`);
   };
 
   return (
@@ -71,6 +91,34 @@ export function LabPage() {
           value={option2}
           onChange={(e) => setOption2(e.target.value)}
         />
+        
+        {/* Owner Response Selection */}
+        {option1 && option2 && (
+          <div style={{ marginTop: '16px', marginBottom: '12px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#1F2937' }}>
+              Your Answer:
+            </label>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={() => setOwnerResponseState(option1)}
+                className={`btn ${ownerResponse === option1 ? 'btn-selected' : 'btn-option'}`}
+                style={{ flex: 1 }}
+              >
+                {option1}
+                {ownerResponse === option1 && ' ✓'}
+              </button>
+              <button
+                onClick={() => setOwnerResponseState(option2)}
+                className={`btn ${ownerResponse === option2 ? 'btn-selected' : 'btn-option'}`}
+                style={{ flex: 1 }}
+              >
+                {option2}
+                {ownerResponse === option2 && ' ✓'}
+              </button>
+            </div>
+          </div>
+        )}
+        
         <button onClick={addQuestionToDraft} className="btn btn-secondary">
           + Add to Drafts
         </button>
@@ -90,6 +138,7 @@ export function LabPage() {
               draft={draft}
               index={index}
               onRemove={removeDraft}
+              onSetOwnerResponse={setOwnerResponse}
             />
           ))}
         </div>

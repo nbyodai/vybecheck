@@ -9,7 +9,7 @@ export function QuizPage() {
   const { send } = useWebSocketStore();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const prevQuestionCountRef = useRef(0);
-  
+
   // Configurable threshold: percentage of participants that must complete before matches can be calculated
   // 100 = all participants must complete, 50 = half must complete, etc.
   const COMPLETION_THRESHOLD_PERCENT = 100;
@@ -17,26 +17,26 @@ export function QuizPage() {
   // Navigate to new questions when they're added
   useEffect(() => {
     if (!quizState || quizState.questions.length === 0) return;
-    
+
     const currentQuestionCount = quizState.questions.length;
-    
+
     // Check if new questions were added
     if (currentQuestionCount > prevQuestionCountRef.current) {
       console.log('New questions added! Old count:', prevQuestionCountRef.current, 'New count:', currentQuestionCount);
-      
+
       // Find first unanswered
       const firstUnanswered = quizState.myResponses.findIndex(response => response === '');
       console.log('First unanswered question index:', firstUnanswered);
-      
+
       if (firstUnanswered !== -1) {
         // Jump to first unanswered question
         setCurrentQuestionIndex(firstUnanswered);
       }
     }
-    
+
     // Update the ref for next comparison
     prevQuestionCountRef.current = currentQuestionCount;
-    
+
     // Handle out of bounds
     if (currentQuestionIndex >= quizState.questions.length) {
       setCurrentQuestionIndex(quizState.questions.length - 1);
@@ -48,7 +48,7 @@ export function QuizPage() {
       type: 'response:submit',
       data: { questionId, optionChosen }
     });
-    
+
     // Move to next question after answering
     if (quizState && currentQuestionIndex < quizState.questions.length - 1) {
       setTimeout(() => setCurrentQuestionIndex(currentQuestionIndex + 1), 300);
@@ -56,6 +56,7 @@ export function QuizPage() {
   };
 
   const getMatches = () => {
+    console.log(quizState?.myResponses)
     send({ type: 'matches:get' });
   };
 
@@ -86,7 +87,7 @@ export function QuizPage() {
   const answeredCount = quizState.myResponses.filter(r => r !== '').length;
   const totalQuestions = quizState.questions.length;
   const progressPercentage = Math.round((answeredCount / totalQuestions) * 100);
-  
+
   // Calculate completion locally - check if all questions have been answered
   const isCompleted = quizState.myResponses.every(r => r !== '');
 
@@ -109,7 +110,7 @@ export function QuizPage() {
           <div className="question-icon">🎨</div>
           <h2 className="question-title">{currentQuestion.prompt}</h2>
           <p className="question-subtitle">Pick the option that speaks to you right now.</p>
-          
+
           <div className="question-options">
             {currentQuestion.options.map((option) => (
               <button
@@ -120,8 +121,8 @@ export function QuizPage() {
                   hasAnswered && currentResponse === option ? 'selected' : ''
                 }`}
               >
-                <div className="option-icon" style={{ 
-                  background: hasAnswered && currentResponse === option 
+                <div className="option-icon" style={{
+                  background: hasAnswered && currentResponse === option
                     ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
                     : 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)'
                 }}>
@@ -143,7 +144,7 @@ export function QuizPage() {
           <div className="question-icon">✨</div>
           <h2 className="question-title">You've completed the quiz!</h2>
           <p className="question-subtitle">Calculate your matches to see who you vibe with.</p>
-          
+
           {(() => {
             // Calculate how many participants have completed
             const participantsWithResponses = quizState.participants.filter(p => {
@@ -152,14 +153,14 @@ export function QuizPage() {
               // For now, we'll use a simple heuristic based on active participants
               return p.isActive;
             }).length;
-            
+
             const totalParticipants = quizState.participantCount;
-            const completionRate = totalParticipants > 0 
+            const completionRate = totalParticipants > 0
               ? Math.round((participantsWithResponses / totalParticipants) * 100)
               : 0;
-            
+
             const canCalculateMatches = completionRate >= COMPLETION_THRESHOLD_PERCENT;
-            
+
             return (
               <>
                 {!canCalculateMatches && (
@@ -180,13 +181,13 @@ export function QuizPage() {
                     </div>
                   </div>
                 )}
-                
-                <button 
-                  onClick={getMatches} 
+
+                <button
+                  onClick={getMatches}
                   disabled={!canCalculateMatches}
-                  className="btn btn-primary" 
-                  style={{ 
-                    width: '100%', 
+                  className="btn btn-primary"
+                  style={{
+                    width: '100%',
                     marginTop: '24px',
                     opacity: canCalculateMatches ? 1 : 0.5,
                     cursor: canCalculateMatches ? 'pointer' : 'not-allowed'
