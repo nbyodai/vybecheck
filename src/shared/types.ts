@@ -9,7 +9,7 @@ export type ClientMessage =
   | { type: 'session:create'; data: { username?: string } }
   | { type: 'session:join'; data: { sessionId: string; username?: string } }
   | { type: 'session:leave' }
-  | { type: 'question:add'; data: { prompt: string; options: [string, string]; timer?: number } }
+  | { type: 'question:add'; data: { prompt: string; options: [string, string]; timer?: number; ownerResponse?: string } }
   | { type: 'response:submit'; data: { questionId: string; optionChosen: string } }
   | { type: 'matches:get' }
   | { type: 'ping'; timestamp: number };

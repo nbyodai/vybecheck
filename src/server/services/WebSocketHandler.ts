@@ -119,8 +119,7 @@ export class WebSocketHandler {
     }, ws);
   }
 
-  private handleQuestionAdd(ws: WebSocket, data: { prompt: string; options: [string, string]; timer?: number }) {
-    console.log('')
+  private handleQuestionAdd(ws: WebSocket, data: { prompt: string; options: [string, string]; timer?: number; ownerResponse?: string }) {
     const connectionInfo = this.connections.get(ws);
     if (!connectionInfo) {
       this.sendError(ws, 'Not in a session');
@@ -148,10 +147,28 @@ export class WebSocketHandler {
 
     try {
       session.addQuestion(question);
+      
+      // If owner provided a response, record it
+      if (data.ownerResponse) {
+        const ownerResponse: Response = {
+          id: generateResponseId(),
+          participantId: connectionInfo.participantId,
+          questionId: question.id,
+          sessionId: session.sessionId,
+          optionChosen: data.ownerResponse,
+          answeredAt: new Date()
+        };
+        session.recordResponse(ownerResponse);
+      }
+      
       this.broadcastToSession(session, {
         type: 'question:added',
         data: { question }
       });
+      
+      // Send updated quiz state to owner (includes their response if recorded)
+      this.sendQuizState(ws, session, connectionInfo.participantId);
+      
       this.broadcastToSession(session, {
         type: 'notification',
         message: 'New question added!'

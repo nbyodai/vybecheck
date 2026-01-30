@@ -11,7 +11,7 @@ describe('QuizSession - Slice 2: Owner Adds Questions', () => {
   beforeEach(() => {
     ownerId = 'owner123';
     quizSession = new QuizSession(ownerId);
-    
+
     ownerParticipant = {
       id: ownerId,
       username: 'TestOwner',
@@ -21,7 +21,7 @@ describe('QuizSession - Slice 2: Owner Adds Questions', () => {
       lastActiveAt: new Date(),
       isActive: true
     };
-    
+
     quizSession.addParticipant(ownerParticipant);
   });
 
@@ -183,7 +183,7 @@ describe('QuizSession - Slice 2: Owner Adds Questions', () => {
       };
 
       quizSession.addQuestion(q1);
-      
+
       expect(() => quizSession.addQuestion(q2))
         .toThrow('Question with ID q1 already exists');
     });
