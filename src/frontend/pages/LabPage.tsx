@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useDraftStore } from '../store/draftStore';
 import { useWebSocketStore } from '../store/websocketStore';
 import { useUIStore } from '../store/uiStore';
+import { useQuizStore } from '../store/quizStore';
+import { useAuthStore } from '../store/authStore';
 import { DraftQuestionCard } from '../components/DraftQuestionCard';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 
@@ -9,7 +11,9 @@ export function LabPage() {
   const { draftQuestions, addDraft, removeDraft, clearDrafts, setOwnerResponse } = useDraftStore();
   const { send } = useWebSocketStore();
   const { showNotification, showError } = useUIStore();
-  
+  const { quizState } = useQuizStore();
+  const { getQuestionLimit } = useAuthStore();
+
   const [questionPrompt, setQuestionPrompt] = useState('');
   const [option1, setOption1] = useState('');
   const [option2, setOption2] = useState('');
@@ -17,6 +21,12 @@ export function LabPage() {
   const [showPublishDialog, setShowPublishDialog] = useState(false);
 
   const addQuestionToDraft = () => {
+    // Check question limit first
+    if (hasReachedLimit) {
+      showError(`Question limit reached (${questionLimit}). Remove drafts or upgrade to add more.`);
+      return;
+    }
+    
     if (!questionPrompt.trim() || !option1.trim() || !option2.trim()) {
       showError('Please fill in all fields');
       return;
@@ -48,12 +58,12 @@ export function LabPage() {
   const confirmPublish = () => {
     // Store draft questions with responses before clearing
     const questionsToPublish = [...draftQuestions];
-    
+
     // Clear drafts and close dialog immediately for better UX
     clearDrafts();
     setShowPublishDialog(false);
     showNotification(`Publishing ${questionsToPublish.length} question${questionsToPublish.length !== 1 ? 's' : ''}...`);
-    
+
     // Send all draft questions to server
     // The owner responses will be submitted when we receive question:added events
     questionsToPublish.forEach(draft => {
@@ -69,8 +79,54 @@ export function LabPage() {
     });
   };
 
+  // Get question limit from authStore
+  const questionLimit = getQuestionLimit();
+  const publishedQuestionsCount = quizState?.questions.length ?? 0;
+  const totalQuestionsCount = publishedQuestionsCount + draftQuestions.length;
+  const hasReachedLimit = totalQuestionsCount >= questionLimit;
+
   return (
     <div className="page-content">
+      {/* Combined Question Info Banner */}
+      <div style={{ 
+        padding: '16px 20px', 
+        marginBottom: '16px', 
+        backgroundColor: hasReachedLimit ? '#FEE2E2' : '#EEF2FF', 
+        borderRadius: '8px',
+        border: hasReachedLimit ? '1px solid #FCA5A5' : '1px solid #C7D2FE'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <span style={{ fontSize: '14px', color: hasReachedLimit ? '#991B1B' : '#4338CA', fontWeight: '600' }}>
+            📊 Questions in Session
+          </span>
+          <span style={{ fontSize: '18px', fontWeight: '700', color: hasReachedLimit ? '#991B1B' : '#4338CA' }}>
+            {publishedQuestionsCount}
+          </span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <span style={{ 
+              fontSize: '14px', 
+              color: hasReachedLimit ? '#991B1B' : '#4338CA', 
+              fontWeight: '600'
+            }}>
+              {hasReachedLimit ? '⚠️ Question Limit Reached' : '✅ Question Limit'}
+            </span>
+            {hasReachedLimit && (
+              <span style={{ fontSize: '12px', color: '#991B1B', marginLeft: '8px' }}>
+                Remove drafts or upgrade to add more
+              </span>
+            )}
+          </div>
+          <span style={{ 
+            fontSize: '18px', 
+            fontWeight: '700', 
+            color: hasReachedLimit ? '#991B1B' : '#4338CA'
+          }}>
+            {totalQuestionsCount} / {questionLimit}
+          </span>
+        </div>
+      </div>
       <div className="owner-controls">
         <h2>Add Question</h2>
         <input
@@ -78,20 +134,23 @@ export function LabPage() {
           placeholder="Question prompt"
           value={questionPrompt}
           onChange={(e) => setQuestionPrompt(e.target.value)}
+          disabled={hasReachedLimit}
         />
         <input
           type="text"
           placeholder="Option 1"
           value={option1}
           onChange={(e) => setOption1(e.target.value)}
+          disabled={hasReachedLimit}
         />
         <input
           type="text"
           placeholder="Option 2"
           value={option2}
           onChange={(e) => setOption2(e.target.value)}
+          disabled={hasReachedLimit}
         />
-        
+
         {/* Owner Response Selection */}
         {option1 && option2 && (
           <div style={{ marginTop: '16px', marginBottom: '12px' }}>
@@ -103,6 +162,7 @@ export function LabPage() {
                 onClick={() => setOwnerResponseState(option1)}
                 className={`btn ${ownerResponse === option1 ? 'btn-selected' : 'btn-option'}`}
                 style={{ flex: 1 }}
+                disabled={hasReachedLimit}
               >
                 {option1}
                 {ownerResponse === option1 && ' ✓'}
@@ -111,6 +171,7 @@ export function LabPage() {
                 onClick={() => setOwnerResponseState(option2)}
                 className={`btn ${ownerResponse === option2 ? 'btn-selected' : 'btn-option'}`}
                 style={{ flex: 1 }}
+                disabled={hasReachedLimit}
               >
                 {option2}
                 {ownerResponse === option2 && ' ✓'}
@@ -118,9 +179,14 @@ export function LabPage() {
             </div>
           </div>
         )}
-        
-        <button onClick={addQuestionToDraft} className="btn btn-secondary">
-          + Add to Drafts
+
+        <button 
+          onClick={addQuestionToDraft} 
+          className="btn btn-secondary"
+          disabled={hasReachedLimit}
+          style={hasReachedLimit ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+        >
+          {hasReachedLimit ? '🔒 Limit Reached' : '+ Add to Drafts'}
         </button>
       </div>
 
