@@ -6,6 +6,7 @@ interface AuthStore {
   isSigningIn: boolean;
   twitterUsername: string | null;
   featureUnlocks: UnlockableFeature[];
+  vybesBalance: number;
   signInWithTwitter: () => void;
   setSignedIn: (username: string) => void;
   getQuestionLimit: () => number;
@@ -17,6 +18,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   isSigningIn: false,
   twitterUsername: null,
   featureUnlocks: [],
+  vybesBalance: 0,
 
   signInWithTwitter: () => {
     set({ isSigningIn: true });

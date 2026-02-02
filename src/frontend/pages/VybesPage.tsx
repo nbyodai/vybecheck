@@ -1,7 +1,8 @@
+import { useAuthStore } from '../store/authStore';
+
 export function VybesPage() {
-  // Placeholder for monetization features
-  const vybeBalance = 100; // Mock balance
-  
+  const { vybesBalance } = useAuthStore();
+
   const vybePacks = [
     { id: 1, name: 'Starter Pack', vybes: 20, price: 5, popular: false },
     { id: 2, name: 'Pro Pack', vybes: 50, price: 10, popular: true },
@@ -11,7 +12,7 @@ export function VybesPage() {
   return (
     <div className="page-content">
       {/* Balance Card */}
-      <div style={{ 
+      <div style={{
         background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
         padding: '24px',
         borderRadius: '20px',
@@ -22,7 +23,7 @@ export function VybesPage() {
         <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '4px' }}>Your Balance</div>
         <div style={{ fontSize: '36px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>✨</span>
-          <span>{vybeBalance}</span>
+          <span>{vybesBalance}</span>
           <span style={{ fontSize: '20px', opacity: 0.8 }}>Vybes</span>
         </div>
       </div>
@@ -80,7 +81,7 @@ export function VybesPage() {
           What are Vybes?
         </h3>
         <p style={{ margin: 0, fontSize: '14px', color: '#6B7280', lineHeight: '1.6' }}>
-          Vybes are used to unlock premium features like viewing detailed match results, 
+          Vybes are used to unlock premium features like viewing detailed match results,
           accessing exclusive visualizations, and more. Purchase Vybe packs to enhance your experience!
         </p>
       </div>
