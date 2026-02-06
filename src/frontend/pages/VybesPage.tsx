@@ -1,13 +1,39 @@
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
+import { useWebSocketStore } from '../store/websocketStore';
+import type { LedgerEntry } from '../../shared/types';
+
+// Transaction reason display names
+const REASON_LABELS: Record<string, string> = {
+  INITIAL_VYBES: 'Welcome Bonus',
+  PURCHASE_VYBES: 'Purchased',
+  UNLOCK_MATCH_TOP3: 'Unlocked Top 3 Matches',
+  UNLOCK_MATCH_ALL: 'Unlocked All Matches',
+  UNLOCK_QUESTION_LIMIT: 'Upgraded Question Limit',
+};
 
 export function VybesPage() {
-  const { vybesBalance } = useAuthStore();
+  const { vybesBalance, transactionHistory } = useAuthStore();
+  const { send } = useWebSocketStore();
+  const [showHistory, setShowHistory] = useState(false);
+
+  // Request transaction history when showing
+  useEffect(() => {
+    if (showHistory) {
+      send({ type: 'credits:history' });
+    }
+  }, [showHistory, send]);
 
   const vybePacks = [
     { id: 1, name: 'Starter Pack', vybes: 20, price: 5, popular: false },
     { id: 2, name: 'Pro Pack', vybes: 50, price: 10, popular: true },
     { id: 3, name: 'Ultimate Pack', vybes: 120, price: 20, popular: false },
   ];
+
+  const formatDate = (date: Date | string) => {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  };
 
   return (
     <div className="page-content">
@@ -26,7 +52,71 @@ export function VybesPage() {
           <span>{vybesBalance}</span>
           <span style={{ fontSize: '20px', opacity: 0.8 }}>Vybes</span>
         </div>
+        <button
+          onClick={() => setShowHistory(!showHistory)}
+          style={{
+            marginTop: '12px',
+            background: 'rgba(255,255,255,0.2)',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '8px',
+            color: 'white',
+            fontSize: '13px',
+            cursor: 'pointer',
+          }}
+        >
+          {showHistory ? 'Hide History' : 'View History'}
+        </button>
       </div>
+
+      {/* Transaction History */}
+      {showHistory && (
+        <div style={{
+          background: 'white',
+          padding: '16px',
+          borderRadius: '16px',
+          marginBottom: '20px',
+          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)',
+        }}>
+          <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '700', color: '#1F2937' }}>
+            Transaction History
+          </h3>
+          {transactionHistory.length === 0 ? (
+            <p style={{ color: '#6B7280', fontSize: '14px', margin: 0 }}>No transactions yet</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {transactionHistory.map((txn: LedgerEntry) => (
+                <div
+                  key={txn.id}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '10px 0',
+                    borderBottom: '1px solid #F3F4F6',
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#1F2937' }}>
+                      {REASON_LABELS[txn.reason] || txn.reason}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>
+                      {formatDate(txn.createdAt)}
+                    </div>
+                  </div>
+                  <div style={{
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    color: txn.amount > 0 ? '#10B981' : '#EF4444',
+                  }}>
+                    {txn.amount > 0 ? '+' : ''}{txn.amount} ✨
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Vybe Packs */}
       <h2 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: '700', color: '#1F2937' }}>Buy Vybe Packs</h2>
@@ -75,6 +165,31 @@ export function VybesPage() {
         ))}
       </div>
 
+      {/* Pricing Info */}
+      <div style={{ background: '#F9FAFB', padding: '20px', borderRadius: '16px', marginBottom: '20px' }}>
+        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '700', color: '#1F2937' }}>
+          Unlock Pricing
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6B7280' }}>
+            <span>Preview Matches</span>
+            <span style={{ color: '#10B981', fontWeight: '600' }}>Free</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6B7280' }}>
+            <span>Top 3 Matches</span>
+            <span style={{ fontWeight: '600' }}>2 ✨</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6B7280' }}>
+            <span>All Matches</span>
+            <span style={{ fontWeight: '600' }}>5 ✨</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6B7280' }}>
+            <span>Extended Questions (10)</span>
+            <span style={{ fontWeight: '600' }}>3 ✨</span>
+          </div>
+        </div>
+      </div>
+
       {/* What are Vybes? */}
       <div style={{ background: '#F9FAFB', padding: '20px', borderRadius: '16px' }}>
         <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '700', color: '#1F2937' }}>
@@ -82,7 +197,7 @@ export function VybesPage() {
         </h3>
         <p style={{ margin: 0, fontSize: '14px', color: '#6B7280', lineHeight: '1.6' }}>
           Vybes are used to unlock premium features like viewing detailed match results,
-          accessing exclusive visualizations, and more. Purchase Vybe packs to enhance your experience!
+          accessing exclusive visualizations, and more. New participants receive 10 free Vybes!
         </p>
       </div>
     </div>
