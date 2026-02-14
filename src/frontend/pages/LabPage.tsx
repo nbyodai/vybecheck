@@ -7,12 +7,15 @@ import { useAuthStore } from '../store/authStore';
 import { DraftQuestionCard } from '../components/DraftQuestionCard';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 
+const QUESTION_LIMIT_UPGRADE_COST = 3;
+
 export function LabPage() {
   const { draftQuestions, addDraft, removeDraft, clearDrafts, setOwnerResponse } = useDraftStore();
   const { send } = useWebSocketStore();
   const { showNotification, showError } = useUIStore();
-  const { quizState } = useQuizStore();
-  const { getQuestionLimit } = useAuthStore();
+  const { quizState, questionLimitState } = useQuizStore();
+  const { getQuestionLimit, vybesBalance, hasUpgradedQuestionLimit } = useAuthStore();
+  const [isUnlocking, setIsUnlocking] = useState(false);
 
   const [questionPrompt, setQuestionPrompt] = useState('');
   const [option1, setOption1] = useState('');
@@ -84,6 +87,19 @@ export function LabPage() {
   const publishedQuestionsCount = quizState?.questions.length ?? 0;
   const totalQuestionsCount = publishedQuestionsCount + draftQuestions.length;
   const hasReachedLimit = totalQuestionsCount >= questionLimit;
+  const canAffordUpgrade = vybesBalance >= QUESTION_LIMIT_UPGRADE_COST;
+  const hasUpgraded = hasUpgradedQuestionLimit();
+
+  const handleUnlockQuestionLimit = () => {
+    if (!canAffordUpgrade) {
+      showError(`Not enough Vybes! Need ${QUESTION_LIMIT_UPGRADE_COST}, have ${vybesBalance}`);
+      return;
+    }
+    setIsUnlocking(true);
+    send({ type: 'question:unlock-limit' });
+    // isUnlocking will be reset when we receive question:limit-unlocked or error
+    setTimeout(() => setIsUnlocking(false), 3000); // Fallback reset
+  };
 
   return (
     <div className="page-content">
@@ -112,9 +128,9 @@ export function LabPage() {
             }}>
               {hasReachedLimit ? '⚠️ Question Limit Reached' : '✅ Question Limit'}
             </span>
-            {hasReachedLimit && (
+            {hasReachedLimit && !hasUpgraded && (
               <span style={{ fontSize: '12px', color: '#991B1B', marginLeft: '8px' }}>
-                Remove drafts or upgrade to add more
+                Upgrade to add more
               </span>
             )}
           </div>
@@ -126,6 +142,41 @@ export function LabPage() {
             {totalQuestionsCount} / {questionLimit}
           </span>
         </div>
+
+        {/* Upgrade Button - show when at limit and not yet upgraded */}
+        {hasReachedLimit && !hasUpgraded && (
+          <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #E5E7EB' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '14px', fontWeight: '600', color: '#1F2937' }}>
+                  Upgrade to 10 Questions
+                </div>
+                <div style={{ fontSize: '12px', color: '#6B7280' }}>
+                  Your balance: {vybesBalance} ✨
+                </div>
+              </div>
+              <button
+                onClick={handleUnlockQuestionLimit}
+                disabled={!canAffordUpgrade || isUnlocking}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: canAffordUpgrade 
+                    ? 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)' 
+                    : '#E5E7EB',
+                  color: canAffordUpgrade ? 'white' : '#9CA3AF',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  cursor: canAffordUpgrade && !isUnlocking ? 'pointer' : 'not-allowed',
+                  opacity: isUnlocking ? 0.7 : 1,
+                }}
+              >
+                {isUnlocking ? 'Unlocking...' : `Unlock (${QUESTION_LIMIT_UPGRADE_COST} ✨)`}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
       <div className="owner-controls">
         <h2>Add Question</h2>

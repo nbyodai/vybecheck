@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { UnlockableFeature } from '../../shared/types';
+import type { UnlockableFeature, LedgerEntry } from '../../shared/types';
 
 interface AuthStore {
   isSignedIn: boolean;
@@ -7,10 +7,15 @@ interface AuthStore {
   twitterUsername: string | null;
   featureUnlocks: UnlockableFeature[];
   vybesBalance: number;
+  transactionHistory: LedgerEntry[];
   signInWithTwitter: () => void;
   setSignedIn: (username: string) => void;
+  setVybesBalance: (balance: number) => void;
+  addFeatureUnlock: (feature: UnlockableFeature) => void;
+  setTransactionHistory: (transactions: LedgerEntry[]) => void;
   getQuestionLimit: () => number;
   hasUpgradedQuestionLimit: () => boolean;
+  hasFeatureUnlock: (feature: UnlockableFeature) => boolean;
 }
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
@@ -19,6 +24,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   twitterUsername: null,
   featureUnlocks: [],
   vybesBalance: 0,
+  transactionHistory: [],
 
   signInWithTwitter: () => {
     set({ isSigningIn: true });
@@ -38,13 +44,33 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ isSignedIn: true, twitterUsername: username });
   },
 
+  setVybesBalance: (balance) => {
+    set({ vybesBalance: balance });
+  },
+
+  addFeatureUnlock: (feature) => {
+    set((state) => ({
+      featureUnlocks: state.featureUnlocks.includes(feature)
+        ? state.featureUnlocks
+        : [...state.featureUnlocks, feature],
+    }));
+  },
+
+  setTransactionHistory: (transactions) => {
+    set({ transactionHistory: transactions });
+  },
+
   hasUpgradedQuestionLimit: () => {
     return get().featureUnlocks.includes('QUESTION_LIMIT_10');
   },
 
+  hasFeatureUnlock: (feature) => {
+    return get().featureUnlocks.includes(feature);
+  },
+
   getQuestionLimit: () => {
     const hasUpgrade = get().hasUpgradedQuestionLimit();
-    const defaultLimit = Number(import.meta.env.VITE_DEFAULT_QUESTION_LIMIT) || 5;
+    const defaultLimit = Number(import.meta.env.VITE_DEFAULT_QUESTION_LIMIT) || 3;
     const upgradedLimit = Number(import.meta.env.VITE_UPGRADED_QUESTION_LIMIT) || 10;
     return hasUpgrade ? upgradedLimit : defaultLimit;
   },

@@ -4,26 +4,37 @@ import type { Question } from '../server/models/Question';
 import type { Participant } from '../server/models/Participant';
 import type { Response } from '../server/models/Response';
 
+// Match tiers for tiered access
+export type MatchTier = 'PREVIEW' | 'TOP3' | 'ALL';
+
 // Client → Server Messages
 export type ClientMessage =
   | { type: 'session:create'; data: { username?: string } }
   | { type: 'session:join'; data: { sessionId: string; username?: string } }
   | { type: 'session:leave' }
   | { type: 'question:add'; data: { prompt: string; options: [string, string]; timer?: number; ownerResponse?: string } }
+  | { type: 'question:unlock-limit' }
   | { type: 'response:submit'; data: { questionId: string; optionChosen: string } }
-  | { type: 'matches:get' }
+  | { type: 'matches:get'; data?: { tier?: MatchTier } }
+  | { type: 'credits:balance' }
+  | { type: 'credits:history' }
   | { type: 'ping'; timestamp: number };
 
 // Server → Client Messages
 export type ServerMessage =
-  | { type: 'session:created'; data: { sessionId: string; participantId: string } }
-  | { type: 'session:joined'; data: { sessionId: string; participantId: string; isOwner: boolean } }
+  | { type: 'session:created'; data: { sessionId: string; participantId: string; vybesBalance: number } }
+  | { type: 'session:joined'; data: { sessionId: string; participantId: string; isOwner: boolean; vybesBalance: number } }
   | { type: 'quiz:state'; data: QuizState }
   | { type: 'question:added'; data: { question: Question } }
+  | { type: 'question:limit-reached'; data: { current: number; max: number; upgradeCost: number } }
+  | { type: 'question:limit-unlocked'; data: { newLimit: number; vybesBalance: number } }
   | { type: 'participant:joined'; data: ParticipantInfo }
   | { type: 'participant:left'; data: { participantId: string } }
   | { type: 'response:recorded'; data: { participantId: string; questionId: string } }
-  | { type: 'matches:result'; data: { matches: MatchResult[] } }
+  | { type: 'matches:result'; data: { tier: MatchTier; matches: MatchResult[]; cost: number; vybesBalance: number } }
+  | { type: 'credits:balance'; data: { balance: number } }
+  | { type: 'credits:history'; data: { transactions: LedgerEntry[] } }
+  | { type: 'credits:insufficient'; data: { feature: UnlockableFeature; required: number; current: number } }
   | { type: 'notification'; message: string }
   | { type: 'pong'; timestamp: number }
   | { type: 'error'; message: string };

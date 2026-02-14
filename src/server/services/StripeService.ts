@@ -1,0 +1,256 @@
+import Stripe from 'stripe';
+import type { VybeLedger } from '../models/VybeLedger';
+
+// Pack configuration - replace with your actual Stripe Price IDs
+export interface VybePack {
+  id: string;
+  name: string;
+  vybes: number;
+  priceUsd: number;
+  stripePriceId: string;
+}
+
+// Returns packs with Stripe Price IDs from environment
+function getVybePacks(): VybePack[] {
+  return [
+    {
+      id: 'starter',
+      name: 'Starter Pack',
+      vybes: 20,
+      priceUsd: 5,
+      stripePriceId: process.env.STRIPE_PRICE_STARTER || '',
+    },
+    {
+      id: 'pro',
+      name: 'Pro Pack',
+      vybes: 50,
+      priceUsd: 10,
+      stripePriceId: process.env.STRIPE_PRICE_PRO || '',
+    },
+    {
+      id: 'ultimate',
+      name: 'Ultimate Pack',
+      vybes: 120,
+      priceUsd: 20,
+      stripePriceId: process.env.STRIPE_PRICE_ULTIMATE || '',
+    },
+  ];
+}
+
+export interface CheckoutSessionResult {
+  url: string;
+  sessionId: string;
+}
+
+export interface WebhookResult {
+  success: boolean;
+  participantId?: string;
+  vybesAdded?: number;
+  error?: string;
+}
+
+export class StripeService {
+  private stripe: Stripe;
+  private vybeLedger: VybeLedger;
+  private webhookSecret: string;
+  private appUrl: string;
+
+  // Track processed session IDs to prevent duplicate credits (idempotency)
+  private processedSessions: Set<string> = new Set();
+
+  constructor(params: {
+    secretKey: string;
+    webhookSecret: string;
+    vybeLedger: VybeLedger;
+    appUrl: string;
+  }) {
+    this.stripe = new Stripe(params.secretKey);
+    this.webhookSecret = params.webhookSecret;
+    this.vybeLedger = params.vybeLedger;
+    this.appUrl = params.appUrl;
+  }
+
+  /**
+   * Get pack by ID
+   */
+  getPack(packId: string): VybePack | undefined {
+    return getVybePacks().find(p => p.id === packId);
+  }
+
+  /**
+   * Get all available packs
+   */
+  getAllPacks(): VybePack[] {
+    return getVybePacks();
+  }
+
+  /**
+   * Create a Stripe Checkout Session
+   */
+  async createCheckoutSession(params: {
+    packId: string;
+    participantId: string;
+  }): Promise<CheckoutSessionResult> {
+    const { packId, participantId } = params;
+
+    const pack = this.getPack(packId);
+    if (!pack) {
+      throw new Error(`Invalid pack ID: ${packId}`);
+    }
+
+    const session = await this.stripe.checkout.sessions.create({
+      mode: 'payment',
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price: pack.stripePriceId,
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        participantId,
+        packId,
+        vybes: pack.vybes.toString(),
+      },
+      success_url: `${this.appUrl}/purchase/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${this.appUrl}/purchase/cancel`,
+    });
+
+    if (!session.url) {
+      throw new Error('Failed to create checkout session URL');
+    }
+
+    return {
+      url: session.url,
+      sessionId: session.id,
+    };
+  }
+
+  /**
+   * Verify and process Stripe webhook
+   */
+  async handleWebhook(params: {
+    payload: Buffer;
+    signature: string;
+  }): Promise<WebhookResult> {
+    const { payload, signature } = params;
+
+    let event: Stripe.Event;
+
+    try {
+      event = this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        this.webhookSecret
+      );
+    } catch (err: any) {
+      console.error('Webhook signature verification failed:', err.message);
+      return { success: false, error: 'Invalid signature' };
+    }
+
+    // Handle the event
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object as Stripe.Checkout.Session;
+      return this.handleCheckoutCompleted(session);
+    }
+
+    // Acknowledge other events without processing
+    return { success: true };
+  }
+
+  /**
+   * Handle successful checkout
+   */
+  private handleCheckoutCompleted(session: Stripe.Checkout.Session): WebhookResult {
+    const { participantId, vybes } = session.metadata || {};
+
+    if (!participantId || !vybes) {
+      console.error('Missing metadata in checkout session:', session.id);
+      return { success: false, error: 'Missing metadata' };
+    }
+
+    // Idempotency check - prevent duplicate credits
+    if (this.processedSessions.has(session.id)) {
+      console.log('Session already processed:', session.id);
+      return { success: true, participantId, vybesAdded: 0 };
+    }
+
+    const vybesAmount = parseInt(vybes, 10);
+    if (isNaN(vybesAmount) || vybesAmount <= 0) {
+      console.error('Invalid vybes amount:', vybes);
+      return { success: false, error: 'Invalid vybes amount' };
+    }
+
+    // Credit the Vybes
+    try {
+      this.vybeLedger.addVybes({
+        participantId,
+        amount: vybesAmount,
+        reason: 'PURCHASE_VYBES',
+      });
+
+      // Mark session as processed
+      this.processedSessions.add(session.id);
+
+      console.log(`Credited ${vybesAmount} Vybes to participant ${participantId}`);
+
+      return {
+        success: true,
+        participantId,
+        vybesAdded: vybesAmount,
+      };
+    } catch (err: any) {
+      console.error('Failed to credit Vybes:', err.message);
+      return { success: false, error: 'Failed to credit Vybes' };
+    }
+  }
+
+  /**
+   * Verify a checkout session (for success page verification)
+   * Also credits Vybes if paid and not already processed (handles server restart)
+   */
+  async verifySession(sessionId: string): Promise<{
+    paid: boolean;
+    participantId?: string;
+    vybes?: number;
+    credited?: boolean;
+  }> {
+    try {
+      const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+      
+      if (session.payment_status === 'paid') {
+        const { participantId, vybes } = session.metadata || {};
+        const vybesAmount = vybes ? parseInt(vybes, 10) : undefined;
+
+        // Credit Vybes if not already processed (idempotent)
+        let credited = false;
+        if (participantId && vybesAmount && !this.processedSessions.has(sessionId)) {
+          try {
+            this.vybeLedger.addVybes({
+              participantId,
+              amount: vybesAmount,
+              reason: 'PURCHASE_VYBES',
+            });
+            this.processedSessions.add(sessionId);
+            credited = true;
+            console.log(`[verifySession] Credited ${vybesAmount} Vybes to ${participantId}`);
+          } catch (err: any) {
+            console.error('[verifySession] Failed to credit Vybes:', err.message);
+          }
+        }
+
+        return {
+          paid: true,
+          participantId,
+          vybes: vybesAmount,
+          credited,
+        };
+      }
+
+      return { paid: false };
+    } catch (err) {
+      console.error('Failed to verify session:', err);
+      return { paid: false };
+    }
+  }
+}

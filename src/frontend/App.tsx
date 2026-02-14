@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import type { ServerMessage } from '../shared/types';
 import { useWebSocketStore } from './store/websocketStore';
@@ -14,11 +14,15 @@ import { LabPage } from './pages/LabPage';
 import { QuizPage } from './pages/QuizPage';
 import { LobbyPage } from './pages/LobbyPage';
 import { VybesPage } from './pages/VybesPage';
+import { PurchaseSuccess } from './pages/PurchaseSuccess';
+import { PurchaseCancel } from './pages/PurchaseCancel';
+import { PurchaseError } from './pages/PurchaseError';
 
 function App() {
   // Zustand stores
   const { connected, setWebSocket, setConnected } = useWebSocketStore();
-  const { setSessionId, setParticipantId, setIsOwner, setQuizState, updateQuizState, setMatches, isOwner } = useQuizStore();
+  const { setSessionId, setParticipantId, setIsOwner, setQuizState, updateQuizState, setMatchState, setQuestionLimitState, clearQuestionLimitState, isOwner } = useQuizStore();
+  const { setVybesBalance, addFeatureUnlock, setTransactionHistory } = useAuthStore();
   const { activePage, setActivePage, notification, error, showNotification, showError } = useUIStore();
   const { draftQuestions } = useDraftStore();
 
@@ -70,6 +74,7 @@ function App() {
         setSessionId(message.data.sessionId);
         setParticipantId(message.data.participantId);
         setIsOwner(true);
+        setVybesBalance(message.data.vybesBalance);
         setActivePage('lab'); // Navigate to lab page for owner
         break;
 
@@ -77,6 +82,7 @@ function App() {
         setSessionId(message.data.sessionId);
         setParticipantId(message.data.participantId);
         setIsOwner(message.data.isOwner);
+        setVybesBalance(message.data.vybesBalance);
         // Navigate to lab if owner, quiz if participant
         setActivePage(message.data.isOwner ? 'lab' : 'quiz');
         break;
@@ -94,7 +100,25 @@ function App() {
             myResponses: [...prev.myResponses, ""]
           };
         });
+        clearQuestionLimitState(); // Clear any limit warning since question was added
         showNotification('New question added!');
+        break;
+
+      case 'question:limit-reached':
+        setQuestionLimitState({
+          isAtLimit: true,
+          current: message.data.current,
+          max: message.data.max,
+          upgradeCost: message.data.upgradeCost,
+        });
+        showError(`Question limit reached (${message.data.current}/${message.data.max}). Upgrade for ${message.data.upgradeCost} Vybes!`);
+        break;
+
+      case 'question:limit-unlocked':
+        clearQuestionLimitState();
+        setVybesBalance(message.data.vybesBalance);
+        addFeatureUnlock('QUESTION_LIMIT_10');
+        showNotification(`Question limit upgraded to ${message.data.newLimit}!`);
         break;
 
       case 'participant:joined':
@@ -128,7 +152,25 @@ function App() {
         break;
 
       case 'matches:result':
-        setMatches(message.data.matches);
+        setMatchState({
+          matches: message.data.matches,
+          tier: message.data.tier,
+          cost: message.data.cost,
+          isLoading: false,
+        });
+        setVybesBalance(message.data.vybesBalance);
+        break;
+
+      case 'credits:balance':
+        setVybesBalance(message.data.balance);
+        break;
+
+      case 'credits:history':
+        setTransactionHistory(message.data.transactions);
+        break;
+
+      case 'credits:insufficient':
+        showError(`Not enough Vybes! Need ${message.data.required}, have ${message.data.current}`);
         break;
 
       case 'notification':
@@ -149,6 +191,18 @@ function App() {
     lobby: 'Lobby',
     vybes: 'Vybes',
   };
+
+  // Check for purchase routes (path-based routing)
+  const pathname = window.location.pathname;
+  if (pathname === '/purchase/success') {
+    return <PurchaseSuccess />;
+  }
+  if (pathname === '/purchase/cancel') {
+    return <PurchaseCancel />;
+  }
+  if (pathname === '/purchase/error') {
+    return <PurchaseError />;
+  }
 
   if (!connected) {
     return (

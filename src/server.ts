@@ -1,7 +1,10 @@
+import 'dotenv/config';
 import express from 'express';
 import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import { WebSocketHandler } from './server/services/WebSocketHandler';
+import { StripeService } from './server/services/StripeService';
+import { createPaymentRoutes, createWebhookHandler } from './server/routes/payment';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -14,14 +17,32 @@ const wss = new WebSocketServer({ server });
 const wsHandler = new WebSocketHandler();
 
 const PORT = process.env.PORT || 3000;
+const APP_URL = process.env.APP_URL || 'http://localhost:5173';
+
+// Initialize Stripe service (shares VybeLedger with WebSocket handler)
+const stripeService = new StripeService({
+  secretKey: process.env.STRIPE_SECRET_KEY || '',
+  webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
+  vybeLedger: wsHandler.getVybeLedger(),
+  appUrl: APP_URL,
+});
+
+// Stripe webhook needs raw body - must be before express.json()
+app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), createWebhookHandler(stripeService));
+
+// JSON parsing for other routes
+app.use(express.json());
 
 // Serve static files from dist directory (for production)
 app.use(express.static(path.join(__dirname)));
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
+
+// Payment routes
+app.use('/api', createPaymentRoutes(stripeService));
 
 // WebSocket connection handler
 wss.on('connection', (ws) => {
@@ -31,4 +52,8 @@ wss.on('connection', (ws) => {
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`WebSocket server ready`);
+  console.log(`App URL: ${APP_URL}`);
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.warn('Warning: STRIPE_SECRET_KEY not set');
+  }
 });
