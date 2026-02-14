@@ -13,6 +13,10 @@ export default defineConfig(({ command, mode }) => {
           target: env.VITE_WS_URL,
           ws: true,
         },
+        '/api': {
+          target: 'http://localhost:3000',
+          changeOrigin: true,
+        },
       },
     },
     test: {

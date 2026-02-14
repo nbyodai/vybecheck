@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useWebSocketStore } from '../store/websocketStore';
+import { useQuizStore } from '../store/quizStore';
 import type { LedgerEntry } from '../../shared/types';
 
 // Transaction reason display names
@@ -12,10 +13,20 @@ const REASON_LABELS: Record<string, string> = {
   UNLOCK_QUESTION_LIMIT: 'Upgraded Question Limit',
 };
 
+// Pack IDs must match server-side StripeService VYBE_PACKS
+const VYBE_PACKS = [
+  { id: 'starter', name: 'Starter Pack', vybes: 20, price: 5, popular: false },
+  { id: 'pro', name: 'Pro Pack', vybes: 50, price: 10, popular: true },
+  { id: 'ultimate', name: 'Ultimate Pack', vybes: 120, price: 20, popular: false },
+];
+
 export function VybesPage() {
   const { vybesBalance, transactionHistory } = useAuthStore();
   const { send } = useWebSocketStore();
+  const { participantId } = useQuizStore();
   const [showHistory, setShowHistory] = useState(false);
+  const [purchasingPackId, setPurchasingPackId] = useState<string | null>(null);
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
 
   // Request transaction history when showing
   useEffect(() => {
@@ -24,11 +35,36 @@ export function VybesPage() {
     }
   }, [showHistory, send]);
 
-  const vybePacks = [
-    { id: 1, name: 'Starter Pack', vybes: 20, price: 5, popular: false },
-    { id: 2, name: 'Pro Pack', vybes: 50, price: 10, popular: true },
-    { id: 3, name: 'Ultimate Pack', vybes: 120, price: 20, popular: false },
-  ];
+  const handlePurchase = async (packId: string) => {
+    if (!participantId) {
+      setPurchaseError('Please join a session first to purchase Vybes');
+      return;
+    }
+
+    setPurchasingPackId(packId);
+    setPurchaseError(null);
+
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ packId, participantId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to create checkout session');
+      }
+
+      // Redirect to Stripe Checkout
+      window.location.href = data.url;
+    } catch (err: any) {
+      console.error('Purchase error:', err);
+      setPurchaseError(err.message || 'Failed to start checkout');
+      setPurchasingPackId(null);
+    }
+  };
 
   const formatDate = (date: Date | string) => {
     const d = typeof date === 'string' ? new Date(date) : date;
@@ -118,51 +154,75 @@ export function VybesPage() {
         </div>
       )}
 
+      {/* Purchase Error */}
+      {purchaseError && (
+        <div style={{
+          background: '#FEE2E2',
+          border: '1px solid #FCA5A5',
+          borderRadius: '12px',
+          padding: '12px 16px',
+          marginBottom: '16px',
+          color: '#991B1B',
+          fontSize: '14px',
+        }}>
+          {purchaseError}
+        </div>
+      )}
+
       {/* Vybe Packs */}
       <h2 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: '700', color: '#1F2937' }}>Buy Vybe Packs</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
-        {vybePacks.map(pack => (
-          <div
-            key={pack.id}
-            style={{
-              background: 'white',
-              padding: '20px',
-              borderRadius: '16px',
-              boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)',
-              border: pack.popular ? '2px solid #6366F1' : 'none',
-              position: 'relative'
-            }}
-          >
-            {pack.popular && (
-              <div style={{
-                position: 'absolute',
-                top: '-10px',
-                right: '20px',
-                background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
-                color: 'white',
-                padding: '4px 12px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '700'
-              }}>
-                POPULAR
-              </div>
-            )}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: '18px', fontWeight: '700', color: '#1F2937', marginBottom: '4px' }}>
-                  {pack.name}
+        {VYBE_PACKS.map(pack => {
+          const isPurchasing = purchasingPackId === pack.id;
+          return (
+            <div
+              key={pack.id}
+              style={{
+                background: 'white',
+                padding: '20px',
+                borderRadius: '16px',
+                boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)',
+                border: pack.popular ? '2px solid #6366F1' : 'none',
+                position: 'relative',
+                opacity: isPurchasing ? 0.7 : 1,
+              }}
+            >
+              {pack.popular && (
+                <div style={{
+                  position: 'absolute',
+                  top: '-10px',
+                  right: '20px',
+                  background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+                  color: 'white',
+                  padding: '4px 12px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '700'
+                }}>
+                  POPULAR
                 </div>
-                <div style={{ fontSize: '14px', color: '#6B7280' }}>
-                  ✨ {pack.vybes} Vybes
+              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontSize: '18px', fontWeight: '700', color: '#1F2937', marginBottom: '4px' }}>
+                    {pack.name}
+                  </div>
+                  <div style={{ fontSize: '14px', color: '#6B7280' }}>
+                    ✨ {pack.vybes} Vybes
+                  </div>
                 </div>
+                <button 
+                  className="btn btn-primary" 
+                  style={{ padding: '12px 24px', fontSize: '15px' }}
+                  onClick={() => handlePurchase(pack.id)}
+                  disabled={isPurchasing || purchasingPackId !== null}
+                >
+                  {isPurchasing ? 'Loading...' : `$${pack.price}`}
+                </button>
               </div>
-              <button className="btn btn-primary" style={{ padding: '12px 24px', fontSize: '15px' }}>
-                ${pack.price}
-              </button>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Pricing Info */}

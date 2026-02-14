@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import type { ServerMessage } from '../shared/types';
 import { useWebSocketStore } from './store/websocketStore';
@@ -14,6 +14,9 @@ import { LabPage } from './pages/LabPage';
 import { QuizPage } from './pages/QuizPage';
 import { LobbyPage } from './pages/LobbyPage';
 import { VybesPage } from './pages/VybesPage';
+import { PurchaseSuccess } from './pages/PurchaseSuccess';
+import { PurchaseCancel } from './pages/PurchaseCancel';
+import { PurchaseError } from './pages/PurchaseError';
 
 function App() {
   // Zustand stores
@@ -188,6 +191,18 @@ function App() {
     lobby: 'Lobby',
     vybes: 'Vybes',
   };
+
+  // Check for purchase routes (path-based routing)
+  const pathname = window.location.pathname;
+  if (pathname === '/purchase/success') {
+    return <PurchaseSuccess />;
+  }
+  if (pathname === '/purchase/cancel') {
+    return <PurchaseCancel />;
+  }
+  if (pathname === '/purchase/error') {
+    return <PurchaseError />;
+  }
 
   if (!connected) {
     return (

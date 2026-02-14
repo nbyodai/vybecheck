@@ -32,8 +32,9 @@ export class WebSocketHandler {
   private quotaManager: QuotaManager;
   private billingService: BillingService;
 
-  constructor() {
-    this.vybeLedger = new VybeLedger();
+  constructor(options?: { vybeLedger?: VybeLedger }) {
+    // Use provided VybeLedger or create new one
+    this.vybeLedger = options?.vybeLedger || new VybeLedger();
     this.participantUnlock = new ParticipantUnlockManager();
     this.quotaManager = new QuotaManager(this.participantUnlock);
     this.billingService = new BillingService({
@@ -41,6 +42,13 @@ export class WebSocketHandler {
       participantUnlock: this.participantUnlock,
       quotaManager: this.quotaManager,
     });
+  }
+
+  /**
+   * Get the VybeLedger instance (for sharing with other services)
+   */
+  getVybeLedger(): VybeLedger {
+    return this.vybeLedger;
   }
 
   handleConnection(ws: WebSocket) {
