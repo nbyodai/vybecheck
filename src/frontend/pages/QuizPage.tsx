@@ -6,6 +6,8 @@ import { MatchCard } from '../components/MatchCard';
 import type { MatchTier } from '../../shared/types';
 import '../styles/QuizPage.css';
 
+// TODO: Refactor this page - it's doing a lot right now with quiz taking, progress tracking, and match purchasing.
+// We can break it down into smaller components and hooks for better readability and maintainability.
 // Pricing for match tiers
 const TIER_COSTS: Record<MatchTier, number> = {
   PREVIEW: 0,
@@ -288,7 +290,7 @@ export function QuizPage() {
                     cursor: canCalculateMatches && canAffordTier(selectedTier) ? 'pointer' : 'not-allowed'
                   }}
                 >
-                  {matchState.isLoading ? 'Loading...' : 
+                  {matchState.isLoading ? 'Loading...' :
                    hasTierAccess(selectedTier) ? `View ${TIER_LABELS[selectedTier]}` :
                    `Unlock ${TIER_LABELS[selectedTier]} (${TIER_COSTS[selectedTier]} ✨)`}
                 </button>

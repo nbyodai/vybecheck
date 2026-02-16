@@ -105,7 +105,7 @@ export function VybesPage() {
         </button>
       </div>
 
-      {/* Transaction History */}
+      {/* TODO: Transaction History Component */}
       {showHistory && (
         <div style={{
           background: 'white',
@@ -211,8 +211,8 @@ export function VybesPage() {
                     ✨ {pack.vybes} Vybes
                   </div>
                 </div>
-                <button 
-                  className="btn btn-primary" 
+                <button
+                  className="btn btn-primary"
                   style={{ padding: '12px 24px', fontSize: '15px' }}
                   onClick={() => handlePurchase(pack.id)}
                   disabled={isPurchasing || purchasingPackId !== null}
