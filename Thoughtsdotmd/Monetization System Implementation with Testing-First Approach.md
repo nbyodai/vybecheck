@@ -6,18 +6,30 @@ Implement a credit-based monetization system that gates access to match result t
 * Cache expensive match calculations
 * Work with the existing WebSocket-based quiz system
 # Current State
+**Last Updated: 2026-02-06**
+
 The VybeCheck application has:
 * Completed backend with QuizSession, Participant, Question, Response models
 * MatchingService that calculates participant matches based on response agreement
 * WebSocket communication between client and server
 * No database (in-memory storage only)
 * No authentication or user management
-* No credit system or monetization logic
 * Express server with ws for WebSocket handling
-* Vitest for testing with 96 passing tests
+* **245 passing tests** (Vitest)
+
+**Monetization Implementation Status:**
+* ✅ Phase 1: Core Monetization Types & Models - COMPLETE
+* ✅ Phase 2: Billing Service with Entitlement Logic - COMPLETE
+* ✅ Phase 3: Enhanced MatchingService with Tiered Results - COMPLETE
+* ✅ Phase 4: Resource ID & Quota Management Strategy - COMPLETE
+* ⏳ Phase 5: WebSocket Integration - **IN PROGRESS (Next Step)**
+* ⏳ Phase 6: Initial Credits & Participant Tracking - NOT STARTED
+* ✅ Phase 7: Testing Strategy - Unit/Integration tests written and passing
+* ⏳ Phase 8: Implementation Order - Steps 1-4 complete, steps 5-7 remaining
 # Proposed Changes
-## Phase 1: Core Monetization Types & Models
+## Phase 1: Core Monetization Types & Models ✅ COMPLETE
 **Goal:** Define TypeScript types and create models for the credit system
+**Status:** All types and models implemented with full test coverage.
 ### Types to Add (src/shared/types.ts)
 * `MatchTier`: 'PREVIEW' | 'TOP3' | 'ALL' - For match result access tiers
 * `UnlockableFeature`: 'MATCH_PREVIEW' | 'MATCH_TOP3' | 'MATCH_ALL' | 'QUESTION_LIMIT_10' - Extensible feature flags
@@ -37,8 +49,9 @@ The VybeCheck application has:
 * Missing participant IDs
 * Question limit enforcement when adding questions
 * Quota exhaustion handling
-## Phase 2: Billing Service with Entitlement Logic
+## Phase 2: Billing Service with Entitlement Logic ✅ COMPLETE
 **Goal:** Create the "check → charge → grant" service that prevents double-charging
+**Status:** `BillingService.ts` implemented with idempotent purchase logic.
 ### Service to Create (src/server/services/BillingService.ts)
 Key methods:
 * `getBalance(participantId: string): Promise<number>` - Sum ledger entries for participant
@@ -67,8 +80,9 @@ Key methods:
 * Accessing MATCH_PREVIEW tier (should be free, no unlock needed)
 * Owner tries to add 4th question without purchasing QUESTION_LIMIT_10
 * Owner purchases QUESTION_LIMIT_10, can now add up to 10 questions
-## Phase 3: Enhanced MatchingService with Tiered Results
+## Phase 3: Enhanced MatchingService with Tiered Results ✅ COMPLETE
 **Goal:** Modify MatchingService to return different result slices based on tier
+**Status:** `getMatchesByTier()` implemented with caching strategy.
 ### Current Service: src/server/services/MatchingService.ts
 Already has `getMatchesForParticipant()` returning full sorted matches
 ### New Methods to Add
@@ -88,8 +102,9 @@ Already has `getMatchesForParticipant()` returning full sorted matches
 * Cache expiration timing
 * Cache invalidation when quiz state changes
 * Partial responses from participants
-## Phase 4: Resource ID & Quota Management Strategy
+## Phase 4: Resource ID & Quota Management Strategy ✅ COMPLETE
 **Goal:** Define how resources are identified for unlock tracking and implement quota enforcement
+**Status:** `QuotaManager.ts` implemented with question limit enforcement.
 ### Resource ID Formats
 Session-based approach (recommended for MVP):
 * Format: `session:${sessionId}`
@@ -113,8 +128,18 @@ Session-based approach (recommended for MVP):
 * Owner at question limit tries to add question (should fail with clear error)
 * Owner purchases limit unlock mid-session (existing questions preserved, can add more)
 * Multiple owners scenario (if allowed in future)
-## Phase 5: WebSocket Integration
+## Phase 5: WebSocket Integration ⏳ IN PROGRESS
 **Goal:** Add credit-gated WebSocket message handlers for matches AND question limits
+**Status:** WebSocketHandler exists but NOT wired to monetization. This is the NEXT STEP.
+
+**Remaining Work:**
+1. Add new message types to `src/shared/types.ts`
+2. Inject BillingService, VybeLedger, ParticipantUnlockManager, QuotaManager into WebSocketHandler
+3. Implement `credits:balance` and `credits:history` handlers
+4. Modify `matches:get` to accept tier parameter and check billing
+5. Modify `question:add` to enforce quota limits
+6. Add `question:unlock-limit` handler
+7. Return billing metadata (cost, balance) in responses
 ### New Message Types (src/shared/types.ts)
 Client → Server:
 * `{ type: 'credits:balance' }` - Request current balance
@@ -159,8 +184,14 @@ Server → Client:
 * Owner at question limit, tries to add without purchasing unlock
 * Owner purchases question limit unlock, immediately adds more questions
 * Non-owner tries to purchase question limit (should fail - only owners can add questions)
-## Phase 6: Initial Credits & Participant Tracking
+## Phase 6: Initial Credits & Participant Tracking ⏳ NOT STARTED
 **Goal:** Ensure participants receive initial credits and are properly tracked
+**Status:** Not implemented. Participants currently receive no initial Vybes.
+
+**Remaining Work:**
+1. Grant 10 initial Vybes during `session:create`
+2. Grant 10 initial Vybes during `session:join`
+3. Check for existing ledger entries to prevent duplicate grants
 ### Implementation Strategy
 **No separate authentication layer needed** - Use existing Participant model:
 * Participant ID already generated on session creation/join
@@ -179,7 +210,7 @@ Server → Client:
 * Participant disconnects and reconnects (should preserve participantId via session)
 * Participant creates multiple sessions (gets initial credits only once per participantId)
 * Server restart (all credit balances lost - acceptable for MVP, fixed with database)
-## Phase 7: Testing Strategy
+## Phase 7: Testing Strategy ✅ TESTS WRITTEN
 ### Unit Tests (tests/unit/)
 #### CreditLedger Tests (20+ tests)
 * ✓ Add positive transaction (purchase)
@@ -297,16 +328,16 @@ Server → Client:
 * ✓ Owner at 10 question limit (even with upgrade) tries to add 11th question (should fail)
 * ✓ Non-owner participant tries to add question (should fail regardless of credits)
 ## Phase 8: Implementation Order
-1. Write all test files first (TDD approach) - tests should fail initially
-2. Implement models (CreditLedger, ParticipantUnlock, QuotaManager)
-3. Implement BillingService (run unit tests, fix until passing)
-4. Enhance MatchingService with tiers and caching (run unit tests)
-5. Update WebSocket message types in shared/types.ts
-6. Update WebSocketHandler with new message handlers (run integration tests)
-7. Add initial credits grant logic in session creation/join
-8. Add question quota enforcement in question:add handler
-9. Run full test suite, fix any failures
-10. Manual testing with multiple browser tabs (test both match purchases and question limits)
+1. ✅ Write all test files first (TDD approach) - tests should fail initially
+2. ✅ Implement models (VybeLedger, ParticipantUnlock, QuotaManager)
+3. ✅ Implement BillingService (run unit tests, fix until passing)
+4. ✅ Enhance MatchingService with tiers and caching (run unit tests)
+5. ⏳ **NEXT:** Update WebSocket message types in shared/types.ts
+6. ⏳ Update WebSocketHandler with new message handlers (run integration tests)
+7. ⏳ Add initial credits grant logic in session creation/join
+8. ⏳ Add question quota enforcement in question:add handler
+9. ⏳ Run full test suite, fix any failures
+10. ⏳ Manual testing with multiple browser tabs (test both match purchases and question limits)
 ## Success Criteria
 * All unit tests passing (90+ tests including quota tests)
 * All integration tests passing (35+ tests including question limit tests)

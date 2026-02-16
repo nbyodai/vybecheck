@@ -4,13 +4,52 @@ import type { Participant } from '../models/Participant';
 import type { Question } from '../models/Question';
 import type { Response } from '../models/Response';
 import { MatchingService } from './MatchingService';
+import { BillingService } from './BillingService';
+import { VybeLedger } from '../models/VybeLedger';
+import { ParticipantUnlockManager } from '../models/ParticipantUnlock';
+import { QuotaManager } from '../models/QuotaManager';
 import { generateParticipantId, generateQuestionId, generateResponseId } from '../utils/idGenerator';
-import type { ClientMessage, ServerMessage, QuizState, ParticipantInfo, MatchResult } from '../../shared/types';
+import type { ClientMessage, ServerMessage, QuizState, ParticipantInfo, MatchResult, MatchTier, UnlockableFeature } from '../../shared/types';
+
+// Pricing constants
+const FEATURE_COSTS: Record<UnlockableFeature, number> = {
+  MATCH_PREVIEW: 0,
+  MATCH_TOP3: 2,
+  MATCH_ALL: 5,
+  QUESTION_LIMIT_10: 3,
+};
+
+const INITIAL_VYBES = 10;
 
 export class WebSocketHandler {
   private sessions: Map<string, QuizSession> = new Map();
   private connections: Map<WebSocket, { sessionId: string; participantId: string }> = new Map();
   private matchingService: MatchingService = new MatchingService();
+  
+  // Billing dependencies
+  private vybeLedger: VybeLedger;
+  private participantUnlock: ParticipantUnlockManager;
+  private quotaManager: QuotaManager;
+  private billingService: BillingService;
+
+  constructor(options?: { vybeLedger?: VybeLedger }) {
+    // Use provided VybeLedger or create new one
+    this.vybeLedger = options?.vybeLedger || new VybeLedger();
+    this.participantUnlock = new ParticipantUnlockManager();
+    this.quotaManager = new QuotaManager(this.participantUnlock);
+    this.billingService = new BillingService({
+      vybeLedger: this.vybeLedger,
+      participantUnlock: this.participantUnlock,
+      quotaManager: this.quotaManager,
+    });
+  }
+
+  /**
+   * Get the VybeLedger instance (for sharing with other services)
+   */
+  getVybeLedger(): VybeLedger {
+    return this.vybeLedger;
+  }
 
   handleConnection(ws: WebSocket) {
     console.log('Client connected');
@@ -45,11 +84,20 @@ export class WebSocketHandler {
       case 'question:add':
         this.handleQuestionAdd(ws, message.data);
         break;
+      case 'question:unlock-limit':
+        this.handleQuestionUnlockLimit(ws);
+        break;
       case 'response:submit':
         this.handleResponseSubmit(ws, message.data);
         break;
       case 'matches:get':
-        this.handleMatchesGet(ws);
+        this.handleMatchesGet(ws, message.data);
+        break;
+      case 'credits:balance':
+        this.handleCreditsBalance(ws);
+        break;
+      case 'credits:history':
+        this.handleCreditsHistory(ws);
         break;
       case 'ping':
         this.send(ws, { type: 'pong', timestamp: Date.now() });
@@ -77,9 +125,13 @@ export class WebSocketHandler {
     this.sessions.set(session.sessionId, session);
     this.connections.set(ws, { sessionId: session.sessionId, participantId });
 
+    // Grant initial Vybes
+    this.grantInitialVybes(participantId);
+    const vybesBalance = this.billingService.getBalance(participantId);
+
     this.send(ws, {
       type: 'session:created',
-      data: { sessionId: session.sessionId, participantId }
+      data: { sessionId: session.sessionId, participantId, vybesBalance }
     });
 
     this.sendQuizState(ws, session, participantId);
@@ -107,9 +159,13 @@ export class WebSocketHandler {
     session.addParticipant(participant);
     this.connections.set(ws, { sessionId: session.sessionId, participantId });
 
+    // Grant initial Vybes
+    this.grantInitialVybes(participantId);
+    const vybesBalance = this.billingService.getBalance(participantId);
+
     this.send(ws, {
       type: 'session:joined',
-      data: { sessionId: session.sessionId, participantId, isOwner: false }
+      data: { sessionId: session.sessionId, participantId, isOwner: false, vybesBalance }
     });
 
     this.sendQuizState(ws, session, participantId);
@@ -132,8 +188,31 @@ export class WebSocketHandler {
       return;
     }
 
-    if (!session.canAddQuestion(connectionInfo.participantId)) {
+    const isOwner = session.canAddQuestion(connectionInfo.participantId);
+    if (!isOwner) {
       this.sendError(ws, 'Only owner can add questions');
+      return;
+    }
+
+    // Check quota limit
+    const currentQuestionCount = session.questions.length;
+    const canAdd = this.quotaManager.canAddQuestion({
+      participantId: connectionInfo.participantId,
+      sessionId: session.sessionId,
+      currentCount: currentQuestionCount,
+      isOwner: true,
+    });
+
+    if (!canAdd) {
+      const maxLimit = this.quotaManager.getQuestionLimit(connectionInfo.participantId, session.sessionId);
+      this.send(ws, {
+        type: 'question:limit-reached',
+        data: {
+          current: currentQuestionCount,
+          max: maxLimit,
+          upgradeCost: FEATURE_COSTS.QUESTION_LIMIT_10,
+        },
+      });
       return;
     }
 
@@ -178,6 +257,58 @@ export class WebSocketHandler {
     }
   }
 
+  private handleQuestionUnlockLimit(ws: WebSocket) {
+    const connectionInfo = this.connections.get(ws);
+    if (!connectionInfo) {
+      this.sendError(ws, 'Not in a session');
+      return;
+    }
+
+    const session = this.sessions.get(connectionInfo.sessionId);
+    if (!session) {
+      this.sendError(ws, 'Session not found');
+      return;
+    }
+
+    const isOwner = session.canAddQuestion(connectionInfo.participantId);
+    if (!isOwner) {
+      this.sendError(ws, 'Only owner can unlock question limit');
+      return;
+    }
+
+    const resourceId = `session:${session.sessionId}`;
+    const result = this.billingService.purchaseOrVerifyAccess({
+      participantId: connectionInfo.participantId,
+      resourceId,
+      feature: 'QUESTION_LIMIT_10',
+      cost: FEATURE_COSTS.QUESTION_LIMIT_10,
+      isOwner: true,
+    });
+
+    if (result.error === 'INSUFFICIENT_VYBES') {
+      this.send(ws, {
+        type: 'credits:insufficient',
+        data: {
+          feature: 'QUESTION_LIMIT_10',
+          required: FEATURE_COSTS.QUESTION_LIMIT_10,
+          current: result.balance,
+        },
+      });
+      return;
+    }
+
+    if (result.granted) {
+      const newLimit = this.quotaManager.getQuestionLimit(connectionInfo.participantId, session.sessionId);
+      this.send(ws, {
+        type: 'question:limit-unlocked',
+        data: {
+          newLimit,
+          vybesBalance: result.balance,
+        },
+      });
+    }
+  }
+
   private handleResponseSubmit(ws: WebSocket, data: { questionId: string; optionChosen: string }) {
     const connectionInfo = this.connections.get(ws);
     if (!connectionInfo) {
@@ -212,7 +343,7 @@ export class WebSocketHandler {
     }
   }
 
-  private handleMatchesGet(ws: WebSocket) {
+  private handleMatchesGet(ws: WebSocket, data?: { tier?: MatchTier }) {
     const connectionInfo = this.connections.get(ws);
     if (!connectionInfo) {
       this.sendError(ws, 'Not in a session');
@@ -225,17 +356,116 @@ export class WebSocketHandler {
       return;
     }
 
-    const matches = this.matchingService.getMatchesForParticipant(connectionInfo.participantId, session);
-    const matchResults: MatchResult[] = matches.map(m => ({
+    const tier: MatchTier = data?.tier || 'PREVIEW';
+    const resourceId = `session:${session.sessionId}`;
+
+    // Map tier to feature
+    const featureMap: Record<MatchTier, UnlockableFeature> = {
+      PREVIEW: 'MATCH_PREVIEW',
+      TOP3: 'MATCH_TOP3',
+      ALL: 'MATCH_ALL',
+    };
+    const feature = featureMap[tier];
+    const cost = FEATURE_COSTS[feature];
+
+    // Check billing (idempotent - won't charge twice)
+    const result = this.billingService.purchaseOrVerifyAccess({
+      participantId: connectionInfo.participantId,
+      resourceId,
+      feature,
+      cost,
+    });
+
+    if (result.error === 'INSUFFICIENT_VYBES') {
+      this.send(ws, {
+        type: 'credits:insufficient',
+        data: {
+          feature,
+          required: cost,
+          current: result.balance,
+        },
+      });
+      return;
+    }
+
+    // Get all matches and slice based on tier
+    const allMatches = this.matchingService.getMatchesForParticipant(connectionInfo.participantId, session);
+    const matchResults: MatchResult[] = allMatches.map(m => ({
       participantId: m.participantId,
       username: session.participants.get(m.participantId)?.username || null,
       matchPercentage: m.matchPercentage
     }));
 
+    // Slice results based on tier
+    let tieredMatches: MatchResult[];
+    switch (tier) {
+      case 'PREVIEW':
+        // Return 2 matches from the middle
+        const midStart = Math.floor(matchResults.length / 2) - 1;
+        tieredMatches = matchResults.slice(Math.max(0, midStart), midStart + 2);
+        break;
+      case 'TOP3':
+        tieredMatches = matchResults.slice(0, 3);
+        break;
+      case 'ALL':
+        tieredMatches = matchResults;
+        break;
+      default:
+        tieredMatches = [];
+    }
+
     this.send(ws, {
       type: 'matches:result',
-      data: { matches: matchResults }
+      data: {
+        tier,
+        matches: tieredMatches,
+        cost: result.charged ? cost : 0,
+        vybesBalance: result.balance,
+      },
     });
+  }
+
+  private handleCreditsBalance(ws: WebSocket) {
+    const connectionInfo = this.connections.get(ws);
+    if (!connectionInfo) {
+      this.sendError(ws, 'Not in a session');
+      return;
+    }
+
+    const balance = this.billingService.getBalance(connectionInfo.participantId);
+    this.send(ws, {
+      type: 'credits:balance',
+      data: { balance },
+    });
+  }
+
+  private handleCreditsHistory(ws: WebSocket) {
+    const connectionInfo = this.connections.get(ws);
+    if (!connectionInfo) {
+      this.sendError(ws, 'Not in a session');
+      return;
+    }
+
+    const transactions = this.billingService.getTransactionHistory(connectionInfo.participantId);
+    this.send(ws, {
+      type: 'credits:history',
+      data: { transactions },
+    });
+  }
+
+  /**
+   * Grant initial Vybes to new participants (idempotent)
+   */
+  private grantInitialVybes(participantId: string) {
+    // Check if participant already has transactions (prevent duplicate grants)
+    const existingTransactions = this.vybeLedger.getTransactionHistory(participantId);
+    if (existingTransactions.length === 0) {
+      this.billingService.addVybes({
+        participantId,
+        amount: INITIAL_VYBES,
+        reason: 'INITIAL_VYBES',
+      });
+    }
   }
 
   private handleDisconnect(ws: WebSocket) {
