@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useQuizStore } from '../store/quizStore';
 import { useWebSocketStore } from '../store/websocketStore';
 import { useAuthStore } from '../store/authStore';
+import { useUIStore } from '../store/uiStore';
 import { MatchCard } from '../components/MatchCard';
 import type { MatchTier } from '../../shared/types';
 import '../styles/QuizPage.css';
@@ -22,9 +23,10 @@ const TIER_LABELS: Record<MatchTier, string> = {
 };
 
 export function QuizPage() {
-  const { quizState, matchState, setMatchesLoading } = useQuizStore();
+  const { sessionId, quizState, matchState, setMatchesLoading } = useQuizStore();
   const { send } = useWebSocketStore();
   const { vybesBalance, hasFeatureUnlock } = useAuthStore();
+  const { setActivePage } = useUIStore();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedTier, setSelectedTier] = useState<MatchTier>('PREVIEW');
   const prevQuestionCountRef = useRef(0);
@@ -92,12 +94,32 @@ export function QuizPage() {
     return vybesBalance >= TIER_COSTS[tier];
   };
 
-  if (!quizState) {
+  // No active session
+  if (!sessionId || !quizState) {
     return (
       <div className="page-content">
-        <p style={{ textAlign: 'center', color: '#6B7280', padding: '40px 20px' }}>
-          Loading quiz...
-        </p>
+        <div style={{
+          background: 'white',
+          padding: '32px 24px',
+          borderRadius: '20px',
+          textAlign: 'center',
+          boxShadow: '0 2px 16px rgba(0, 0, 0, 0.08)',
+        }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎯</div>
+          <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: '700', color: '#1F2937' }}>
+            No Active Session
+          </h2>
+          <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '24px' }}>
+            Join a session to start answering questions and find your matches.
+          </p>
+          <button
+            onClick={() => setActivePage('lobby')}
+            className="btn btn-primary"
+            style={{ width: '100%' }}
+          >
+            Go to Lobby
+          </button>
+        </div>
       </div>
     );
   }

@@ -1,6 +1,37 @@
 import { create } from 'zustand';
 import type { UnlockableFeature, LedgerEntry } from '../../shared/types';
 
+const AUTH_STORAGE_KEY = 'vybecheck_auth';
+
+interface AuthState {
+  isSignedIn: boolean;
+  twitterUsername: string | null;
+}
+
+const getStoredAuth = (): AuthState => {
+  try {
+    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return {
+        isSignedIn: parsed.isSignedIn || false,
+        twitterUsername: parsed.twitterUsername || null,
+      };
+    }
+  } catch {
+    // Ignore
+  }
+  return { isSignedIn: false, twitterUsername: null };
+};
+
+const saveAuth = (state: AuthState) => {
+  try {
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Ignore
+  }
+};
+
 interface AuthStore {
   isSignedIn: boolean;
   isSigningIn: boolean;
@@ -9,6 +40,7 @@ interface AuthStore {
   vybesBalance: number;
   transactionHistory: LedgerEntry[];
   signInWithTwitter: () => void;
+  signOut: () => void;
   setSignedIn: (username: string) => void;
   setVybesBalance: (balance: number) => void;
   addFeatureUnlock: (feature: UnlockableFeature) => void;
@@ -18,10 +50,12 @@ interface AuthStore {
   hasFeatureUnlock: (feature: UnlockableFeature) => boolean;
 }
 
+const storedAuth = getStoredAuth();
+
 export const useAuthStore = create<AuthStore>((set, get) => ({
-  isSignedIn: false,
+  isSignedIn: storedAuth.isSignedIn,
   isSigningIn: false,
-  twitterUsername: null,
+  twitterUsername: storedAuth.twitterUsername,
   featureUnlocks: [],
   vybesBalance: 0,
   transactionHistory: [],
@@ -31,16 +65,24 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     // TODO: Implement actual Twitter OAuth flow
     // For now, simulate sign-in after 2 seconds
     setTimeout(() => {
-      set({
+      const newState = {
         isSigningIn: false,
         isSignedIn: true,
         twitterUsername: '@demo_user',
-        featureUnlocks: [],
-      });
+        featureUnlocks: [] as UnlockableFeature[],
+      };
+      saveAuth({ isSignedIn: true, twitterUsername: '@demo_user' });
+      set(newState);
     }, 2000);
   },
 
+  signOut: () => {
+    saveAuth({ isSignedIn: false, twitterUsername: null });
+    set({ isSignedIn: false, twitterUsername: null, featureUnlocks: [] });
+  },
+
   setSignedIn: (username) => {
+    saveAuth({ isSignedIn: true, twitterUsername: username });
     set({ isSignedIn: true, twitterUsername: username });
   },
 

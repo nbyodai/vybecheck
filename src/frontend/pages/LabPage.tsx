@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDraftStore } from '../store/draftStore';
 import { useWebSocketStore } from '../store/websocketStore';
 import { useUIStore } from '../store/uiStore';
@@ -14,7 +14,7 @@ export function LabPage() {
   const { draftQuestions, addDraft, removeDraft, clearDrafts, setOwnerResponse } = useDraftStore();
   const { send } = useWebSocketStore();
   const { showNotification, showError } = useUIStore();
-  const { quizState, questionLimitState } = useQuizStore();
+  const { sessionId, quizState, questionLimitState, isOwner } = useQuizStore();
   const { getQuestionLimit, vybesBalance, hasUpgradedQuestionLimit } = useAuthStore();
   const [isUnlocking, setIsUnlocking] = useState(false);
 
@@ -23,6 +23,34 @@ export function LabPage() {
   const [option2, setOption2] = useState('');
   const [ownerResponse, setOwnerResponseState] = useState<string>('');
   const [showPublishDialog, setShowPublishDialog] = useState(false);
+  const [showCreateSessionDialog, setShowCreateSessionDialog] = useState(false);
+  const [pendingPublish, setPendingPublish] = useState(false);
+  const prevSessionIdRef = useRef<string | null>(null);
+
+  // Check if session is active (has sessionId and quizState)
+  const hasActiveSession = Boolean(sessionId && quizState);
+
+  // Watch for session creation to auto-publish drafts
+  useEffect(() => {
+    if (pendingPublish && sessionId && sessionId !== prevSessionIdRef.current) {
+      // Session was just created, publish the drafts
+      const questionsToPublish = [...draftQuestions];
+      questionsToPublish.forEach(draft => {
+        send({
+          type: 'question:add',
+          data: {
+            prompt: draft.prompt,
+            options: draft.options,
+            ownerResponse: draft.ownerResponse
+          }
+        });
+      });
+      clearDrafts();
+      setPendingPublish(false);
+      showNotification(`Session created with ${questionsToPublish.length} question(s)`);
+    }
+    prevSessionIdRef.current = sessionId;
+  }, [sessionId, pendingPublish, draftQuestions, send, clearDrafts, showNotification]);
 
   const addQuestionToDraft = () => {
     // Check question limit first
@@ -56,6 +84,13 @@ export function LabPage() {
       showError(`Please answer all questions before publishing (${unansweredDrafts.length} unanswered)`);
       return;
     }
+    
+    // If no active session, show create session dialog
+    if (!hasActiveSession) {
+      setShowCreateSessionDialog(true);
+      return;
+    }
+    
     setShowPublishDialog(true);
   };
 
@@ -69,23 +104,27 @@ export function LabPage() {
     showNotification(`Publishing ${questionsToPublish.length} question${questionsToPublish.length !== 1 ? 's' : ''}...`);
 
     // Send all draft questions to server
-    // The owner responses will be submitted when we receive question:added events
     questionsToPublish.forEach(draft => {
       send({
         type: 'question:add',
         data: {
           prompt: draft.prompt,
           options: draft.options,
-          // Include owner response in metadata so we can auto-submit it
           ownerResponse: draft.ownerResponse
         }
       });
     });
   };
 
+  const confirmCreateSession = () => {
+    setShowCreateSessionDialog(false);
+    setPendingPublish(true);
+    send({ type: 'session:create', data: {} });
+  };
+
   // Get question limit from authStore
   const questionLimit = getQuestionLimit();
-  const publishedQuestionsCount = quizState?.questions.length ?? 0;
+  const publishedQuestionsCount = hasActiveSession ? (quizState?.questions.length ?? 0) : 0;
   const totalQuestionsCount = publishedQuestionsCount + draftQuestions.length;
   const hasReachedLimit = totalQuestionsCount >= questionLimit;
   const canAffordUpgrade = vybesBalance >= QUESTION_LIMIT_UPGRADE_COST;
@@ -104,6 +143,44 @@ export function LabPage() {
 
   return (
     <div className="page-content">
+      {/* Session Status Banner */}
+      {hasActiveSession ? (
+        <div style={{
+          padding: '12px 16px',
+          marginBottom: '16px',
+          backgroundColor: '#ECFDF5',
+          borderRadius: '8px',
+          border: '1px solid #A7F3D0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '16px' }}>🟢</span>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: '#065F46' }}>Live Session</span>
+          </div>
+          <span style={{ fontSize: '12px', color: '#047857', fontFamily: 'monospace' }}>
+            {sessionId}
+          </span>
+        </div>
+      ) : (
+        <div style={{
+          padding: '12px 16px',
+          marginBottom: '16px',
+          backgroundColor: '#FEF3C7',
+          borderRadius: '8px',
+          border: '1px solid #FCD34D',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+        }}>
+          <span style={{ fontSize: '16px' }}>✏️</span>
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#92400E' }}>
+            Draft Mode — Create questions offline, publish when ready
+          </span>
+        </div>
+      )}
+
       {/* Combined Question Info Banner */}
       <div style={{
         padding: '16px 20px',
@@ -276,6 +353,15 @@ export function LabPage() {
         onConfirm={confirmPublish}
         onCancel={() => setShowPublishDialog(false)}
         confirmText="Publish"
+      />
+
+      <ConfirmDialog
+        isOpen={showCreateSessionDialog}
+        title="Create New Session?"
+        message={`This will create a new quiz session and publish your ${draftQuestions.length} draft question${draftQuestions.length !== 1 ? 's' : ''}. Others can join using the session ID.`}
+        onConfirm={confirmCreateSession}
+        onCancel={() => setShowCreateSessionDialog(false)}
+        confirmText="Create & Publish"
       />
     </div>
   );

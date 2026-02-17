@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useWebSocketStore } from '../store/websocketStore';
+import { useAuthStore } from '../store/authStore';
+import { useUIStore } from '../store/uiStore';
 
 interface VerifyResult {
   paid: boolean;
   vybes?: number;
   credited?: boolean;
+  participantId?: string;
 }
 
 export function PurchaseSuccess() {
-  const { send } = useWebSocketStore();
+  const { setVybesBalance } = useAuthStore();
+  const { setActivePage } = useUIStore();
   const [verifyResult, setVerifyResult] = useState<VerifyResult | null>(null);
   const [isVerifying, setIsVerifying] = useState(true);
 
@@ -27,12 +30,16 @@ export function PurchaseSuccess() {
   const verifyPurchase = async (sessionId: string) => {
     try {
       const response = await fetch(`/api/checkout/verify?session_id=${sessionId}`);
-      const data = await response.json();
+      const data: VerifyResult = await response.json();
       setVerifyResult(data);
       
-      // If credited, refresh balance via WebSocket
-      if (data.credited) {
-        send({ type: 'credits:balance' });
+      // Fetch updated balance via REST if we have participantId
+      if (data.paid && data.participantId) {
+        const balanceResponse = await fetch(`/api/vybes/balance?participantId=${data.participantId}`);
+        if (balanceResponse.ok) {
+          const balanceData = await balanceResponse.json();
+          setVybesBalance(balanceData.balance);
+        }
       }
     } catch (err) {
       console.error('Verify error:', err);
@@ -42,7 +49,8 @@ export function PurchaseSuccess() {
   };
 
   const handleContinue = () => {
-    // Navigate back to app (remove query params)
+    // Set active page to vybes and navigate
+    setActivePage('vybes');
     window.location.href = '/';
   };
 

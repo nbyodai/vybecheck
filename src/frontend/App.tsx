@@ -21,8 +21,8 @@ import { PurchaseError } from './pages/PurchaseError';
 function App() {
   // Zustand stores
   const { connected, setWebSocket, setConnected } = useWebSocketStore();
-  const { setSessionId, setParticipantId, setIsOwner, setQuizState, updateQuizState, setMatchState, setQuestionLimitState, clearQuestionLimitState, isOwner } = useQuizStore();
-  const { setVybesBalance, addFeatureUnlock, setTransactionHistory } = useAuthStore();
+  const { sessionId, setSessionId, setParticipantId, setIsOwner, setQuizState, updateQuizState, setMatchState, setQuestionLimitState, clearQuestionLimitState, isOwner } = useQuizStore();
+  const { isSignedIn, setSignedIn, setVybesBalance, addFeatureUnlock, setTransactionHistory } = useAuthStore();
   const { activePage, setActivePage, notification, error, showNotification, showError } = useUIStore();
   const { draftQuestions } = useDraftStore();
 
@@ -83,6 +83,10 @@ function App() {
         setParticipantId(message.data.participantId);
         setIsOwner(message.data.isOwner);
         setVybesBalance(message.data.vybesBalance);
+        // Mark as signed in (as guest participant if not already signed in)
+        if (!isSignedIn) {
+          setSignedIn(`Guest_${message.data.participantId.slice(0, 6)}`);
+        }
         // Navigate to lab if owner, quiz if participant
         setActivePage(message.data.isOwner ? 'lab' : 'quiz');
         break;
@@ -212,7 +216,8 @@ function App() {
     );
   }
 
-  if (activePage === 'start') {
+  // Show start page only when not signed in
+  if (!isSignedIn) {
     return (
       <div className="app">
         <StartPage />
@@ -238,6 +243,7 @@ function App() {
         activePage={activePage}
         onNavigate={setActivePage}
         isOwner={isOwner}
+        hasSession={Boolean(sessionId)}
         draftCount={draftQuestions.length}
       />
     </div>

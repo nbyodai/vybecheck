@@ -2,6 +2,20 @@ import { create } from 'zustand';
 
 export type PageType = 'start' | 'lab' | 'quiz' | 'lobby' | 'vybes';
 
+const ACTIVE_PAGE_KEY = 'vybecheck_activePage';
+
+const getStoredActivePage = (): PageType => {
+  try {
+    const stored = localStorage.getItem(ACTIVE_PAGE_KEY);
+    if (stored && ['start', 'lab', 'quiz', 'lobby', 'vybes'].includes(stored)) {
+      return stored as PageType;
+    }
+  } catch {
+    // Ignore
+  }
+  return 'start';
+};
+
 interface UIStore {
   activePage: PageType;
   notification: string;
@@ -15,11 +29,18 @@ interface UIStore {
 }
 
 export const useUIStore = create<UIStore>((set) => ({
-  activePage: 'start',
+  activePage: getStoredActivePage(),
   notification: '',
   error: '',
   
-  setActivePage: (page) => set({ activePage: page }),
+  setActivePage: (page) => {
+    try {
+      localStorage.setItem(ACTIVE_PAGE_KEY, page);
+    } catch {
+      // Ignore
+    }
+    set({ activePage: page });
+  },
   
   showNotification: (message, duration = 3000) => {
     set({ notification: message });
