@@ -5,6 +5,7 @@ import { createServer } from 'http';
 import { WebSocketHandler } from './server/services/WebSocketHandler';
 import { StripeService } from './server/services/StripeService';
 import { createPaymentRoutes, createWebhookHandler } from './server/routes/payment';
+import { createVybesRoutes } from './server/routes/vybes';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -43,6 +44,9 @@ app.get('/health', (_req, res) => {
 
 // Payment routes
 app.use('/api', createPaymentRoutes(stripeService));
+
+// Vybes routes (balance, history)
+app.use('/api/vybes', createVybesRoutes(wsHandler.getVybeLedger()));
 
 // WebSocket connection handler
 wss.on('connection', (ws) => {

@@ -5,18 +5,19 @@ import { useUIStore } from '../store/uiStore';
 import logo from '../assets/logo.png';
 
 export function StartPage() {
-  const { isSignedIn, isSigningIn, twitterUsername, signInWithTwitter } = useAuthStore();
+  const { isSigningIn, signInWithTwitter } = useAuthStore();
   const { send } = useWebSocketStore();
-  const { error, notification, showError } = useUIStore();
+  const { error, notification, showError, setActivePage } = useUIStore();
 
   const [joinSessionId, setJoinSessionId] = useState('');
 
-  const createSession = () => {
-    if (!isSignedIn) {
-      showError('Please sign in with Twitter to create a session');
-      return;
-    }
-    send({ type: 'session:create', data: {} });
+  const handleSignIn = () => {
+    signInWithTwitter();
+    // After sign-in completes, user will be redirected to Lab via App.tsx routing
+    // The activePage will default to 'lab' after sign-in
+    setTimeout(() => {
+      setActivePage('lab');
+    }, 2100); // Slightly after the 2000ms mock sign-in delay
   };
 
   const joinSession = () => {
@@ -36,45 +37,31 @@ export function StartPage() {
       {notification && <div className="notification">{notification}</div>}
 
       {/* Sign in section */}
-      {!isSignedIn ? (
-        <>
-          <button
-            onClick={signInWithTwitter}
-            disabled={isSigningIn}
-            className="btn btn-twitter"
-            style={{ width: '100%', maxWidth: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-          >
-            {isSigningIn ? (
-              <>
-                <div className="spinner-small"></div>
-                <span>Signing in...</span>
-              </>
-            ) : (
-              <>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-                <span>Sign in with Twitter</span>
-              </>
-            )}
-          </button>
-          <p style={{ color: '#9CA3AF', fontSize: '13px', marginTop: '12px', maxWidth: '320px', textAlign: 'center' }}>
-            Sign in to create sessions and view matches
-          </p>
-        </>
-      ) : (
-        <>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: '#10B981', fontSize: '14px', fontWeight: '600' }}>
-            <span>✓</span>
-            <span>Signed in as {twitterUsername}</span>
-          </div>
-          <button onClick={createSession} className="btn btn-primary" style={{ width: '100%', maxWidth: '320px' }}>
-            Create New Session
-          </button>
-        </>
-      )}
+      <button
+        onClick={handleSignIn}
+        disabled={isSigningIn}
+        className="btn btn-twitter"
+        style={{ width: '100%', maxWidth: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+      >
+        {isSigningIn ? (
+          <>
+            <div className="spinner-small"></div>
+            <span>Signing in...</span>
+          </>
+        ) : (
+          <>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            <span>Sign in with Twitter</span>
+          </>
+        )}
+      </button>
+      <p style={{ color: '#9CA3AF', fontSize: '13px', marginTop: '12px', maxWidth: '320px', textAlign: 'center' }}>
+        Sign in to create quizzes and view matches
+      </p>
 
-      <div className="separator">or join existing</div>
+      <div className="separator">or join existing session</div>
       <div className="join-form" style={{ width: '100%', maxWidth: '320px' }}>
         <input
           type="text"
@@ -88,7 +75,7 @@ export function StartPage() {
         </button>
       </div>
       <p style={{ color: '#9CA3AF', fontSize: '13px', marginTop: '12px', maxWidth: '320px', textAlign: 'center' }}>
-        {isSignedIn ? 'Join any session with the ID' : 'No sign-in required to join, but needed to participate'}
+        Join as a participant to answer questions
       </p>
     </div>
   );

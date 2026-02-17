@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { useWebSocketStore } from '../store/websocketStore';
-import { useQuizStore } from '../store/quizStore';
 import type { LedgerEntry } from '../../shared/types';
 
 // Transaction reason display names
@@ -21,23 +19,67 @@ const VYBE_PACKS = [
 ];
 
 export function VybesPage() {
-  const { vybesBalance, transactionHistory } = useAuthStore();
-  const { send } = useWebSocketStore();
-  const { participantId } = useQuizStore();
+  const { twitterUsername, vybesBalance, transactionHistory, setVybesBalance, setTransactionHistory } = useAuthStore();
   const [showHistory, setShowHistory] = useState(false);
   const [purchasingPackId, setPurchasingPackId] = useState<string | null>(null);
   const [purchaseError, setPurchaseError] = useState<string | null>(null);
+  const [isLoadingBalance, setIsLoadingBalance] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
-  // Request transaction history when showing
+  // Use twitterUsername as account ID (Vybes are account-based, not session-based)
+  const accountId = twitterUsername || '';
+
+  // Fetch balance via REST API
+  const fetchBalance = useCallback(async () => {
+    if (!accountId) return;
+    
+    setIsLoadingBalance(true);
+    try {
+      const response = await fetch(`/api/vybes/balance?participantId=${encodeURIComponent(accountId)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setVybesBalance(data.balance);
+      }
+    } catch (err) {
+      console.error('Failed to fetch balance:', err);
+    } finally {
+      setIsLoadingBalance(false);
+    }
+  }, [accountId, setVybesBalance]);
+
+  // Fetch transaction history via REST API
+  const fetchHistory = useCallback(async () => {
+    if (!accountId) return;
+    
+    setIsLoadingHistory(true);
+    try {
+      const response = await fetch(`/api/vybes/history?participantId=${encodeURIComponent(accountId)}`);
+      if (response.ok) {
+        const data = await response.json();
+        setTransactionHistory(data.transactions);
+      }
+    } catch (err) {
+      console.error('Failed to fetch history:', err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  }, [accountId, setTransactionHistory]);
+
+  // Fetch balance on mount
+  useEffect(() => {
+    fetchBalance();
+  }, [fetchBalance]);
+
+  // Fetch history when toggled
   useEffect(() => {
     if (showHistory) {
-      send({ type: 'credits:history' });
+      fetchHistory();
     }
-  }, [showHistory, send]);
+  }, [showHistory, fetchHistory]);
 
   const handlePurchase = async (packId: string) => {
-    if (!participantId) {
-      setPurchaseError('Please join a session first to purchase Vybes');
+    if (!accountId) {
+      setPurchaseError('Please sign in to purchase Vybes');
       return;
     }
 
@@ -48,7 +90,7 @@ export function VybesPage() {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ packId, participantId }),
+        body: JSON.stringify({ packId, participantId: accountId }),
       });
 
       const data = await response.json();
@@ -85,7 +127,7 @@ export function VybesPage() {
         <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '4px' }}>Your Balance</div>
         <div style={{ fontSize: '36px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>✨</span>
-          <span>{vybesBalance}</span>
+          <span>{isLoadingBalance ? '...' : vybesBalance}</span>
           <span style={{ fontSize: '20px', opacity: 0.8 }}>Vybes</span>
         </div>
         <button
@@ -117,7 +159,9 @@ export function VybesPage() {
           <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '700', color: '#1F2937' }}>
             Transaction History
           </h3>
-          {transactionHistory.length === 0 ? (
+          {isLoadingHistory ? (
+            <p style={{ color: '#6B7280', fontSize: '14px', margin: 0 }}>Loading...</p>
+          ) : transactionHistory.length === 0 ? (
             <p style={{ color: '#6B7280', fontSize: '14px', margin: 0 }}>No transactions yet</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

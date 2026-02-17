@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import type { QuizState, MatchResult, MatchTier } from '../../shared/types';
 
+const PARTICIPANT_STORAGE_KEY = 'vybecheck_participantId';
+const SESSION_STORAGE_KEY = 'vybecheck_sessionId';
+
 interface MatchState {
   matches: MatchResult[];
   tier: MatchTier;
@@ -46,9 +49,26 @@ const initialMatchState: MatchState = {
   isLoading: false,
 };
 
+// Hydrate from localStorage
+const getStoredParticipantId = (): string => {
+  try {
+    return localStorage.getItem(PARTICIPANT_STORAGE_KEY) || '';
+  } catch {
+    return '';
+  }
+};
+
+const getStoredSessionId = (): string => {
+  try {
+    return localStorage.getItem(SESSION_STORAGE_KEY) || '';
+  } catch {
+    return '';
+  }
+};
+
 export const useQuizStore = create<QuizStore>((set, get) => ({
-  sessionId: '',
-  participantId: '',
+  sessionId: getStoredSessionId(),
+  participantId: getStoredParticipantId(),
   isOwner: false,
   quizState: null,
   matchState: initialMatchState,
@@ -59,9 +79,31 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
     return get().matchState.matches;
   },
   
-  setSessionId: (sessionId) => set({ sessionId }),
+  setSessionId: (sessionId) => {
+    try {
+      if (sessionId) {
+        localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
+      } else {
+        localStorage.removeItem(SESSION_STORAGE_KEY);
+      }
+    } catch {
+      // Ignore storage errors
+    }
+    set({ sessionId });
+  },
   
-  setParticipantId: (participantId) => set({ participantId }),
+  setParticipantId: (participantId) => {
+    try {
+      if (participantId) {
+        localStorage.setItem(PARTICIPANT_STORAGE_KEY, participantId);
+      } else {
+        localStorage.removeItem(PARTICIPANT_STORAGE_KEY);
+      }
+    } catch {
+      // Ignore storage errors
+    }
+    set({ participantId });
+  },
   
   setIsOwner: (isOwner) => set({ isOwner }),
   

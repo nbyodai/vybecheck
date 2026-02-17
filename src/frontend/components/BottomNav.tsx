@@ -5,20 +5,26 @@ interface BottomNavProps {
   activePage: PageType;
   onNavigate: (page: PageType) => void;
   isOwner: boolean;
+  hasSession: boolean;
   draftCount: number;
 }
 
-export function BottomNav({ activePage, onNavigate, isOwner, draftCount }: BottomNavProps) {
+export function BottomNav({ activePage, onNavigate, isOwner, hasSession, draftCount }: BottomNavProps) {
   if (activePage === 'start') return null;
 
+  // Show Lab for: owners, or anyone without a session (draft mode)
+  const showLab = isOwner || !hasSession;
+  // Show Quiz for: non-owners with a session
+  const showQuiz = !isOwner && hasSession;
+
   const navItems = [
-    ...(isOwner ? [{
+    ...(showLab ? [{
       id: 'lab' as PageType,
       label: 'Lab',
       icon: '🧪',
       badge: draftCount > 0 ? draftCount : undefined,
     }] : []),
-    ...(!isOwner ? [{
+    ...(showQuiz ? [{
       id: 'quiz' as PageType,
       label: 'Quiz',
       icon: '✓',
