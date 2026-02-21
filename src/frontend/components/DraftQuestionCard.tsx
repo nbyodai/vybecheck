@@ -9,47 +9,41 @@ interface DraftQuestionCardProps {
 
 export function DraftQuestionCard({ draft, index, onRemove, onSetOwnerResponse }: DraftQuestionCardProps) {
   return (
-    <div className="draft-question-card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-        <h3 style={{ margin: 0, flex: 1, fontSize: '16px', fontWeight: '600', color: '#1F2937' }}>
+    <div className="bg-vybe-yellow/30 border-2 border-dashed border-vybe-yellow rounded-2xl p-4 mb-3 transition-all hover:bg-vybe-yellow/40">
+      <div className="flex justify-between items-start mb-3">
+        <h3 className="m-0 flex-1 text-base font-semibold text-gray-800">
           Q{index + 1}: {draft.prompt}
         </h3>
         <button 
           onClick={() => onRemove(draft.id)} 
-          className="btn-icon"
-          style={{ marginLeft: '12px' }}
+          className="ml-3 bg-red-500/10 text-red-500 border-none w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer text-base font-semibold transition-all flex-shrink-0 [-webkit-tap-highlight-color:transparent] hover:bg-red-500/20 active:scale-95"
         >
           ✕
         </button>
       </div>
-      <div className="draft-options">
-        {draft.options.map((option) => (
-          <div 
-            key={option}
-            className="draft-option"
-            onClick={() => onSetOwnerResponse?.(draft.id, option)}
-            style={{ 
-              cursor: onSetOwnerResponse ? 'pointer' : 'default',
-              background: draft.ownerResponse === option ? '#10B981' : 'white',
-              color: draft.ownerResponse === option ? 'white' : '#1F2937',
-              borderColor: draft.ownerResponse === option ? '#10B981' : '#F59E0B',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}
-          >
-            <span>{option}</span>
-            {draft.ownerResponse === option && <span>✓</span>}
-          </div>
-        ))}
+      <div className="flex flex-col gap-2">
+        {draft.options.map((option) => {
+          const isSelected = draft.ownerResponse === option;
+          return (
+            <div 
+              key={option}
+              onClick={() => onSetOwnerResponse?.(draft.id, option)}
+              className={`border-2 rounded-xl py-3 px-4 font-medium text-[15px] flex items-center justify-between transition-all ${
+                onSetOwnerResponse ? 'cursor-pointer' : 'cursor-default'
+              } ${
+                isSelected
+                  ? 'bg-emerald-500 text-white border-emerald-500'
+                  : 'bg-white text-gray-800 border-vybe-yellow'
+              }`}
+            >
+              <span>{option}</span>
+              {isSelected && <span>✓</span>}
+            </div>
+          );
+        })}
       </div>
       {!draft.ownerResponse && (
-        <div style={{ 
-          marginTop: '8px',
-          fontSize: '12px',
-          color: '#DC2626',
-          fontWeight: '500'
-        }}>
+        <div className="mt-2 text-xs text-red-600 font-medium">
           ⚠️ Click an option to select your answer
         </div>
       )}

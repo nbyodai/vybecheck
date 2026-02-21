@@ -20,19 +20,25 @@ export function ConfirmDialog({
   if (!isOpen) return null;
 
   return (
-    <div className="dialog-overlay">
-      <div className="dialog">
-        <h2 style={{ margin: '0 0 12px 0', fontSize: '20px', fontWeight: '700', color: '#1F2937' }}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] animate-fade-in p-5">
+      <div className="bg-white rounded-[20px] p-6 max-w-[400px] w-full shadow-dialog animate-slide-up">
+        <h2 className="m-0 mb-3 text-xl font-bold text-gray-800">
           {title}
         </h2>
-        <p style={{ margin: '0 0 24px 0', color: '#6B7280', fontSize: '15px', lineHeight: '1.5' }}>
+        <p className="m-0 mb-6 text-gray-500 text-[15px] leading-relaxed">
           {message}
         </p>
-        <div className="dialog-actions">
-          <button onClick={onCancel} className="btn btn-secondary" style={{ flex: 1 }}>
+        <div className="flex gap-3">
+          <button
+            onClick={onCancel}
+            className="flex-1 py-4 px-6 border-2 border-gray-200 rounded-xl cursor-pointer text-[17px] font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-white text-vybe-blue shadow-[0_2px_8px_rgba(0,0,0,0.04)] active:bg-gray-50 active:scale-[0.97]"
+          >
             {cancelText}
           </button>
-          <button onClick={onConfirm} className="btn btn-primary" style={{ flex: 1 }}>
+          <button
+            onClick={onConfirm}
+            className="flex-1 py-4 px-6 border-none rounded-xl cursor-pointer text-[17px] font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-gradient-to-br from-vybe-blue to-vybe-purple text-white shadow-primary active:scale-[0.97]"
+          >
             {confirmText}
           </button>
         </div>

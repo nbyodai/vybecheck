@@ -48,28 +48,20 @@ export function LobbyPage() {
     };
 
     return (
-      <div className="page-content">
-        <div style={{
-          background: 'white',
-          padding: '32px 24px',
-          borderRadius: '20px',
-          textAlign: 'center',
-          boxShadow: '0 2px 16px rgba(0, 0, 0, 0.08)',
-          marginBottom: '20px'
-        }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>📡</div>
-          <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: '700', color: '#1F2937' }}>
+      <div className="w-full min-h-full">
+        <div className="bg-white p-8 rounded-[20px] text-center shadow-card mb-5">
+          <div className="text-5xl mb-4">📡</div>
+          <h2 className="m-0 mb-2 text-2xl font-bold text-gray-800">
             No Active Session
           </h2>
-          <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '24px' }}>
+          <p className="text-gray-500 text-sm mb-6">
             Create a new session to start a quiz, or join an existing one.
           </p>
 
           <button
             onClick={handleCreateSession}
             disabled={isCreating}
-            className="btn btn-primary"
-            style={{ width: '100%', marginBottom: '12px' }}
+            className="w-full mb-3 py-4 px-6 border-none rounded-xl cursor-pointer text-[17px] font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-gradient-to-br from-vybe-blue to-vybe-purple text-white shadow-primary active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isCreating ? 'Creating...' : draftQuestions.length > 0 
               ? `Create Session (${draftQuestions.length} draft${draftQuestions.length !== 1 ? 's' : ''} will publish)`
@@ -78,19 +70,14 @@ export function LobbyPage() {
           </button>
 
           {draftQuestions.length > 0 && (
-            <p style={{ color: '#6366F1', fontSize: '12px', marginBottom: '16px' }}>
+            <p className="text-vybe-blue text-xs mb-4">
               Your {draftQuestions.length} draft question{draftQuestions.length !== 1 ? 's' : ''} will be published automatically
             </p>
           )}
         </div>
 
-        <div style={{
-          background: 'white',
-          padding: '24px',
-          borderRadius: '20px',
-          boxShadow: '0 2px 16px rgba(0, 0, 0, 0.08)'
-        }}>
-          <h3 style={{ margin: '0 0 16px 0', fontSize: '16px', fontWeight: '600', color: '#1F2937' }}>
+        <div className="bg-white p-6 rounded-[20px] shadow-card">
+          <h3 className="m-0 mb-4 text-base font-semibold text-gray-800">
             Join Existing Session
           </h3>
           <input
@@ -99,12 +86,11 @@ export function LobbyPage() {
             value={joinSessionId}
             onChange={(e) => setJoinSessionId(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleJoinSession()}
-            style={{ marginBottom: '12px' }}
+            className="mb-3"
           />
           <button
             onClick={handleJoinSession}
-            className="btn btn-secondary"
-            style={{ width: '100%' }}
+            className="w-full py-4 px-6 border-2 border-gray-200 rounded-xl cursor-pointer text-[17px] font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-white text-vybe-blue shadow-[0_2px_8px_rgba(0,0,0,0.04)] active:bg-gray-50 active:scale-[0.97]"
           >
             Join Session
           </button>
@@ -118,31 +104,29 @@ export function LobbyPage() {
   const ownerName = ownerInfo?.username || ownerInfo?.id.slice(0, 8) || 'Unknown';
 
   return (
-    <div className="page-content">
-      <div style={{ background: 'white', padding: '20px', borderRadius: '20px', marginBottom: '20px', boxShadow: '0 2px 16px rgba(0, 0, 0, 0.08)' }}>
-        <h2 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: '700', color: '#1F2937' }}>Session Info</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: '#6B7280', fontWeight: '500' }}>Session ID</span>
-            <span style={{ color: '#1F2937', fontWeight: '600', fontFamily: 'monospace' }}>{sessionId}</span>
+    <div className="w-full min-h-full">
+      <div className="bg-white p-5 rounded-[20px] mb-5 shadow-card">
+        <h2 className="m-0 mb-4 text-xl font-bold text-gray-800">Session Info</h2>
+        <div className="flex flex-col gap-3">
+          <div className="flex justify-between">
+            <span className="text-gray-500 font-medium">Session ID</span>
+            <span className="text-gray-800 font-semibold font-mono">{sessionId}</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: '#6B7280', fontWeight: '500' }}>Owner</span>
-            <span style={{ color: '#1F2937', fontWeight: '600' }}>{ownerName}</span>
+          <div className="flex justify-between">
+            <span className="text-gray-500 font-medium">Owner</span>
+            <span className="text-gray-800 font-semibold">{ownerName}</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: '#6B7280', fontWeight: '500' }}>Status</span>
-            <span style={{
-              color: quizState.status === 'live' ? '#10B981' : quizState.status === 'active' ? '#F59E0B' : '#6B7280',
-              fontWeight: '600',
-              textTransform: 'capitalize'
-            }}>
+          <div className="flex justify-between">
+            <span className="text-gray-500 font-medium">Status</span>
+            <span className={`font-semibold capitalize ${
+              quizState.status === 'live' ? 'text-emerald-500' : quizState.status === 'active' ? 'text-amber-500' : 'text-gray-500'
+            }`}>
               {quizState.status}
             </span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ color: '#6B7280', fontWeight: '500' }}>Questions</span>
-            <span style={{ color: '#1F2937', fontWeight: '600' }}>{quizState.questions.length}</span>
+          <div className="flex justify-between">
+            <span className="text-gray-500 font-medium">Questions</span>
+            <span className="text-gray-800 font-semibold">{quizState.questions.length}</span>
           </div>
         </div>
       </div>

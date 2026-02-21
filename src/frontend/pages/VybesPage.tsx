@@ -114,81 +114,51 @@ export function VybesPage() {
   };
 
   return (
-    <div className="page-content">
+    <div className="w-full min-h-full">
       {/* Balance Card */}
-      <div style={{
-        background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
-        padding: '24px',
-        borderRadius: '20px',
-        marginBottom: '20px',
-        boxShadow: '0 4px 20px rgba(99, 102, 241, 0.3)',
-        color: 'white'
-      }}>
-        <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '4px' }}>Your Balance</div>
-        <div style={{ fontSize: '36px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div className="bg-gradient-to-br from-vybe-blue to-vybe-purple p-6 rounded-[20px] mb-5 shadow-primary text-white">
+        <div className="text-sm opacity-90 mb-1">Your Balance</div>
+        <div className="text-4xl font-bold flex items-center gap-2">
           <span>✨</span>
           <span>{isLoadingBalance ? '...' : vybesBalance}</span>
-          <span style={{ fontSize: '20px', opacity: 0.8 }}>Vybes</span>
+          <span className="text-xl opacity-80">Vybes</span>
         </div>
         <button
           onClick={() => setShowHistory(!showHistory)}
-          style={{
-            marginTop: '12px',
-            background: 'rgba(255,255,255,0.2)',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            color: 'white',
-            fontSize: '13px',
-            cursor: 'pointer',
-          }}
+          className="mt-3 bg-white/20 border-none py-2 px-4 rounded-lg text-white text-[13px] cursor-pointer hover:bg-white/30 transition-colors"
         >
           {showHistory ? 'Hide History' : 'View History'}
         </button>
       </div>
 
-      {/* TODO: Transaction History Component */}
+      {/* Transaction History */}
       {showHistory && (
-        <div style={{
-          background: 'white',
-          padding: '16px',
-          borderRadius: '16px',
-          marginBottom: '20px',
-          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)',
-        }}>
-          <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '700', color: '#1F2937' }}>
+        <div className="bg-white p-4 rounded-2xl mb-5 shadow-card-sm">
+          <h3 className="m-0 mb-3 text-base font-bold text-gray-800">
             Transaction History
           </h3>
           {isLoadingHistory ? (
-            <p style={{ color: '#6B7280', fontSize: '14px', margin: 0 }}>Loading...</p>
+            <p className="text-gray-500 text-sm m-0">Loading...</p>
           ) : transactionHistory.length === 0 ? (
-            <p style={{ color: '#6B7280', fontSize: '14px', margin: 0 }}>No transactions yet</p>
+            <p className="text-gray-500 text-sm m-0">No transactions yet</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div className="flex flex-col gap-2">
               {transactionHistory.map((txn: LedgerEntry) => (
                 <div
                   key={txn.id}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '10px 0',
-                    borderBottom: '1px solid #F3F4F6',
-                  }}
+                  className="flex justify-between items-center py-2.5 border-b border-gray-100"
                 >
                   <div>
-                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#1F2937' }}>
+                    <div className="text-sm font-semibold text-gray-800">
                       {REASON_LABELS[txn.reason] || txn.reason}
                     </div>
-                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>
+                    <div className="text-xs text-gray-400">
                       {formatDate(txn.createdAt)}
                     </div>
                   </div>
-                  <div style={{
-                    fontSize: '16px',
-                    fontWeight: '700',
-                    color: txn.amount > 0 ? '#10B981' : '#EF4444',
-                  }}>
+                  <div className={`text-base font-bold ${
+                    txn.amount > 0 ? 'text-emerald-500' : 'text-red-500'
+                  }`}>
                     {txn.amount > 0 ? '+' : ''}{txn.amount} ✨
                   </div>
                 </div>
@@ -200,64 +170,39 @@ export function VybesPage() {
 
       {/* Purchase Error */}
       {purchaseError && (
-        <div style={{
-          background: '#FEE2E2',
-          border: '1px solid #FCA5A5',
-          borderRadius: '12px',
-          padding: '12px 16px',
-          marginBottom: '16px',
-          color: '#991B1B',
-          fontSize: '14px',
-        }}>
+        <div className="bg-red-100 border border-red-300 rounded-xl py-3 px-4 mb-4 text-red-800 text-sm">
           {purchaseError}
         </div>
       )}
 
       {/* Vybe Packs */}
-      <h2 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: '700', color: '#1F2937' }}>Buy Vybe Packs</h2>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
+      <h2 className="m-0 mb-4 text-xl font-bold text-gray-800">Buy Vybe Packs</h2>
+      <div className="flex flex-col gap-3 mb-8">
         {VYBE_PACKS.map(pack => {
           const isPurchasing = purchasingPackId === pack.id;
           return (
             <div
               key={pack.id}
-              style={{
-                background: 'white',
-                padding: '20px',
-                borderRadius: '16px',
-                boxShadow: '0 2px 12px rgba(0, 0, 0, 0.06)',
-                border: pack.popular ? '2px solid #6366F1' : 'none',
-                position: 'relative',
-                opacity: isPurchasing ? 0.7 : 1,
-              }}
+              className={`bg-white p-5 rounded-2xl shadow-card-sm relative transition-opacity ${
+                pack.popular ? 'border-2 border-vybe-blue' : ''
+              } ${isPurchasing ? 'opacity-70' : 'opacity-100'}`}
             >
               {pack.popular && (
-                <div style={{
-                  position: 'absolute',
-                  top: '-10px',
-                  right: '20px',
-                  background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
-                  color: 'white',
-                  padding: '4px 12px',
-                  borderRadius: '12px',
-                  fontSize: '11px',
-                  fontWeight: '700'
-                }}>
+                <div className="absolute -top-2.5 right-5 bg-gradient-to-br from-vybe-blue to-vybe-purple text-white py-1 px-3 rounded-xl text-[11px] font-bold">
                   POPULAR
                 </div>
               )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="flex justify-between items-center">
                 <div>
-                  <div style={{ fontSize: '18px', fontWeight: '700', color: '#1F2937', marginBottom: '4px' }}>
+                  <div className="text-lg font-bold text-gray-800 mb-1">
                     {pack.name}
                   </div>
-                  <div style={{ fontSize: '14px', color: '#6B7280' }}>
+                  <div className="text-sm text-gray-500">
                     ✨ {pack.vybes} Vybes
                   </div>
                 </div>
                 <button
-                  className="btn btn-primary"
-                  style={{ padding: '12px 24px', fontSize: '15px' }}
+                  className="py-3 px-6 text-[15px] border-none rounded-xl cursor-pointer font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-gradient-to-br from-vybe-blue to-vybe-purple text-white shadow-primary active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => handlePurchase(pack.id)}
                   disabled={isPurchasing || purchasingPackId !== null}
                 >
@@ -270,36 +215,36 @@ export function VybesPage() {
       </div>
 
       {/* Pricing Info */}
-      <div style={{ background: '#F9FAFB', padding: '20px', borderRadius: '16px', marginBottom: '20px' }}>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '700', color: '#1F2937' }}>
+      <div className="bg-gray-50 p-5 rounded-2xl mb-5">
+        <h3 className="m-0 mb-3 text-base font-bold text-gray-800">
           Unlock Pricing
         </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6B7280' }}>
+        <div className="flex flex-col gap-2 text-sm">
+          <div className="flex justify-between text-gray-500">
             <span>Preview Matches</span>
-            <span style={{ color: '#10B981', fontWeight: '600' }}>Free</span>
+            <span className="text-emerald-500 font-semibold">Free</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6B7280' }}>
+          <div className="flex justify-between text-gray-500">
             <span>Top 3 Matches</span>
-            <span style={{ fontWeight: '600' }}>2 ✨</span>
+            <span className="font-semibold">2 ✨</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6B7280' }}>
+          <div className="flex justify-between text-gray-500">
             <span>All Matches</span>
-            <span style={{ fontWeight: '600' }}>5 ✨</span>
+            <span className="font-semibold">5 ✨</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#6B7280' }}>
+          <div className="flex justify-between text-gray-500">
             <span>Extended Questions (10)</span>
-            <span style={{ fontWeight: '600' }}>3 ✨</span>
+            <span className="font-semibold">3 ✨</span>
           </div>
         </div>
       </div>
 
       {/* What are Vybes? */}
-      <div style={{ background: '#F9FAFB', padding: '20px', borderRadius: '16px' }}>
-        <h3 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '700', color: '#1F2937' }}>
+      <div className="bg-gray-50 p-5 rounded-2xl">
+        <h3 className="m-0 mb-3 text-base font-bold text-gray-800">
           What are Vybes?
         </h3>
-        <p style={{ margin: 0, fontSize: '14px', color: '#6B7280', lineHeight: '1.6' }}>
+        <p className="m-0 text-sm text-gray-500 leading-relaxed">
           Vybes are used to unlock premium features like viewing detailed match results,
           accessing exclusive visualizations, and more. New participants receive 10 free Vybes!
         </p>

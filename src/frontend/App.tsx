@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import './App.css';
 import type { ServerMessage } from '../shared/types';
 import { useWebSocketStore } from './store/websocketStore';
 import { useAuthStore } from './store/authStore';
@@ -210,7 +209,7 @@ function App() {
 
   if (!connected) {
     return (
-      <div className="app">
+      <div className="w-screen max-w-app h-screen mx-auto bg-gray-100 flex flex-col overflow-hidden shadow-app relative">
         <LoadingScreen message="Connecting to server..." />
       </div>
     );
@@ -219,19 +218,27 @@ function App() {
   // Show start page only when not signed in
   if (!isSignedIn) {
     return (
-      <div className="app">
+      <div className="w-screen max-w-app h-screen mx-auto bg-gray-100 flex flex-col overflow-hidden shadow-app relative">
         <StartPage />
       </div>
     );
   }
 
   return (
-    <div className="app">
+    <div className="w-screen max-w-app h-screen mx-auto bg-gray-100 flex flex-col overflow-hidden shadow-app relative pb-[env(safe-area-inset-bottom)]">
       <Header title={pageTitles[activePage]} />
 
-      <div className="app-content">
-        {notification && <div className="notification">{notification}</div>}
-        {error && <div className="error">{error}</div>}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-5 pb-[calc(80px+env(safe-area-inset-bottom))] relative min-h-0 [-webkit-overflow-scrolling:touch]">
+        {notification && (
+          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white py-3.5 px-5 rounded-xl mb-4 text-center font-medium shadow-emerald animate-slide-down">
+            {notification}
+          </div>
+        )}
+        {error && (
+          <div className="bg-gradient-to-br from-red-500 to-red-600 text-white py-3.5 px-5 rounded-xl mb-4 text-center font-medium shadow-[0_4px_16px_rgba(239,68,68,0.3)] animate-slide-down">
+            {error}
+          </div>
+        )}
 
         {activePage === 'lab' && <LabPage />}
         {activePage === 'quiz' && <QuizPage />}
