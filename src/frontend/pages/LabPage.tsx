@@ -142,114 +142,75 @@ export function LabPage() {
   };
 
   return (
-    <div className="page-content">
+    <div className="w-full min-h-full">
       {/* Session Status Banner */}
       {hasActiveSession ? (
-        <div style={{
-          padding: '12px 16px',
-          marginBottom: '16px',
-          backgroundColor: '#ECFDF5',
-          borderRadius: '8px',
-          border: '1px solid #A7F3D0',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '16px' }}>🟢</span>
-            <span style={{ fontSize: '14px', fontWeight: '600', color: '#065F46' }}>Live Session</span>
+        <div className="py-3 px-4 mb-4 bg-emerald-50 rounded-lg border border-emerald-200 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <span className="text-base">🟢</span>
+            <span className="text-sm font-semibold text-emerald-800">Live Session</span>
           </div>
-          <span style={{ fontSize: '12px', color: '#047857', fontFamily: 'monospace' }}>
+          <span className="text-xs text-emerald-700 font-mono">
             {sessionId}
           </span>
         </div>
       ) : (
-        <div style={{
-          padding: '12px 16px',
-          marginBottom: '16px',
-          backgroundColor: '#FEF3C7',
-          borderRadius: '8px',
-          border: '1px solid #FCD34D',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-        }}>
-          <span style={{ fontSize: '16px' }}>✏️</span>
-          <span style={{ fontSize: '14px', fontWeight: '500', color: '#92400E' }}>
+        <div className="py-3 px-4 mb-4 bg-amber-100 rounded-lg border border-amber-300 flex items-center gap-2">
+          <span className="text-base">✏️</span>
+          <span className="text-sm font-medium text-amber-800">
             Draft Mode — Create questions offline, publish when ready
           </span>
         </div>
       )}
 
       {/* Combined Question Info Banner */}
-      <div style={{
-        padding: '16px 20px',
-        marginBottom: '16px',
-        backgroundColor: hasReachedLimit ? '#FEE2E2' : '#EEF2FF',
-        borderRadius: '8px',
-        border: hasReachedLimit ? '1px solid #FCA5A5' : '1px solid #C7D2FE'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <span style={{ fontSize: '14px', color: hasReachedLimit ? '#991B1B' : '#4338CA', fontWeight: '600' }}>
+      <div className={`py-4 px-5 mb-4 rounded-lg border ${
+        hasReachedLimit ? 'bg-red-100 border-red-300' : 'bg-indigo-50 border-indigo-200'
+      }`}>
+        <div className="flex justify-between items-center mb-2">
+          <span className={`text-sm font-semibold ${hasReachedLimit ? 'text-red-800' : 'text-indigo-700'}`}>
             📊 Questions in Session
           </span>
-          <span style={{ fontSize: '18px', fontWeight: '700', color: hasReachedLimit ? '#991B1B' : '#4338CA' }}>
+          <span className={`text-lg font-bold ${hasReachedLimit ? 'text-red-800' : 'text-indigo-700'}`}>
             {publishedQuestionsCount}
           </span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="flex justify-between items-center">
           <div>
-            <span style={{
-              fontSize: '14px',
-              color: hasReachedLimit ? '#991B1B' : '#4338CA',
-              fontWeight: '600'
-            }}>
+            <span className={`text-sm font-semibold ${hasReachedLimit ? 'text-red-800' : 'text-indigo-700'}`}>
               {hasReachedLimit ? '⚠️ Question Limit Reached' : '✅ Question Limit'}
             </span>
             {hasReachedLimit && !hasUpgraded && (
-              <span style={{ fontSize: '12px', color: '#991B1B', marginLeft: '8px' }}>
+              <span className="text-xs text-red-800 ml-2">
                 Upgrade to add more
               </span>
             )}
           </div>
-          <span style={{
-            fontSize: '18px',
-            fontWeight: '700',
-            color: hasReachedLimit ? '#991B1B' : '#4338CA'
-          }}>
+          <span className={`text-lg font-bold ${hasReachedLimit ? 'text-red-800' : 'text-indigo-700'}`}>
             {totalQuestionsCount} / {questionLimit}
           </span>
         </div>
 
-        {/* TODO move the logic to own component */}
         {/* Upgrade Button - show when at limit and not yet upgraded */}
         {hasReachedLimit && !hasUpgraded && (
-          <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #E5E7EB' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            <div className="flex justify-between items-center">
               <div>
-                <div style={{ fontSize: '14px', fontWeight: '600', color: '#1F2937' }}>
+                <div className="text-sm font-semibold text-gray-800">
                   Upgrade to 10 Questions
                 </div>
-                <div style={{ fontSize: '12px', color: '#6B7280' }}>
+                <div className="text-xs text-gray-500">
                   Your balance: {vybesBalance} ✨
                 </div>
               </div>
               <button
                 onClick={handleUnlockQuestionLimit}
                 disabled={!canAffordUpgrade || isUnlocking}
-                style={{
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: canAffordUpgrade
-                    ? 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)'
-                    : '#E5E7EB',
-                  color: canAffordUpgrade ? 'white' : '#9CA3AF',
-                  fontWeight: '600',
-                  fontSize: '14px',
-                  cursor: canAffordUpgrade && !isUnlocking ? 'pointer' : 'not-allowed',
-                  opacity: isUnlocking ? 0.7 : 1,
-                }}
+                className={`py-2.5 px-5 rounded-lg border-none font-semibold text-sm transition-all ${
+                  canAffordUpgrade
+                    ? 'bg-gradient-to-br from-vybe-blue to-vybe-purple text-white cursor-pointer'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                } ${isUnlocking ? 'opacity-70' : 'opacity-100'}`}
               >
                 {isUnlocking ? 'Unlocking...' : `Unlock (${QUESTION_LIMIT_UPGRADE_COST} ✨)`}
               </button>
@@ -257,14 +218,16 @@ export function LabPage() {
           </div>
         )}
       </div>
-      <div className="owner-controls">
-        <h2>Add Question</h2>
+
+      <div className="bg-white p-5 rounded-[20px] mb-5 shadow-card">
+        <h2 className="mt-0 mb-4 text-gray-800 text-xl font-bold">Add Question</h2>
         <input
           type="text"
           placeholder="Question prompt"
           value={questionPrompt}
           onChange={(e) => setQuestionPrompt(e.target.value)}
           disabled={hasReachedLimit}
+          className="w-full mb-3"
         />
         <input
           type="text"
@@ -272,6 +235,7 @@ export function LabPage() {
           value={option1}
           onChange={(e) => setOption1(e.target.value)}
           disabled={hasReachedLimit}
+          className="w-full mb-3"
         />
         <input
           type="text"
@@ -279,29 +243,36 @@ export function LabPage() {
           value={option2}
           onChange={(e) => setOption2(e.target.value)}
           disabled={hasReachedLimit}
+          className="w-full mb-3"
         />
 
         {/* Owner Response Selection */}
         {option1 && option2 && (
-          <div style={{ marginTop: '16px', marginBottom: '12px' }}>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#1F2937' }}>
+          <div className="mt-4 mb-3">
+            <label className="block mb-2 text-sm font-semibold text-gray-800">
               Your Answer:
             </label>
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div className="flex gap-3">
               <button
                 onClick={() => setOwnerResponseState(option1)}
-                className={`btn ${ownerResponse === option1 ? 'btn-selected' : 'btn-option'}`}
-                style={{ flex: 1 }}
                 disabled={hasReachedLimit}
+                className={`flex-1 py-4 px-6 border-2 rounded-xl cursor-pointer text-[17px] font-medium transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed ${
+                  ownerResponse === option1
+                    ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white border-emerald-500 shadow-emerald'
+                    : 'bg-white text-gray-800 border-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
+                }`}
               >
                 {option1}
                 {ownerResponse === option1 && ' ✓'}
               </button>
               <button
                 onClick={() => setOwnerResponseState(option2)}
-                className={`btn ${ownerResponse === option2 ? 'btn-selected' : 'btn-option'}`}
-                style={{ flex: 1 }}
                 disabled={hasReachedLimit}
+                className={`flex-1 py-4 px-6 border-2 rounded-xl cursor-pointer text-[17px] font-medium transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed ${
+                  ownerResponse === option2
+                    ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white border-emerald-500 shadow-emerald'
+                    : 'bg-white text-gray-800 border-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
+                }`}
               >
                 {option2}
                 {ownerResponse === option2 && ' ✓'}
@@ -312,19 +283,23 @@ export function LabPage() {
 
         <button
           onClick={addQuestionToDraft}
-          className="btn btn-secondary"
           disabled={hasReachedLimit}
-          style={hasReachedLimit ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+          className={`w-full py-4 px-6 border-2 border-gray-200 rounded-xl cursor-pointer text-[17px] font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-white text-vybe-blue shadow-[0_2px_8px_rgba(0,0,0,0.04)] active:bg-gray-50 active:scale-[0.97] ${
+            hasReachedLimit ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
           {hasReachedLimit ? '🔒 Limit Reached' : '+ Add to Drafts'}
         </button>
       </div>
 
       {draftQuestions.length > 0 && (
-        <div className="drafts-section">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h2>Draft Questions ({draftQuestions.length})</h2>
-            <button onClick={publishDraftQuestions} className="btn btn-primary" style={{ padding: '10px 20px', fontSize: '15px' }}>
+        <div className="mb-5">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-gray-800 text-xl font-bold m-0">Draft Questions ({draftQuestions.length})</h2>
+            <button
+              onClick={publishDraftQuestions}
+              className="py-2.5 px-5 text-[15px] border-none rounded-xl cursor-pointer font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-gradient-to-br from-vybe-blue to-vybe-purple text-white shadow-primary active:scale-[0.97]"
+            >
               Publish All
             </button>
           </div>
@@ -341,7 +316,7 @@ export function LabPage() {
       )}
 
       {draftQuestions.length === 0 && (
-        <p style={{ textAlign: 'center', color: '#6B7280', padding: '40px 20px' }}>
+        <p className="text-center text-gray-500 py-10 px-5">
           ✏️ Create questions above to add to your drafts
         </p>
       )}

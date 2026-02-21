@@ -29,23 +29,31 @@ export function StartPage() {
   };
 
   return (
-    <div className="start-screen">
-      <img src={logo} alt="VybeCheck Logo" style={{ width: '120px', height: '120px', borderRadius: '24px' }} />
-      <h1 style={{ fontSize: '48px', fontWeight: '800', color: '#1F2937', marginBottom: '8px' }}>VybeCheck</h1>
-      <p style={{ color: '#6B7280', marginBottom: '40px', fontSize: '16px' }}>Your vibes on real-time debates</p>
-      {error && <div className="error">{error}</div>}
-      {notification && <div className="notification">{notification}</div>}
+    <div className="flex flex-col items-center justify-center gap-4 py-10 px-5 min-h-full">
+      <img src={logo} alt="VybeCheck Logo" className="w-[120px] h-[120px] rounded-3xl" />
+      <h1 className="text-5xl font-extrabold text-gray-800 mb-2">VybeCheck</h1>
+      <p className="text-gray-500 mb-10 text-base">Your vibes on real-time debates</p>
+      
+      {error && (
+        <div className="bg-gradient-to-br from-red-500 to-red-600 text-white py-3.5 px-5 rounded-xl mb-4 text-center font-medium shadow-[0_4px_16px_rgba(239,68,68,0.3)] animate-slide-down">
+          {error}
+        </div>
+      )}
+      {notification && (
+        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white py-3.5 px-5 rounded-xl mb-4 text-center font-medium shadow-emerald animate-slide-down">
+          {notification}
+        </div>
+      )}
 
       {/* Sign in section */}
       <button
         onClick={handleSignIn}
         disabled={isSigningIn}
-        className="btn btn-twitter"
-        style={{ width: '100%', maxWidth: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+        className="w-full max-w-[320px] flex items-center justify-center gap-2 py-4 px-6 border-none rounded-xl cursor-pointer text-[17px] font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-twitter text-white shadow-twitter active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSigningIn ? (
           <>
-            <div className="spinner-small"></div>
+            <div className="w-5 h-5 border-[3px] border-white/30 border-t-white rounded-full animate-spin-fast" />
             <span>Signing in...</span>
           </>
         ) : (
@@ -57,12 +65,12 @@ export function StartPage() {
           </>
         )}
       </button>
-      <p style={{ color: '#9CA3AF', fontSize: '13px', marginTop: '12px', maxWidth: '320px', textAlign: 'center' }}>
+      <p className="text-gray-400 text-[13px] mt-3 max-w-[320px] text-center">
         Sign in to create quizzes and view matches
       </p>
 
-      <div className="separator">or join existing session</div>
-      <div className="join-form" style={{ width: '100%', maxWidth: '320px' }}>
+      <div className="text-gray-400 my-2 font-medium text-sm">or join existing session</div>
+      <div className="flex flex-col gap-3 w-full max-w-[320px]">
         <input
           type="text"
           placeholder="Enter Session ID"
@@ -70,11 +78,14 @@ export function StartPage() {
           onChange={(e) => setJoinSessionId(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && joinSession()}
         />
-        <button onClick={joinSession} className="btn btn-secondary">
+        <button
+          onClick={joinSession}
+          className="py-4 px-6 border-2 border-gray-200 rounded-xl cursor-pointer text-[17px] font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-white text-vybe-blue shadow-[0_2px_8px_rgba(0,0,0,0.04)] active:bg-gray-50 active:scale-[0.97]"
+        >
           Join Session
         </button>
       </div>
-      <p style={{ color: '#9CA3AF', fontSize: '13px', marginTop: '12px', maxWidth: '320px', textAlign: 'center' }}>
+      <p className="text-gray-400 text-[13px] mt-3 max-w-[320px] text-center">
         Join as a participant to answer questions
       </p>
     </div>

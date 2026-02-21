@@ -5,7 +5,6 @@ import { useAuthStore } from '../store/authStore';
 import { useUIStore } from '../store/uiStore';
 import { MatchCard } from '../components/MatchCard';
 import type { MatchTier } from '../../shared/types';
-import '../styles/QuizPage.css';
 
 // TODO: Refactor this page - it's doing a lot right now with quiz taking, progress tracking, and match purchasing.
 // We can break it down into smaller components and hooks for better readability and maintainability.
@@ -97,25 +96,18 @@ export function QuizPage() {
   // No active session
   if (!sessionId || !quizState) {
     return (
-      <div className="page-content">
-        <div style={{
-          background: 'white',
-          padding: '32px 24px',
-          borderRadius: '20px',
-          textAlign: 'center',
-          boxShadow: '0 2px 16px rgba(0, 0, 0, 0.08)',
-        }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎯</div>
-          <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: '700', color: '#1F2937' }}>
+      <div className="w-full min-h-full">
+        <div className="bg-white p-8 rounded-[20px] text-center shadow-card">
+          <div className="text-5xl mb-4">🎯</div>
+          <h2 className="m-0 mb-2 text-2xl font-bold text-gray-800">
             No Active Session
           </h2>
-          <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '24px' }}>
+          <p className="text-gray-500 text-sm mb-6">
             Join a session to start answering questions and find your matches.
           </p>
           <button
             onClick={() => setActivePage('lobby')}
-            className="btn btn-primary"
-            style={{ width: '100%' }}
+            className="w-full py-4 px-6 border-none rounded-xl cursor-pointer text-[17px] font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-gradient-to-br from-vybe-blue to-vybe-purple text-white shadow-primary active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Go to Lobby
           </button>
@@ -126,10 +118,10 @@ export function QuizPage() {
 
   if (quizState.questions.length === 0) {
     return (
-      <div className="page-content">
-        <div className="empty-state">
-          <div className="empty-icon">⏳</div>
-          <p>Waiting for questions...</p>
+      <div className="w-full min-h-full">
+        <div className="flex flex-col items-center justify-center py-16 px-5 text-center">
+          <div className="text-6xl mb-4 opacity-50">⏳</div>
+          <p className="text-base text-gray-500 m-0">Waiting for questions...</p>
         </div>
       </div>
     );
@@ -146,58 +138,63 @@ export function QuizPage() {
   const isCompleted = quizState.myResponses.every(r => r !== '');
 
   return (
-    <div className="page-content quiz-page">
+    <div className="w-full min-h-full flex flex-col gap-6">
       {/* Progress Bar */}
-      <div className="quiz-progress">
-        <div className="progress-header">
-          <span className="progress-label">QUESTION {currentQuestionIndex + 1} OF {totalQuestions}</span>
-          <span className="progress-percentage">{progressPercentage}% Complete</span>
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-between items-center">
+          <span className="text-xs font-bold text-gray-500 tracking-wide">QUESTION {currentQuestionIndex + 1} OF {totalQuestions}</span>
+          <span className="text-[13px] font-semibold text-vybe-blue">{progressPercentage}% Complete</span>
         </div>
-        <div className="progress-bar">
-          <div className="progress-fill" style={{ width: `${progressPercentage}%` }} />
+        <div className="w-full h-2 bg-gray-200 rounded overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-vybe-blue to-vybe-purple rounded transition-all duration-300" style={{ width: `${progressPercentage}%` }} />
         </div>
       </div>
 
       {/* Question Card */}
       {!isCompleted ? (
-        <div className="single-question-container">
-          <div className="question-icon">🎨</div>
-          <h2 className="question-title">{currentQuestion.prompt}</h2>
-          <p className="question-subtitle">Pick the option that speaks to you right now.</p>
+        <div className="bg-white rounded-3xl py-8 px-6 shadow-[0_4px_24px_rgba(0,0,0,0.08)] flex flex-col items-center text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-2xl flex items-center justify-center text-[32px] mb-6">🎨</div>
+          <h2 className="text-2xl font-bold text-gray-800 m-0 mb-3 leading-tight">{currentQuestion.prompt}</h2>
+          <p className="text-[15px] text-gray-500 m-0 mb-8 leading-relaxed">Pick the option that speaks to you right now.</p>
 
-          <div className="question-options">
-            {currentQuestion.options.map((option) => (
-              <button
-                key={option}
-                onClick={() => submitResponse(currentQuestion.id, option)}
-                disabled={hasAnswered}
-                className={`option-button ${
-                  hasAnswered && currentResponse === option ? 'selected' : ''
-                }`}
-              >
-                <div className="option-icon" style={{
-                  background: hasAnswered && currentResponse === option
-                    ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
-                    : 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)'
-                }}>
-                  {hasAnswered && currentResponse === option ? '✓' : '○'}
-                </div>
-                <span className="option-text">{option}</span>
-                <div className="option-radio">
-                  {hasAnswered && currentResponse === option && (
-                    <div className="radio-selected" />
-                  )}
-                </div>
-              </button>
-            ))}
+          <div className="w-full flex flex-col gap-3">
+            {currentQuestion.options.map((option) => {
+              const isSelected = hasAnswered && currentResponse === option;
+              return (
+                <button
+                  key={option}
+                  onClick={() => submitResponse(currentQuestion.id, option)}
+                  disabled={hasAnswered}
+                  className={`w-full flex items-center gap-4 p-4 border-2 rounded-2xl cursor-pointer transition-all text-left [-webkit-tap-highlight-color:transparent] active:scale-[0.98] disabled:cursor-not-allowed ${
+                    isSelected
+                      ? 'bg-gradient-to-br from-emerald-500/5 to-emerald-600/5 border-emerald-500'
+                      : 'bg-gray-50 border-gray-200 hover:bg-gray-100 hover:border-gray-300'
+                  }`}
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0 ${
+                    isSelected
+                      ? 'bg-gradient-to-br from-emerald-500 to-emerald-600'
+                      : 'bg-gradient-to-br from-vybe-blue to-vybe-purple'
+                  }`}>
+                    {isSelected ? '✓' : '○'}
+                  </div>
+                  <span className="flex-1 text-base font-semibold text-gray-800">{option}</span>
+                  <div className={`w-6 h-6 border-2 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+                    isSelected ? 'border-emerald-500' : 'border-gray-300'
+                  }`}>
+                    {isSelected && <div className="w-3 h-3 bg-emerald-500 rounded-full" />}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       ) : (
         /* Matches Section - shown after completion */
-        <div className="single-question-container">
-          <div className="question-icon">✨</div>
-          <h2 className="question-title">You've completed the quiz!</h2>
-          <p className="question-subtitle">Calculate your matches to see who you vibe with.</p>
+        <div className="bg-white rounded-3xl py-8 px-6 shadow-[0_4px_24px_rgba(0,0,0,0.08)] flex flex-col items-center text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-2xl flex items-center justify-center text-[32px] mb-6">✨</div>
+          <h2 className="text-2xl font-bold text-gray-800 m-0 mb-3 leading-tight">You've completed the quiz!</h2>
+          <p className="text-[15px] text-gray-500 m-0 mb-8 leading-relaxed">Calculate your matches to see who you vibe with.</p>
 
           {(() => {
             // Calculate how many participants have completed
@@ -218,26 +215,16 @@ export function QuizPage() {
             return (
               <>
                 {!canCalculateMatches && (
-                  <div style={{
-                    background: '#FEF3C7',
-                    border: '2px solid #F59E0B',
-                    borderRadius: '12px',
-                    padding: '12px 16px',
-                    marginTop: '16px',
-                    fontSize: '14px',
-                    color: '#92400E',
-                    fontWeight: '500',
-                    textAlign: 'center'
-                  }}>
+                  <div className="bg-amber-100 border-2 border-amber-500 rounded-xl py-3 px-4 mt-4 text-sm text-amber-800 font-medium text-center">
                     ⏳ Waiting for {COMPLETION_THRESHOLD_PERCENT}% of participants to complete
-                    <div style={{ marginTop: '8px', fontSize: '13px', opacity: 0.8 }}>
+                    <div className="mt-2 text-[13px] opacity-80">
                       Currently: {completionRate}% ({participantsWithResponses}/{totalParticipants} active)
                     </div>
                   </div>
                 )}
 
                 {/* Tier Selection */}
-                <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="mt-5 flex flex-col gap-2 w-full">
                   {(['PREVIEW', 'TOP3', 'ALL'] as MatchTier[]).map((tier) => {
                     const cost = TIER_COSTS[tier];
                     const hasAccess = hasTierAccess(tier);
@@ -249,35 +236,21 @@ export function QuizPage() {
                         key={tier}
                         onClick={() => setSelectedTier(tier)}
                         disabled={!canCalculateMatches}
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          padding: '14px 16px',
-                          borderRadius: '12px',
-                          border: isSelected ? '2px solid #6366F1' : '2px solid #E5E7EB',
-                          background: isSelected ? '#EEF2FF' : 'white',
-                          cursor: canCalculateMatches ? 'pointer' : 'not-allowed',
-                          opacity: canCalculateMatches ? 1 : 0.5,
-                        }}
+                        className={`flex justify-between items-center py-3.5 px-4 rounded-xl border-2 transition-all ${
+                          isSelected ? 'border-vybe-blue bg-indigo-50' : 'border-gray-200 bg-white'
+                        } ${canCalculateMatches ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-50'}`}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            border: isSelected ? '6px solid #6366F1' : '2px solid #D1D5DB',
-                            background: 'white',
-                          }} />
-                          <span style={{ fontWeight: '600', color: '#1F2937' }}>
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-5 h-5 rounded-full bg-white ${
+                            isSelected ? 'border-[6px] border-vybe-blue' : 'border-2 border-gray-300'
+                          }`} />
+                          <span className="font-semibold text-gray-800">
                             {TIER_LABELS[tier]}
                           </span>
                         </div>
-                        <span style={{
-                          fontSize: '14px',
-                          fontWeight: '600',
-                          color: hasAccess ? '#10B981' : canAfford ? '#6366F1' : '#EF4444',
-                        }}>
+                        <span className={`text-sm font-semibold ${
+                          hasAccess ? 'text-emerald-500' : canAfford ? 'text-vybe-blue' : 'text-red-500'
+                        }`}>
                           {hasAccess ? '✓ Unlocked' : cost === 0 ? 'Free' : `${cost} ✨`}
                         </span>
                       </button>
@@ -286,31 +259,17 @@ export function QuizPage() {
                 </div>
 
                 {/* Balance indicator */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginTop: '12px',
-                  padding: '8px 12px',
-                  background: '#F9FAFB',
-                  borderRadius: '8px',
-                  fontSize: '13px',
-                  color: '#6B7280',
-                }}>
+                <div className="flex justify-between items-center mt-3 py-2 px-3 bg-gray-50 rounded-lg text-[13px] text-gray-500 w-full">
                   <span>Your balance:</span>
-                  <span style={{ fontWeight: '600', color: '#1F2937' }}>{vybesBalance} ✨</span>
+                  <span className="font-semibold text-gray-800">{vybesBalance} ✨</span>
                 </div>
 
                 <button
                   onClick={() => getMatches(selectedTier)}
                   disabled={!canCalculateMatches || !canAffordTier(selectedTier) || matchState.isLoading}
-                  className="btn btn-primary"
-                  style={{
-                    width: '100%',
-                    marginTop: '16px',
-                    opacity: canCalculateMatches && canAffordTier(selectedTier) ? 1 : 0.5,
-                    cursor: canCalculateMatches && canAffordTier(selectedTier) ? 'pointer' : 'not-allowed'
-                  }}
+                  className={`w-full mt-4 py-4 px-6 border-none rounded-xl cursor-pointer text-[17px] font-semibold transition-all text-center select-none [-webkit-tap-highlight-color:transparent] touch-manipulation bg-gradient-to-br from-vybe-blue to-vybe-purple text-white shadow-primary active:scale-[0.97] ${
+                    canCalculateMatches && canAffordTier(selectedTier) ? 'opacity-100 cursor-pointer' : 'opacity-50 cursor-not-allowed'
+                  }`}
                 >
                   {matchState.isLoading ? 'Loading...' :
                    hasTierAccess(selectedTier) ? `View ${TIER_LABELS[selectedTier]}` :
@@ -321,23 +280,18 @@ export function QuizPage() {
           })()}
 
           {matchState.matches.length > 0 && (
-            <div style={{ marginTop: '24px' }}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '12px',
-              }}>
-                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '700', color: '#1F2937' }}>
+            <div className="mt-6 w-full">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="m-0 text-base font-bold text-gray-800">
                   Your Matches ({TIER_LABELS[matchState.tier]})
                 </h3>
                 {matchState.cost > 0 && (
-                  <span style={{ fontSize: '13px', color: '#6B7280' }}>
+                  <span className="text-[13px] text-gray-500">
                     Cost: {matchState.cost} ✨
                   </span>
                 )}
               </div>
-              <div className="matches-list">
+              <div className="mt-4">
                 {matchState.matches.map((match, index) => (
                   <MatchCard
                     key={match.participantId}
