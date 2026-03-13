@@ -1,0 +1,4204 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="description" content="VybeCheck: Create Vybe sessions in seconds, share to X, and watch real-time results roll in. The social-first Vybe meter built for timelines." />
+  <title>VybeCheck: The Social Vybe Meter</title>
+  <link rel="icon" type="image/x-icon" href="images/Vybecheck logo asset.png" type="image/png" />
+  <link rel="preconnect" href="https://rsms.me/" />
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+  <!-- Set theme before first paint to avoid flash -->
+  <script>
+    (function(){
+      var saved = localStorage.getItem('vyc-theme');
+      var theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<nav id="vyb-nav">
+  <div class="vyb-container nav-inner">
+    <a href="./" class="nav-logo" aria-label="VybeCheck home">
+      <img src="images/Vybecheck logo asset.png" alt="" width="32" height="32" class="nav-logomark" aria-hidden="true" />
+      <span class="nav-wordmark">VybeCheck</span>
+    </a>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#product">Product</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#credits">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="#sign-in" class="nav-signin">Sign in</a>
+      <a href="#early-access" class="btn-primary btn-sm">Get early access</a>
+    </div>
+
+    <button class="nav-burger" id="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="nav-mobile" id="nav-mobile" aria-hidden="true">
+    <div class="nav-mobile-topbar">
+      <button class="theme-toggle" id="theme-toggle-mobile" aria-label="Switch theme">
+        <span class="tt-track" aria-hidden="true">
+          <span class="tt-moon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" fill="currentColor"/></svg></span>
+          <span class="tt-sun"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <span class="tt-thumb"></span>
+        </span>
+      </button>
+    </div>
+    <ul>
+      <li><a href="#product">Product</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#credits">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="mobile-actions">
+      <a href="#sign-in" class="nav-signin">Sign in</a>
+      <a href="#early-access" class="btn-primary">Get early access</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="vyb-section hero-section" id="hero">
+  <div class="vyb-container hero-inner">
+
+    <!-- Left -->
+    <div class="hero-left">
+      <h1 class="hero-h1">
+        Your Vybes on debates.
+      </h1>
+
+      <p class="hero-sub">
+        Create a Vybe session in seconds, drop the link on&nbsp;X, or let AI generate live questions straight from your X&nbsp;Space. Sign&nbsp;in with your real&nbsp;X account and matching works because it's genuinely&nbsp;you.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#early-access" class="btn-primary btn-lg">Join the waitlist</a>
+        <a href="#spaces-ai" class="btn-ghost btn-lg">See Spaces AI →</a>
+      </div>
+
+      <div class="hero-trust">
+        <div class="trust-item">
+          <!-- Lightning icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2L4.5 13.5H12L11 22L19.5 10.5H12.5L13 2Z" fill="#fec539"/></svg>
+          <span>Fast setup</span>
+        </div>
+        <div class="trust-item">
+          <!-- Link icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#539dc0" stroke-width="2" stroke-linecap="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#539dc0" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Shareable links</span>
+        </div>
+        <div class="trust-item">
+          <!-- Sparkle icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L14.09 8.26L20.18 9.27L16 13.14L17.18 19.02L12 16.2L6.82 19.02L8 13.14L3.82 9.27L9.91 8.26L12 2Z" fill="#f14573"/></svg>
+          <span>Creator tools</span>
+        </div>
+        <div class="trust-item trust-item-ai">
+          <!-- AI rays icon -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="#fec539"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" stroke="#fec539" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>AI&nbsp;Spaces questions</span>
+        </div>
+      </div>
+
+      <div class="hero-store-notice">
+        <span class="store-notice-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.32.07 2.22.72 2.98.73.76 0 2.17-.9 3.67-.77 1.67.14 2.93.83 3.73 2.1-3.44 2.07-2.88 6.56.79 7.85-.61 1.46-1.39 2.91-3.17 2.95zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="currentColor"/></svg>
+        </span>
+        <span class="store-notice-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M17.523 15.341L5.185 22.168a1.08 1.08 0 01-1.56-.96V2.792a1.08 1.08 0 011.56-.96l12.338 6.827L14.25 12l3.273 3.341zm1.463-1.494l2.19-1.213a1.08 1.08 0 000-1.868l-2.19-1.213L16.018 12l2.968 1.847z" fill="currentColor"/></svg>
+        </span>
+        <span class="store-notice-text">Coming soon to iOS &amp; Android</span>
+        <span class="store-notice-badge">Soon</span>
+      </div>
+    </div>
+
+    <!-- Right: Phone screenshot cluster -->
+    <div class="hero-right">
+      <div class="phone-cluster">
+
+        <div class="phone-frame pf-1">
+          <div class="pf-notch"></div>
+          <div class="pf-screen">
+            <img src="images/Vybecheck page sample.png" alt="" class="pf-screenshot" />
+          </div>
+        </div>
+
+        <div class="phone-frame pf-2">
+          <div class="pf-notch"></div>
+          <div class="pf-screen">
+            <img src="images/Vybecheck page sample 2.png" alt="" class="pf-screenshot" />
+          </div>
+        </div>
+
+        <div class="phone-frame pf-3">
+          <div class="pf-notch"></div>
+          <div class="pf-screen">
+            <img src="images/Screenshot 2026-01-31 054530.png" alt="" class="pf-screenshot" />
+          </div>
+        </div>
+
+      </div>
+
+      <span class="btn-dev-build btn-dev-build--disabled" aria-disabled="true" aria-label="VybeCheck development build (coming soon)" style="display:none">
+        <span class="dev-build-glow" aria-hidden="true"></span>
+        <span class="dev-build-inner">
+          <span class="dev-build-dot" aria-hidden="true"></span>
+          <span class="dev-build-label">
+            <span class="dev-build-eyebrow">Coming soon</span>
+            <span class="dev-build-cta">VybeCheck is in development&nbsp;→</span>
+          </span>
+        </span>
+      </span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     FEATURE FLASH CARDS
+     ============================================================ -->
+<section class="flash-section" aria-label="VybeCheck features at a glance">
+  <div class="vyb-container">
+    <div class="flash-header">
+      <p class="section-eyebrow">Inside the product</p>
+    </div>
+  </div>
+  <div class="flash-track-wrap">
+    <div class="flash-track">
+
+      <!-- Card 1: Vybe Analysis – opens detail modal -->
+      <button type="button" id="open-vam" class="fc fc-purple fc-wide fc-link fc-analysis" aria-haspopup="dialog" aria-controls="vybe-analysis-modal">
+        <div class="fc-analysis-header">
+          <p class="fc-eyebrow-sm">REAL&#8209;TIME <span class="fc-analysis-live" aria-hidden="true"></span></p>
+          <h3 class="fc-title">Vybe Match</h3>
+        </div>
+        <div class="fc-analysis-radar" aria-hidden="true">
+          <svg width="96" height="96" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Static spokes + grid rings -->
+            <line x1="56" y1="56" x2="56" y2="10"   stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <line x1="56" y1="56" x2="95.8" y2="33" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <line x1="56" y1="56" x2="95.8" y2="79" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <line x1="56" y1="56" x2="56" y2="102"  stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <line x1="56" y1="56" x2="16.2" y2="79" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <line x1="56" y1="56" x2="16.2" y2="33" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+            <polygon points="56,41 68.99,48.5 68.99,63.5 56,71 43.01,63.5 43.01,48.5" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="none"/>
+            <polygon points="56,26 81.98,41 81.98,71 56,86 30.02,71 30.02,41" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="none"/>
+            <!-- Outer ring: counter-rotates slowly -->
+            <g class="fc-radar-outer">
+              <polygon points="56,10 95.8,33 95.8,79 56,102 16.2,79 16.2,33" stroke="#539dc0" stroke-width="1.5" stroke-dasharray="5 3.5" fill="rgba(83,157,192,0.06)"/>
+            </g>
+            <!-- Yellow vybe polygon + vertices: slow clockwise spin -->
+            <g class="fc-radar-rotate">
+              <polygon points="56,17 78,43 88,74 56,98 30,71 25,38" stroke="#fec539" stroke-width="1.5" fill="rgba(254,197,57,0.1)"/>
+              <circle cx="56"  cy="17"  r="2.5" fill="#fec539" opacity="0.8"/>
+              <circle cx="78"  cy="43"  r="2.5" fill="#fec539" opacity="0.8"/>
+              <circle cx="88"  cy="74"  r="2.5" fill="#fec539" opacity="0.8"/>
+              <circle cx="56"  cy="98"  r="2.5" fill="#fec539" opacity="0.8"/>
+              <circle cx="30"  cy="71"  r="2.5" fill="#fec539" opacity="0.8"/>
+              <circle cx="25"  cy="38"  r="2.5" fill="#fec539" opacity="0.8"/>
+            </g>
+            <!-- Center dot: heartbeat pulse -->
+            <circle cx="56" cy="56" r="5" class="fc-center-dot" fill="#f14573" opacity="0.9"/>
+            <circle cx="56" cy="56" r="2" fill="white" opacity="0.8"/>
+          </svg>
+        </div>
+        <div class="fc-analysis-footer">
+          <span class="fc-explore-pill">Explore <span class="fc-explore-arrow">&rarr;</span></span>
+        </div>
+      </button>
+
+      <!-- Card 2: Vybe Creator – blue → #product -->
+      <a href="#product" class="fc fc-blue fc-link">
+        <p class="fc-eyebrow">Core feature</p>
+        <h3 class="fc-title">Vybe<br/>Creator</h3>
+        <p class="fc-sub">Launch your session in 30 seconds</p>
+        <div class="fc-icon-wrap">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <rect x="6" y="10" width="36" height="28" rx="6" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+            <line x1="14" y1="20" x2="34" y2="20" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="14" y1="26" x2="28" y2="26" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="38" cy="34" r="8" fill="#fec539"/>
+            <path d="M35 34h6M38 31v6" stroke="#131313" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </a>
+
+      <!-- Card 3: Top Vybers – dark → #matching -->
+      <a href="#matching" class="fc fc-dark fc-link">
+        <div class="fc-avatars">
+          <div class="fc-av" style="background:#539dc0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="white"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="white"/></svg>
+          </div>
+          <div class="fc-av" style="background:#f14573">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="white"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="white"/></svg>
+          </div>
+          <div class="fc-av" style="background:#fec539">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="#131313"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" fill="#131313"/></svg>
+          </div>
+          <div class="fc-av fc-av-count">+2.4k</div>
+        </div>
+        <h3 class="fc-title">Top Vybers</h3>
+        <p class="fc-sub">Active right now</p>
+      </a>
+
+      <!-- Card 4: Buy Vybes – pink → #credits -->
+      <a href="#credits" class="fc fc-pink fc-link">
+        <p class="fc-eyebrow">Credits</p>
+        <h3 class="fc-title">Buy<br/>Vybes</h3>
+        <p class="fc-sub-loud">BOOST&nbsp;NOW</p>
+        <div class="fc-coin" aria-hidden="true">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="20" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+            <text x="22" y="29" text-anchor="middle" font-size="18" font-weight="900" fill="white" font-family="Inter,sans-serif">V</text>
+          </svg>
+        </div>
+      </a>
+
+      <!-- Card 5: Live Session – dark → #how-it-works -->
+      <a href="#how-it-works" class="fc fc-dark fc-link">
+        <div class="fc-live-dot" aria-hidden="true">
+          <span class="fc-pulse"></span>
+          <span class="fc-live-label">LIVE</span>
+        </div>
+        <h3 class="fc-title">Live Session</h3>
+        <p class="fc-big-stat">1,248</p>
+        <p class="fc-sub">Active voters</p>
+      </a>
+
+      <!-- Card 7: AI Spaces – gold → #spaces-ai -->
+      <a href="#spaces-ai" class="fc fc-ai-spaces fc-link">
+        <p class="fc-eyebrow">Flagship ✦</p>
+        <h3 class="fc-title">AI&nbsp;Spaces<br/>Questions</h3>
+        <p class="fc-sub">Auto-generated from your live X Space</p>
+        <div class="fc-ai-icon" aria-hidden="true">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="18" stroke="rgba(13,13,16,0.3)" stroke-width="1.5" fill="rgba(13,13,16,0.12)"/>
+            <circle cx="22" cy="22" r="4" fill="rgba(13,13,16,0.55)"/>
+            <path d="M22 8v4M22 32v4M8 22h4M32 22h4M12.1 12.1l2.8 2.8M29.1 29.1l2.8 2.8M31.9 12.1l-2.8 2.8M14.9 29.1l-2.8 2.8" stroke="rgba(13,13,16,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </a>
+
+    </div>
+    <div class="flash-fade-left" aria-hidden="true"></div>
+    <div class="flash-fade-right" aria-hidden="true"></div>
+    <button class="flash-arrow flash-arrow-prev" id="flash-prev" aria-label="Scroll carousel left">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="flash-arrow flash-arrow-next" id="flash-next" aria-label="Scroll carousel right">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ============================================================
+     VYBE ANALYSIS MODAL
+     ============================================================ -->
+<dialog id="vybe-analysis-modal" class="vam-dialog" aria-label="Vybe Analysis demo">
+  <div class="vam">
+
+    <!-- Header bar -->
+    <div class="vam-header">
+      <div class="vam-title-row">
+        <span class="vam-eyebrow">VYBE MATCH</span>
+        <span class="vam-demo-badge">DEMO</span>
+      </div>
+      <button class="vam-close" id="close-vam" aria-label="Close Vybe Analysis">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Match row -->
+    <div class="vam-match-row">
+      <div class="vam-match-side vam-match-you">
+        <div class="vam-avatar vam-avatar-you">
+          <svg width="28" height="28" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="13" r="7" fill="rgba(255,255,255,0.5)"/><path d="M4 34c0-7.7 6.3-14 14-14s14 6.3 14 14" fill="rgba(255,255,255,0.4)"/></svg>
+        </div>
+        <div class="vam-match-info">
+          <span class="vam-match-name">noble</span>
+          <span class="vam-match-handle">@noblesays</span>
+        </div>
+      </div>
+      <div class="vam-match-score-block">
+        <span class="vam-arrow-you">&rarr;</span>
+        <div class="vam-score-display">
+          <span class="vam-score-big">87</span><span class="vam-score-denom">/100</span>
+        </div>
+        <span class="vam-arrow-them">&larr;</span>
+      </div>
+      <div class="vam-match-side vam-match-them">
+        <div class="vam-match-info vam-match-info-r">
+          <span class="vam-match-name">topmatch</span>
+          <span class="vam-match-handle vam-handle-r">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25z"/></svg>
+            @vybes4life
+          </span>
+        </div>
+        <div class="vam-avatar vam-avatar-them">
+          <svg width="28" height="28" viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="13" r="7" fill="rgba(255,255,255,0.5)"/><path d="M4 34c0-7.7 6.3-14 14-14s14 6.3 14 14" fill="rgba(255,255,255,0.4)"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Match description -->
+    <p class="vam-match-desc">Very strong Vybe match grounded in real X activity</p>
+
+    <div class="vam-divider"></div>
+
+    <!-- Radar chart -->
+    <div class="vam-chart-wrap">
+      <svg class="vam-svg" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <polygon class="vam-ring" points="160,125 185,135 195,160 185,185 160,195 135,185 125,160 135,135" stroke="rgba(255,255,255,0.06)" stroke-width="1" fill="none"/>
+        <polygon class="vam-ring" points="160,90 210,110 230,160 210,210 160,230 110,210 90,160 110,110" stroke="rgba(255,255,255,0.09)" stroke-width="1" fill="none"/>
+        <polygon class="vam-ring" points="160,55 234,86 265,160 234,234 160,265 86,234 55,160 86,86" stroke="#539dc0" stroke-width="1.5" stroke-dasharray="6 4" fill="rgba(83,157,192,0.04)"/>
+        <line x1="160" y1="160" x2="160" y2="55"  stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="160" y1="160" x2="234" y2="86"  stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="160" y1="160" x2="265" y2="160" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="160" y1="160" x2="234" y2="234" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="160" y1="160" x2="160" y2="265" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="160" y1="160" x2="86"  y2="234" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="160" y1="160" x2="55"  y2="160" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <line x1="160" y1="160" x2="86"  y2="86"  stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <text x="160" y="28"  text-anchor="middle" class="vam-label">HUMOUR</text>
+        <text x="247" y="72"  text-anchor="start"  class="vam-label">SPONTANEITY</text>
+        <text x="278" y="164" text-anchor="start"  class="vam-label">ENERGY</text>
+        <text x="247" y="252" text-anchor="start"  class="vam-label">DEBATE</text>
+        <text x="160" y="300" text-anchor="middle" class="vam-label">TASTE</text>
+        <text x="73"  y="252" text-anchor="end"    class="vam-label">EMPATHY</text>
+        <text x="42"  y="164" text-anchor="end"    class="vam-label">BOLDNESS</text>
+        <text x="73"  y="72"  text-anchor="end"    class="vam-label">VALUES</text>
+        <polygon id="vam-poly-match"
+          points="160,87 223,97 228,160 219,219 160,234 123,197 71,160 130,130"
+          stroke="#f14573" stroke-width="1.5" stroke-dasharray="490 490" stroke-dashoffset="490"
+          fill="rgba(241,69,115,0.08)"/>
+        <polygon id="vam-poly-you"
+          points="160,76 205,116 255,160 216,216 160,207 97,223 102,160 90,90"
+          stroke="#fec539" stroke-width="2" stroke-dasharray="530 530" stroke-dashoffset="530"
+          fill="rgba(254,197,57,0.1)"/>
+        <g id="vam-dots-you" opacity="0">
+          <circle cx="160" cy="76"  r="4" fill="#fec539"/>
+          <circle cx="205" cy="116" r="4" fill="#fec539"/>
+          <circle cx="255" cy="160" r="4" fill="#fec539"/>
+          <circle cx="216" cy="216" r="4" fill="#fec539"/>
+          <circle cx="160" cy="207" r="4" fill="#fec539"/>
+          <circle cx="97"  cy="223" r="4" fill="#fec539"/>
+          <circle cx="102" cy="160" r="4" fill="#fec539"/>
+          <circle cx="90"  cy="90"  r="4" fill="#fec539"/>
+        </g>
+        <g id="vam-dots-match" opacity="0">
+          <circle cx="160" cy="87"  r="3" fill="#f14573"/>
+          <circle cx="223" cy="97"  r="3" fill="#f14573"/>
+          <circle cx="228" cy="160" r="3" fill="#f14573"/>
+          <circle cx="219" cy="219" r="3" fill="#f14573"/>
+          <circle cx="160" cy="234" r="3" fill="#f14573"/>
+          <circle cx="123" cy="197" r="3" fill="#f14573"/>
+          <circle cx="71"  cy="160" r="3" fill="#f14573"/>
+          <circle cx="130" cy="130" r="3" fill="#f14573"/>
+        </g>
+        <circle cx="160" cy="160" r="5" fill="#13141a" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+      </svg>
+
+      <div class="vam-legend">
+        <span class="vam-leg" style="--lc:#fec539"><span class="vam-leg-dot"></span>Your Vybe</span>
+        <span class="vam-leg-dash">&mdash;</span>
+        <span class="vam-leg" style="--lc:#f14573"><span class="vam-leg-dot"></span>Top match</span>
+      </div>
+      <p class="vam-stats-line">Based on <strong>420</strong> votes and <strong>28</strong> sessions grounded in your real X lifetime activity</p>
+    </div>
+
+    <!-- Insights -->
+    <div class="vam-insights">
+      <div class="vam-insights-col">
+        <p class="vam-insights-heading vam-insights-heading--yellow">TOP ALIGNMENTS</p>
+        <ul class="vam-insights-list">
+          <li class="vam-insight-item">
+            <svg class="vam-insight-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="#fec539" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Humour
+          </li>
+          <li class="vam-insight-item">
+            <svg class="vam-insight-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="#fec539" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Debate
+          </li>
+          <li class="vam-insight-item">
+            <svg class="vam-insight-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="#fec539" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Energy
+          </li>
+        </ul>
+      </div>
+      <div class="vam-insights-divider" aria-hidden="true"></div>
+      <div class="vam-insights-col">
+        <p class="vam-insights-heading vam-insights-heading--pink">BIGGEST DIFFERENCES</p>
+        <ul class="vam-insights-list">
+          <li class="vam-insight-item">
+            <svg class="vam-insight-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M14 6l6 6-6 6" stroke="#f14573" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Taste
+          </li>
+          <li class="vam-insight-item">
+            <svg class="vam-insight-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M14 6l6 6-6 6" stroke="#f14573" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Boldness
+          </li>
+          <li class="vam-insight-item">
+            <svg class="vam-insight-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M14 6l6 6-6 6" stroke="#f14573" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Empathy
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Breakdown button -->
+    <div class="vam-breakdown-wrap">
+      <button class="vam-breakdown-btn" type="button" disabled>DIMENSION BREAKDOWN &rsaquo;</button>
+    </div>
+
+  </div>
+</dialog>
+
+<!-- ============================================================
+     PRODUCT FEATURES
+     ============================================================ -->
+<section class="vyb-section" id="product">
+  <div class="vyb-container">
+    <div class="section-header">
+      <p class="section-eyebrow">Features</p>
+      <h2 class="section-h2">Everything your Vybe needs.</h2>
+      <p class="section-sub">From quick polls to creator-grade insights, VybeCheck gives you the tools to make your takes matter.</p>
+    </div>
+
+    <div class="feature-grid">
+
+      <!-- Flagship: AI Spaces -->
+      <div class="feature-card feature-card-flagship">
+        <div class="flagship-inner">
+
+          <div class="flagship-content">
+            <div class="flagship-top">
+              <div class="flagship-icon-wrap">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <div class="flagship-badge">✦ Flagship Feature</div>
+            </div>
+            <h3 class="flagship-title">AI question generation<br/>for X Spaces</h3>
+            <p class="flagship-desc">While you're live on X Spaces, VybeCheck listens to the conversation and generates contextually relevant Vybe questions in near-real-time, ready to push to your audience with one tap. No prep. No interruption. You approve every question before it goes out.</p>
+            <div class="flagship-meta">
+              <span class="flagship-cost">✨ Vybes required</span>
+              <span class="flagship-pill">Near-real-time</span>
+              <span class="flagship-pill">X Spaces</span>
+              <span class="flagship-pill">You stay in control</span>
+            </div>
+            <a href="#spaces-ai" class="flagship-learn-more">Explore Spaces AI in detail →</a>
+          </div>
+
+          <div class="flagship-visual" aria-hidden="true">
+            <div class="flagship-glow-orb"></div>
+            <div class="flagship-stat-stack">
+              <div class="flagship-stat-item">
+                <span class="flagship-stat-val">Near</span>
+                <span class="flagship-stat-label">real-time</span>
+              </div>
+              <div class="flagship-stat-divider"></div>
+              <div class="flagship-stat-item">
+                <span class="flagship-stat-val">AI</span>
+                <span class="flagship-stat-label">generated</span>
+              </div>
+              <div class="flagship-stat-divider"></div>
+              <div class="flagship-stat-item">
+                <span class="flagship-stat-val">You</span>
+                <span class="flagship-stat-label">approve</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="feature-card fta-yellow">
+        <div class="feature-icon" style="background:rgba(254,197,57,0.15); color:#fec539">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L14.09 8.26L20.18 9.27L16 13.14L17.18 19.02L12 16.2L6.82 19.02L8 13.14L3.82 9.27L9.91 8.26L12 2Z" fill="currentColor"/></svg>
+        </div>
+        <h3 class="feature-title">Create Vybe sessions in seconds</h3>
+        <p class="feature-desc">Set up your session, add your questions, choose a timer. Ready to go in under a minute. No training required.</p>
+      </div>
+
+      <div class="feature-card fta-blue">
+        <div class="feature-icon" style="background:rgba(83,157,192,0.15); color:#539dc0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="16 6 12 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="2" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="feature-title">Share to X in one tap</h3>
+        <p class="feature-desc">One button generates a shareable card and pre-fills your tweet with your Vybe link. Your audience is one scroll away.</p>
+      </div>
+
+      <div class="feature-card fta-pink">
+        <div class="feature-icon" style="background:rgba(241,69,115,0.15); color:#f14573">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="feature-title">Real-time results & Vybe outcomes</h3>
+        <p class="feature-desc">Watch votes come in live. See the Vybe score shift in real time. Share final results as a card your audience can repost.</p>
+      </div>
+
+      <div class="feature-card fta-purple">
+        <div class="feature-icon" style="background:rgba(99,104,140,0.15); color:#63688c">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" stroke="currentColor" stroke-width="2"/><line x1="12" y1="12" x2="12" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="14" x2="14" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="feature-title">Sessions that don't break payments flow</h3>
+        <p class="feature-desc">Sessions are fully free to run and share. Credits only come in when you want power features. No surprise gates mid-session.</p>
+      </div>
+
+      <div class="feature-card fta-yellow">
+        <div class="feature-icon" style="background:rgba(254,197,57,0.15); color:#fec539">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="feature-title">Vybes credits for power users</h3>
+        <p class="feature-desc">Buy credits once and spend them when you need them. Advanced insights, extended sessions and audience filters, all unlocked on your terms.</p>
+      </div>
+
+      <div class="feature-card fta-blue">
+        <div class="feature-icon" style="background:rgba(83,157,192,0.15); color:#539dc0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M7 7h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="feature-title">Creator tools for recurring formats</h3>
+        <p class="feature-desc">Save session templates, build a Vybe series, and brand your sessions with your own look. Built for creators who post consistently.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SPACES AI SPOTLIGHT
+     ============================================================ -->
+<section class="spaces-ai-section" id="spaces-ai">
+  <div class="vyb-container">
+    <div class="spaces-ai-inner">
+
+      <div class="spaces-ai-left">
+        <p class="section-eyebrow spaces-ai-eyebrow">✦ Flagship Paid Feature</p>
+        <h2 class="spaces-ai-h2">AI questions, live from your X Space.</h2>
+        <p class="spaces-ai-desc">While you host a live X Space, VybeCheck's AI monitors the conversation and surfaces relevant Vybe questions in near-real-time. With one tap you push them directly to your audience. No context-switching, no prep work.</p>
+        <p class="spaces-ai-desc">This is not a bot that hijacks your session. The AI drafts the questions and you approve them. You stay in complete control of every question that goes out.</p>
+
+        <div class="spaces-ai-points">
+          <div class="sai-point">
+            <div class="sai-dot" style="background:var(--vyc-yellow)"></div>
+            <span>Reads live Space conversation context</span>
+          </div>
+          <div class="sai-point">
+            <div class="sai-dot" style="background:var(--vyc-blue)"></div>
+            <span>Surfaces questions in near-real-time</span>
+          </div>
+          <div class="sai-point">
+            <div class="sai-dot" style="background:var(--vyc-pink)"></div>
+            <span>You approve before anything goes live</span>
+          </div>
+          <div class="sai-point">
+            <div class="sai-dot" style="background:var(--vyc-yellow)"></div>
+            <span>Opt-in only. Uses Vybes credits per AI session.</span>
+          </div>
+        </div>
+
+        <a href="#early-access" class="btn-primary spaces-ai-cta">Get early access</a>
+      </div>
+
+      <div class="spaces-ai-right" aria-hidden="true">
+        <div class="sai-mockup">
+          <div class="sai-mock-header">
+            <span class="sai-live-pip"></span>
+            <span class="sai-mock-title">X Space: Live</span>
+            <span class="sai-vybes-cost">✨ 8 Vybes / session</span>
+          </div>
+          <div class="sai-mock-body">
+            <p class="sai-mock-listening">AI listening&hellip;</p>
+            <div class="sai-suggestion">
+              <p class="sai-suggestion-label">Suggested question</p>
+              <p class="sai-suggestion-text">&ldquo;Do you think Web3 social will outlast centralised platforms?&rdquo;</p>
+              <div class="sai-suggestion-actions">
+                <button class="sai-btn-approve">Push live ✓</button>
+                <button class="sai-btn-skip">Skip</button>
+              </div>
+            </div>
+            <div class="sai-suggestion sai-suggestion-dim">
+              <p class="sai-suggestion-label">Up next</p>
+              <p class="sai-suggestion-text">&ldquo;Would you pay for a decentralised alternative to X?&rdquo;</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section class="vyb-section how-section" id="how-it-works">
+  <div class="vyb-container">
+    <div class="section-header">
+      <p class="section-eyebrow">How it works</p>
+      <h2 class="section-h2">From idea to live Vybe in under a minute.</h2>
+    </div>
+
+    <div class="steps-grid">
+
+      <div class="step-card">
+        <div class="step-number">01</div>
+        <div class="step-icon-wrap" style="background:rgba(254,197,57,0.12)">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#fec539" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#fec539" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="step-title">Sign in with X &amp; start a session</h3>
+        <p class="step-desc">Connect your real X account. No anonymous participation. Then type your question, add 2–4 answer options, set an optional expiry. About 30 seconds total.</p>
+      </div>
+
+      <div class="step-arrow" aria-hidden="true">
+        <svg width="32" height="24" viewBox="0 0 32 24" fill="none"><path d="M2 12L30 12M22 4L30 12L22 20" stroke="#63688c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">02</div>
+        <div class="step-icon-wrap" style="background:rgba(83,157,192,0.12)">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 2L11 13" stroke="#539dc0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#539dc0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="step-title">Publish and share</h3>
+        <p class="step-desc">Hit publish and your Vybe gets a shareable link. One tap pre-fills an X post. Drop it in your bio or thread.</p>
+      </div>
+
+      <div class="step-arrow" aria-hidden="true">
+        <svg width="32" height="24" viewBox="0 0 32 24" fill="none"><path d="M2 12L30 12M22 4L30 12L22 20" stroke="#63688c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">03</div>
+        <div class="step-icon-wrap" style="background:rgba(241,69,115,0.12)">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="#f14573" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="step-title">Watch the Vybe form in real time</h3>
+        <p class="step-desc">Results update live. See who's Vybing, track the momentum, and share the final outcome as a visual card.</p>
+      </div>
+
+    </div>
+
+    <!-- Callout about sessions vs payments -->
+    <div class="how-callout">
+      <div class="callout-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#fec539" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="#fec539" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="#fec539" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <p><strong>Payments never interrupt your session.</strong> VybeCheck keeps the core experience free and frictionless. Vybes credits are opt-in, not a gate. Your audience always gets to vote, no matter what.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     MATCHING MODELS
+     ============================================================ -->
+<section class="vyb-section matching-section" id="matching">
+  <div class="vyb-container">
+
+    <div class="section-header">
+      <p class="section-eyebrow">How matching works</p>
+      <h2 class="section-h2">Five ways VybeCheck finds your match.</h2>
+      <p class="section-sub">VybeCheck goes beyond collecting votes. It finds signal in your answers and your X identity. Every match is grounded in a real profile. Anonymity isn't an option, because anonymous noise would make every match meaningless.</p>
+    </div>
+
+    <div class="match-grid">
+
+      <!-- 1: Similar answers -->
+      <div class="match-card mc-blue">
+        <div class="mc-number">01</div>
+        <div class="mc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="mc-title">Match by similar answers</h3>
+        <p class="mc-desc">Your answers map to a score vector across humour, spontaneity, values, taste and energy. VybeCheck ranks everyone in the session by closeness and shows why: <em>"you both chose X on 6 of 10 questions."</em></p>
+        <div class="mc-tags">
+          <span>Friend groups</span>
+          <span>Dating style</span>
+          <span>Community Vybe</span>
+        </div>
+      </div>
+
+      <!-- 2: Vybe archetype -->
+      <div class="match-card mc-yellow">
+        <div class="mc-number">02</div>
+        <div class="mc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L14.09 8.26L20.18 9.27L16 13.14L17.18 19.02L12 16.2L6.82 19.02L8 13.14L3.82 9.27L9.91 8.26L12 2Z" fill="currentColor"/></svg>
+        </div>
+        <h3 class="mc-title">Match you to a Vybe archetype</h3>
+        <p class="mc-desc">Questions map to archetype dimensions. Your answers produce a type like <em>"Calm Chaos,"</em> <em>"Soft Speculator,"</em> or <em>"Main Character Energy,"</em> complete with a breakdown so it feels earned, not random.</p>
+        <div class="mc-tags">
+          <span>Shareable on X</span>
+          <span>Lightweight identity</span>
+        </div>
+      </div>
+
+      <!-- 3: Compatible opposites -->
+      <div class="match-card mc-pink">
+        <div class="mc-number">03</div>
+        <div class="mc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h-3a2 2 0 0 1-2-2v-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="mc-title">Match compatible opposites</h3>
+        <p class="mc-desc">Some dimensions are marked complementary, like planner versus spontaneous. VybeCheck scores "fit" using compatibility rules, not just similarity, and shows the logic: <em>"you like structure, they like novelty. Strong fit."</em></p>
+        <div class="mc-tags">
+          <span>Teams</span>
+          <span>Partnerships</span>
+          <span>Balanced dating sessions</span>
+        </div>
+      </div>
+
+      <!-- 4: Content & creators -->
+      <div class="match-card mc-purple">
+        <div class="mc-number">04</div>
+        <div class="mc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M7 7h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="mc-title">Match you to content &amp; creators</h3>
+        <p class="mc-desc">VybeCheck learns what session styles you engage with: serious, flirty, funny, deep. From there it recommends sessions and creators whose formats match your natural response pattern.</p>
+        <div class="mc-tags">
+          <span>Retention</span>
+          <span>Discovery</span>
+          <span>Creator growth</span>
+        </div>
+      </div>
+
+      <!-- 5: Vybe trend — spans full width -->
+      <div class="match-card mc-blue mc-wide">
+        <div class="mc-number">05</div>
+        <div class="mc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="mc-wide-inner">
+          <div>
+            <h3 class="mc-title">Your Vybe trend over time</h3>
+            <p class="mc-desc">Your answers build a baseline Vybe profile that nudges slightly with every new session. VybeCheck shows "you today" vs "you last month" and surfaces who's trending closer to your current Vybe, creating a loop that keeps the experience meaningful over time.</p>
+            <div class="mc-tags">
+              <span>Repeat usage</span>
+              <span>Identity &amp; growth loops</span>
+            </div>
+          </div>
+          <div class="mc-trend-visual" aria-hidden="true">
+            <div class="mc-trend-bar" style="--h:45%;--c:rgba(83,157,192,0.35)"></div>
+            <div class="mc-trend-bar" style="--h:60%;--c:rgba(83,157,192,0.45)"></div>
+            <div class="mc-trend-bar" style="--h:50%;--c:rgba(83,157,192,0.5)"></div>
+            <div class="mc-trend-bar" style="--h:75%;--c:rgba(83,157,192,0.55)"></div>
+            <div class="mc-trend-bar" style="--h:65%;--c:rgba(83,157,192,0.65)"></div>
+            <div class="mc-trend-bar mc-trend-bar-now" style="--h:88%;--c:#539dc0"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Trust callout -->
+    <div class="match-trust">
+      <div class="match-x-notice">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/></svg>
+        Real X accounts only. All match pools exclude anonymous and unverified profiles.
+      </div>
+      <p class="match-trust-heading">What makes matching feel trustworthy</p>
+      <p class="match-trust-sub">To avoid "this feels random" energy, every match shows at least one of these:</p>
+      <div class="match-trust-grid">
+        <div class="mt-item">
+          <div class="mt-icon mt-icon-blue">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div>
+            <span class="mt-label">Shared answers count</span>
+            <span class="mt-eg">e.g. 7 out of 10 questions matched</span>
+          </div>
+        </div>
+        <div class="mt-item">
+          <div class="mt-icon mt-icon-yellow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L14.09 8.26L20.18 9.27L16 13.14L17.18 19.02L12 16.2L6.82 19.02L8 13.14L3.82 9.27L9.91 8.26L12 2Z" fill="currentColor"/></svg>
+          </div>
+          <div>
+            <span class="mt-label">Top matching dimensions</span>
+            <span class="mt-eg">e.g. humour and spontaneity</span>
+          </div>
+        </div>
+        <div class="mt-item">
+          <div class="mt-icon mt-icon-pink">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2L4.5 13.5H12L11 22L19.5 10.5H12.5L13 2Z" fill="currentColor"/></svg>
+          </div>
+          <div>
+            <span class="mt-label">Strongest difference</span>
+            <span class="mt-eg">e.g. "you're low drama, they're spicy"</span>
+          </div>
+        </div>
+        <div class="mt-item">
+          <div class="mt-icon mt-icon-purple">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <span class="mt-label">Confidence score</span>
+            <span class="mt-eg">higher when more questions are answered</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     VYBES CREDITS
+     ============================================================ -->
+<section class="vyb-section credits-section" id="credits">
+  <div class="vyb-container">
+    <div class="credits-inner">
+
+      <div class="credits-left">
+        <p class="section-eyebrow">Vybes</p>
+        <h2 class="section-h2">Power when you want it. Free when you don't.</h2>
+        <p class="credits-desc">Vybes are used to unlock premium features like viewing detailed match results, accessing exclusive visualizations, and more. You only spend them when you want to go further. Your core session always runs free.</p>
+
+        <div class="credits-what">
+          <p class="credits-what-title">What are Vybes?</p>
+          <p class="credits-desc">Vybes are optional, spendable tokens that unlock premium capabilities. Think of them like fuel: you only burn them when you want to go further. Your core session always runs free.</p>
+          <p class="credits-free-note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6Z" fill="#fec539"/></svg>
+            New participants receive <strong>10 free Vybes</strong> to get started!
+          </p>
+        </div>
+
+        <div class="credits-why">
+          <div class="why-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17L4 12" stroke="#fec539" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>No paywalled core features</span>
+          </div>
+          <div class="why-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17L4 12" stroke="#fec539" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Spend only when you need premium power</span>
+          </div>
+          <div class="why-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17L4 12" stroke="#fec539" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Vybes never expire</span>
+          </div>
+          <div class="why-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17L4 12" stroke="#fec539" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Audience votes stay free, always</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="credits-right">
+        <div class="credits-table-wrap">
+          <p class="table-heading">Unlock Pricing</p>
+          <table class="credits-table" aria-label="Vybes unlock pricing table">
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                <th scope="col">Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="table-group-header">
+                <td colspan="2">Match basics</td>
+              </tr>
+              <tr>
+                <td>Preview Matches</td>
+                <td><span class="credit-badge credit-badge-free">Free</span></td>
+              </tr>
+              <tr>
+                <td>Top 3 Matches</td>
+                <td><span class="credit-badge">2 ✨</span></td>
+              </tr>
+              <tr>
+                <td>All Matches</td>
+                <td><span class="credit-badge">5 ✨</span></td>
+              </tr>
+              <tr class="table-group-header">
+                <td colspan="2">Match power features</td>
+              </tr>
+              <tr>
+                <td>
+                  Deeper match breakdown
+                  <div class="td-sub">Full dimension scores per match</div>
+                </td>
+                <td><span class="credit-badge">3 ✨</span></td>
+              </tr>
+              <tr>
+                <td>
+                  Expanded match pool
+                  <div class="td-sub">Beyond the session, opt-in wider pool</div>
+                </td>
+                <td><span class="credit-badge">4 ✨</span></td>
+              </tr>
+              <tr>
+                <td>
+                  Match filters
+                  <div class="td-sub">Location, interests, audience type</div>
+                </td>
+                <td><span class="credit-badge">5 ✨</span></td>
+              </tr>
+              <tr>
+                <td>
+                  Share kit
+                  <div class="td-sub">Result cards &amp; export</div>
+                </td>
+                <td><span class="credit-badge">2 ✨</span></td>
+              </tr>
+              <tr class="table-group-header">
+                <td colspan="2">Sessions</td>
+              </tr>
+              <tr>
+                <td>Extended Questions (10)</td>
+                <td><span class="credit-badge">3 ✨</span></td>
+              </tr>
+              <tr class="credits-table-row-ai">
+                <td>
+                  <div class="td-ai-wrap">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="#fec539"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" stroke="#fec539" stroke-width="2" stroke-linecap="round"/></svg>
+                    AI Spaces Questions
+                  </div>
+                  <div class="td-ai-note">Per live X Spaces session &middot; near-real-time</div>
+                </td>
+                <td><span class="credit-badge credit-badge-ai">8 ✨</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Buy Vybes packs -->
+    <div class="packs-section">
+      <p class="packs-heading">Buy Vybes</p>
+      <div class="packs-grid">
+
+        <div class="pack-card pack-row">
+          <div class="pack-row-left">
+            <div class="pack-name">Starter Pack</div>
+            <div class="pack-credits">✨ 20 Vybes</div>
+          </div>
+          <a href="#" class="pack-buy-btn">$5</a>
+        </div>
+
+        <div class="pack-card pack-row pack-popular">
+          <div class="popular-badge">Popular</div>
+          <div class="pack-row-left">
+            <div class="pack-name">Pro Pack</div>
+            <div class="pack-credits">✨ 50 Vybes</div>
+          </div>
+          <a href="#" class="pack-buy-btn pack-buy-popular">$10</a>
+        </div>
+
+        <div class="pack-card pack-row">
+          <div class="pack-row-left">
+            <div class="pack-name">Ultimate Pack</div>
+            <div class="pack-credits">✨ 120 Vybes</div>
+          </div>
+          <a href="#" class="pack-buy-btn">$20</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ
+     ============================================================ -->
+<section class="vyb-section faq-section" id="faq">
+  <div class="vyb-container">
+    <div class="section-header">
+      <p class="section-eyebrow">FAQ</p>
+      <h2 class="section-h2">Plain answers to real questions.</h2>
+    </div>
+
+    <div class="faq-list" role="list">
+
+      <details class="faq-item" role="listitem">
+        <summary class="faq-question">
+          What is a session?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
+        <div class="faq-answer">
+          <p>A Vybe session is a question with answer options that you publish and share. Each session generates a unique link, collects real-time votes, and produces a shareable results card when it closes or expires. Free users get 3 sessions per day. Creator and Studio plans get unlimited sessions.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" role="listitem">
+        <summary class="faq-question">
+          What are Vybes credits?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
+        <div class="faq-answer">
+          <p>Vybes credits are optional tokens that unlock premium features including extra sessions beyond your daily limit, advanced result breakdowns, audience filters, and creator templates. They're completely optional. The core voting experience is always free for you and your audience. Credits never expire, so you can stock up and use them whenever you need the extra power.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" role="listitem">
+        <summary class="faq-question">
+          Do I need an X account to use VybeCheck?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
+        <div class="faq-answer">
+          <p>VybeCheck requires signing in with a real X (Twitter) account. Anonymous participation isn't allowed. The entire matching engine runs on real identity: your vote history, your answer patterns, your Vybe profile over time. Without a real account, your responses can't be matched, stored or compared. You'd effectively be a ghost in the system. We use your X account to build your Vybe fingerprint, not to post on your behalf.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" role="listitem">
+        <summary class="faq-question">
+          Why can't I participate anonymously?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
+        <div class="faq-answer">
+          <p>Because anonymity destroys matching accuracy. When people vote with no identity attached, they vote differently — more extreme, less consistent, less honest. The match pool fills with noise instead of signal. VybeCheck's whole value is connecting you with people who genuinely share your opinions, so real identity is the foundation, not a gatekeeping choice. Your X account creates the stake that makes your Vybe score trustworthy.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" role="listitem">
+        <summary class="faq-question">
+          Can I share my results publicly?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
+        <div class="faq-answer">
+          <p>That's the whole point. Every completed session generates a results card that you can share directly on X (or anywhere else). Creator and Studio plans get enhanced export kits with styled visuals. The results card shows vote percentages, the winning option, and the total vote count.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" role="listitem">
+        <summary class="faq-question">
+          Does buying credits interrupt an active session?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
+        <div class="faq-answer">
+          <p>Never. Credits are a separate action from running a session. Voting starts the moment you publish — no payment step in the middle. You can buy credits before, during, or after a session and they'll be waiting in your balance. We designed this specifically so that your social momentum is never broken by a checkout flow.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" role="listitem">
+        <summary class="faq-question">
+          What platforms are supported at launch?
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
+        <div class="faq-answer">
+          <p>The initial launch surface is X (Twitter). VybeCheck sessions are shareable on any platform via link, but the native share integration, card preview, and social hooks are optimised for X at launch. Support for Threads, LinkedIn, and more social surfaces are on the roadmap based on early traction.</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FINAL CTA
+     ============================================================ -->
+<section class="vyb-section cta-section" id="early-access">
+  <div class="vyb-container">
+    <div class="cta-card">
+      <div class="cta-inner">
+        <div class="cta-text">
+          <h2 class="cta-h2">Get early access to VybeCheck.</h2>
+          <p class="cta-sub">Be first in line when we launch. Early access members get a free credits top-up and founder pricing for life. You'll sign in with your X account at launch. No separate password needed.</p>
+        </div>
+
+        <form class="cta-form" id="cta-form" novalidate>
+          <label for="cta-email" class="sr-only">Email address</label>
+          <input
+            type="email"
+            id="cta-email"
+            name="email"
+            placeholder="your@email.com"
+            autocomplete="email"
+            required
+            class="cta-input"
+          />
+          <button type="submit" class="btn-primary cta-submit">Join the waitlist</button>
+        </form>
+
+        <div id="cta-toast" class="cta-toast" role="status" aria-live="polite" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17L4 12" stroke="#131313" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          You're on the list! We'll be in touch soon.
+        </div>
+
+        <p class="cta-privacy">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:inline; vertical-align:middle; margin-right:4px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" stroke="#63688c" stroke-width="2" stroke-linejoin="round"/></svg>
+          No spam. No selling your data. Just a heads-up when VybeCheck goes live.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="vyb-footer">
+  <div class="vyb-container footer-inner">
+    <div class="footer-logo">
+      <img src="images/Vybecheck logo asset.png" alt="" width="24" height="24" aria-hidden="true" class="nav-logomark" />
+      <span>VybeCheck</span>
+    </div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="https://vybecheck.social/privacy">Privacy</a>
+      <a href="https://vybecheck.social/terms">Terms</a>
+      <a href="https://vybecheck.social/contact">Contact</a>
+    </nav>
+    <p class="footer-byline">&copy; 2026 VybeCheck</p>
+    <button class="theme-toggle theme-toggle-footer" id="theme-toggle-desktop" aria-label="Switch theme">
+      <span class="tt-track" aria-hidden="true">
+        <span class="tt-moon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" fill="currentColor"/></svg></span>
+        <span class="tt-sun"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span class="tt-thumb"></span>
+      </span>
+    </button>
+  </div>
+</footer>
+
+<!-- ============================================================
+     STYLES
+     ============================================================ -->
+<style>
+  /* ---- Custom fonts ---- */
+  @font-face {
+    font-family: "Elido";
+    src: url("fonts/fonnts.com-Elido-Black.otf") format("opentype");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Elido";
+    src: url("fonts/fonnts.com-Elido-Bold.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Elido";
+    src: url("fonts/fonnts.com-Elido-BoldItalic.otf") format("opentype");
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Elido";
+    src: url("fonts/fonnts.com-Elido-Semibold.otf") format("opentype");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "ElidoUpright";
+    src: url("fonts/fonnts.com-ElidoUprightItalic-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "VybeCheck";
+    src: url("fonts/Vybecheck-font.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Midnight";
+    src: url("fonts/Midnight.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* ---- Variables (dark mode — default) ---- */
+  :root {
+    --vyc-yellow:  #fec539;
+    --vyc-blue:    #539dc0;
+    --vyc-pink:    #f14573;
+    --vyc-purple:  #63688c;
+    --vyc-bg:      #0d0d10;
+    --vyc-surface: #17171c;
+    --vyc-border:  #2a2a35;
+    --vyc-text:    #f0f0f4;
+    --vyc-muted:   #a0a0b0;
+    --vyc-white:   #ffffff;
+    --max-w: 1160px;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+    scroll-behavior: smooth;
+  }
+
+  /* ---- Variables (light mode — system preference, no-JS fallback) ---- */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      --vyc-yellow:  #c98900;
+      --vyc-blue:    #2b7fa8;
+      --vyc-pink:    #d42056;
+      --vyc-purple:  #46487a;
+      --vyc-bg:      rgba(244,244,250,0.58);
+      --vyc-surface: rgba(255,255,255,0.82);
+      --vyc-border:  #dcdce8;
+      --vyc-text:    #111116;
+      --vyc-muted:   #55557a;
+      --vyc-white:   #111116;
+    }
+  }
+
+  /* ---- Variables (light mode — manual toggle) ---- */
+  html[data-theme="light"] {
+    --vyc-yellow:  #c98900;
+    --vyc-blue:    #2b7fa8;
+    --vyc-pink:    #d42056;
+    --vyc-purple:  #46487a;
+    --vyc-bg:      rgba(244,244,250,0.58);
+    --vyc-surface: rgba(255,255,255,0.82);
+    --vyc-border:  #dcdce8;
+    --vyc-text:    #111116;
+    --vyc-muted:   #55557a;
+    --vyc-white:   #111116;
+
+    /* ── Animated aurora gradient background ── */
+    background:
+      linear-gradient(125deg,
+        #fffdf7  0%,
+        #fafafa 18%,
+        #f5f9fc 34%,
+        #fafafa 50%,
+        #fdf5f8 66%,
+        #fafafa 80%,
+        #f6f5fd 92%,
+        #fffdf7 100%
+      );
+    background-size: 300% 300%;
+    background-attachment: fixed;
+    animation: light-aurora 26s ease-in-out infinite;
+  }
+
+  /* ---- Variables (dark mode — manual toggle overrides system light) ---- */
+  html[data-theme="dark"] {
+    --vyc-yellow:  #fec539;
+    --vyc-blue:    #539dc0;
+    --vyc-pink:    #f14573;
+    --vyc-purple:  #63688c;
+    --vyc-bg:      #0d0d10;
+    --vyc-surface: #17171c;
+    --vyc-border:  #2a2a35;
+    --vyc-text:    #f0f0f4;
+    --vyc-muted:   #a0a0b0;
+    --vyc-white:   #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--vyc-bg);
+    color: var(--vyc-text);
+    -webkit-font-smoothing: antialiased;
+  }
+  html[data-theme="light"] body { background: transparent; }
+
+  /* ---- Utilities ---- */
+  .vyb-container {
+    max-width: var(--max-w);
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 3rem);
+  }
+
+  .vyb-section {
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+  }
+
+  /* ---- Buttons ---- */
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--vyc-yellow); color: #131313;
+    font-weight: 700; font-size: 0.9rem; letter-spacing: 0.01em;
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--radius-sm);
+    border: none; cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-primary:focus-visible { outline: 3px solid var(--vyc-yellow); outline-offset: 3px; }
+  .btn-primary.btn-lg { padding: 0.85rem 1.9rem; font-size: 1rem; }
+  .btn-primary.btn-sm { padding: 0.55rem 1.1rem; font-size: 0.85rem; }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center;
+    color: var(--vyc-muted);
+    font-weight: 600; font-size: 0.9rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: var(--radius-sm);
+    border: none; cursor: pointer;
+    text-decoration: none;
+    background: transparent;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--vyc-text); }
+  .btn-ghost.btn-lg { padding: 0.85rem 1.5rem; font-size: 1rem; }
+  .btn-ghost:focus-visible { outline: 3px solid var(--vyc-yellow); outline-offset: 3px; }
+
+  @keyframes dev-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(254,197,57,0.5), 0 8px 32px rgba(254,197,57,0.2); }
+    50%       { box-shadow: 0 0 0 10px rgba(254,197,57,0), 0 8px 48px rgba(254,197,57,0.4); }
+  }
+  @keyframes dev-dot-blink {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+  }
+  @keyframes dev-glow-spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  .btn-dev-build {
+    position: relative;
+    display: flex; align-items: center;
+    width: fit-content;
+    margin: 2rem auto 0;
+    padding: 1rem 1.75rem;
+    background: rgba(254,197,57,0.07);
+    border: 1.5px solid rgba(254,197,57,0.35);
+    border-radius: 1rem;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    animation: dev-pulse 2.8s ease-in-out infinite;
+    transition: background 0.25s, border-color 0.25s, transform 0.2s;
+  }
+  .btn-dev-build:hover {
+    background: rgba(254,197,57,0.14);
+    border-color: rgba(254,197,57,0.65);
+    transform: translateY(-2px);
+  }
+  .btn-dev-build:focus-visible { outline: 2px solid var(--vyc-yellow); outline-offset: 3px; }
+
+  .btn-dev-build--disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+    animation: none;
+    filter: grayscale(0.4);
+  }
+  .btn-dev-build--disabled:hover {
+    background: rgba(254,197,57,0.07);
+    border-color: rgba(254,197,57,0.35);
+    transform: none;
+  }
+  .btn-dev-build--disabled .dev-build-glow,
+  .btn-dev-build--disabled .dev-build-dot { animation: none; }
+
+  .dev-build-glow {
+    position: absolute; top: 50%; left: 50%;
+    width: 260px; height: 260px;
+    background: conic-gradient(from 0deg, transparent 60%, rgba(254,197,57,0.18) 80%, transparent 100%);
+    border-radius: 50%;
+    animation: dev-glow-spin 4s linear infinite;
+    pointer-events: none;
+  }
+
+  .dev-build-inner {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; gap: 1rem;
+  }
+
+  .dev-build-dot {
+    width: 10px; height: 10px; flex-shrink: 0;
+    background: var(--vyc-yellow);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--vyc-yellow);
+    animation: dev-dot-blink 1.6s ease-in-out infinite;
+  }
+
+  .dev-build-label {
+    display: flex; flex-direction: column; gap: 0.15rem;
+  }
+  .dev-build-eyebrow {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(254,197,57,0.7);
+  }
+  .dev-build-cta {
+    font-size: 1rem; font-weight: 700; letter-spacing: 0.01em;
+    color: var(--vyc-yellow);
+  }
+
+  .btn-outline {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent;
+    border: 1.5px solid var(--vyc-border);
+    color: var(--vyc-text);
+    font-weight: 600; font-size: 0.9rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer; text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, transform 0.15s;
+  }
+  .btn-outline:hover { border-color: var(--vyc-yellow); color: var(--vyc-yellow); transform: translateY(-1px); }
+  .btn-outline:focus-visible { outline: 3px solid var(--vyc-yellow); outline-offset: 3px; }
+
+  /* ---- Nav ---- */
+  #vyb-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13, 13, 16, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: none;
+  }
+  #vyb-nav::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, var(--vyc-yellow) 0%, var(--vyc-blue) 33%, var(--vyc-pink) 66%, var(--vyc-purple) 100%);
+    opacity: 0.55;
+  }
+
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px; gap: 2rem;
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 0.6rem;
+    text-decoration: none; color: var(--vyc-text); flex-shrink: 0;
+  }
+
+  .nav-logomark { object-fit: contain; display: block; flex-shrink: 0; }
+
+  .nav-wordmark {
+    font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em;
+  }
+
+  .nav-links {
+    display: flex; list-style: none; gap: 0.25rem;
+    margin: 0 auto;
+  }
+
+  .nav-links a {
+    color: var(--vyc-muted); font-size: 0.9rem; font-weight: 500;
+    text-decoration: none; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm);
+    transition: color 0.2s, background 0.2s;
+  }
+  .nav-links a:hover { color: var(--vyc-text); background: rgba(255,255,255,0.06); }
+  .nav-links a:focus-visible { outline: 3px solid var(--vyc-yellow); outline-offset: 2px; }
+
+  .nav-actions {
+    display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0;
+  }
+
+  .nav-signin {
+    color: var(--vyc-muted); font-size: 0.9rem; font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-signin:hover { color: var(--vyc-text); }
+  .nav-signin:focus-visible { outline: 3px solid var(--vyc-yellow); outline-offset: 2px; }
+
+  .nav-burger {
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    gap: 5px; width: 36px; height: 36px; background: none; border: none; cursor: pointer;
+    padding: 0; flex-shrink: 0;
+  }
+  .nav-burger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--vyc-text); border-radius: 2px;
+    transition: transform 0.25s, opacity 0.25s;
+  }
+  .nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-burger:focus-visible { outline: 3px solid var(--vyc-yellow); outline-offset: 2px; }
+
+  .nav-mobile {
+    display: none; flex-direction: column;
+    padding: 1rem 1.25rem 1.5rem;
+    border-top: 1px solid var(--vyc-border);
+    background: var(--vyc-bg);
+  }
+  .nav-mobile.open { display: flex; }
+  .nav-mobile ul { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+  .nav-mobile ul a {
+    display: block; color: var(--vyc-text); font-size: 1.1rem; font-weight: 600;
+    text-decoration: none; padding: 0.65rem 0.5rem;
+    border-bottom: 1px solid var(--vyc-border);
+    transition: color 0.2s;
+  }
+  .nav-mobile ul a:focus-visible { outline: 3px solid var(--vyc-yellow); }
+  .mobile-actions { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.25rem; }
+  .mobile-actions .nav-signin { font-size: 1rem; }
+  .mobile-actions .btn-primary { text-align: center; }
+
+  /* ---- Theme toggle ---- */
+  .nav-mobile-topbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.25rem 0.5rem 0.75rem;
+  }
+
+  .theme-toggle {
+    background: none; border: none; cursor: pointer; padding: 2px;
+    border-radius: 999px;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { opacity: 0.8; }
+  .theme-toggle:focus-visible { outline: 3px solid var(--vyc-yellow); outline-offset: 3px; border-radius: 999px; }
+
+  .tt-track {
+    display: flex; align-items: center;
+    width: 52px; height: 26px;
+    background: var(--vyc-surface);
+    border: 1px solid var(--vyc-border);
+    border-radius: 999px;
+    position: relative;
+    transition: background 0.3s, border-color 0.3s;
+    overflow: hidden;
+  }
+  html[data-theme="light"] .tt-track {
+    background: #fec539;
+    border-color: #c98900;
+  }
+
+  .tt-moon, .tt-sun {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    height: 100%; position: relative; z-index: 1;
+    transition: opacity 0.25s, color 0.25s;
+  }
+  /* dark mode: moon lit, sun dim */
+  .tt-moon { color: var(--vyc-purple); opacity: 1; }
+  .tt-sun  { color: var(--vyc-muted);  opacity: 0.35; }
+  /* light mode: sun lit, moon dim */
+  html[data-theme="light"] .tt-moon { color: rgba(13,13,16,0.4); opacity: 0.4; }
+  html[data-theme="light"] .tt-sun  { color: #131313; opacity: 1; }
+
+  .tt-thumb {
+    position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--vyc-yellow);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s;
+    z-index: 2;
+  }
+  html[data-theme="light"] .tt-thumb {
+    transform: translateX(26px);
+    background: #131313;
+  }
+
+  /* Desktop toggle lives in footer — hide on mobile */
+  .theme-toggle-footer { display: none; }
+  @media (min-width: 768px) {
+    .theme-toggle-footer { display: inline-flex; }
+    /* Also hide the mobile topbar on desktop (nav-mobile never opens there anyway) */
+    .nav-mobile-topbar { display: none; }
+  }
+  @media (max-width: 767px) {
+    .nav-mobile-topbar { display: flex; }
+  }
+
+  /* ---- Hero ---- */
+  .hero-section {
+    padding-top: clamp(3rem, 7vw, 6rem);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-section::before {
+    content: '';
+    position: absolute; top: -100px; left: -100px;
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, rgba(83,157,192,0.09) 0%, transparent 60%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .hero-section::after {
+    content: '';
+    position: absolute; bottom: -60px; right: 0;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(99,104,140,0.07) 0%, transparent 60%);
+    border-radius: 50%; pointer-events: none;
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    position: relative; z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(254,197,57,0.1);
+    border: 1px solid rgba(254,197,57,0.25);
+    color: var(--vyc-yellow); font-size: 0.8rem; font-weight: 600;
+    padding: 0.35rem 0.85rem; border-radius: 999px;
+    margin-bottom: 1.5rem;
+  }
+  .badge-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--vyc-yellow);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  .hero-h1 {
+    font-family: "VybeCheck", sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 400; letter-spacing: -0.01em;
+    line-height: 1.1;
+    color: var(--vyc-white);
+    margin-top: 10px;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: var(--vyc-muted); line-height: 1.7;
+    max-width: 48ch;
+    margin-bottom: 2rem;
+  }
+
+  .hero-ctas {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-trust {
+    display: flex; flex-wrap: wrap; gap: 1.25rem;
+  }
+  .trust-item {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.82rem; font-weight: 600;
+    color: var(--vyc-muted);
+  }
+
+  /* ---- Phone cluster ---- */
+  .hero-right {
+    display: flex; justify-content: center; align-items: center;
+    padding: 2rem 1rem;
+    position: relative;
+  }
+  .hero-right::before {
+    content: '';
+    position: absolute; top: 10%; left: 5%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(254,197,57,0.13) 0%, transparent 65%);
+    border-radius: 50%; pointer-events: none; z-index: 0;
+  }
+  .hero-right::after {
+    content: '';
+    position: absolute; bottom: 5%; right: 5%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(241,69,115,0.11) 0%, transparent 65%);
+    border-radius: 50%; pointer-events: none; z-index: 0;
+  }
+
+  .phone-cluster {
+    position: relative;
+    width: 300px; height: 560px;
+    z-index: 1;
+  }
+
+  .phone-frame {
+    position: absolute;
+    width: 210px;
+    background: #08080b;
+    border-radius: 34px;
+    border: 2px solid rgba(255,255,255,0.11);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 28px 65px rgba(0,0,0,0.65),
+      0 6px 18px rgba(0,0,0,0.4);
+    overflow: hidden;
+    transition: transform 0.35s ease;
+    cursor: default;
+  }
+
+  .pf-1 { top: 80px; left: -20px; transform: rotate(-8deg);   z-index: 1; }
+  .pf-2 { top: 35px; left: 18px;  transform: rotate(-2deg);   z-index: 2; }
+  .pf-3 { top: 0;    left: 55px;  transform: rotate(5.5deg);  z-index: 3; animation: float 5s ease-in-out infinite; }
+
+  .phone-cluster:hover .pf-1 { transform: rotate(-10deg) translateX(-14px) translateY(8px); }
+  .phone-cluster:hover .pf-2 { transform: rotate(-3deg)  translateX(-4px)  translateY(3px); }
+  .phone-cluster:hover .pf-3 { transform: rotate(2.5deg) translateX(10px)  translateY(-5px); }
+
+  @keyframes float {
+    0%, 100% { transform: rotate(5.5deg) translateY(0); }
+    50%       { transform: rotate(5.5deg) translateY(-13px); }
+  }
+
+  /* Each phone gets a palette-coloured header bar */
+  .pf-notch {
+    height: 26px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pf-notch::after {
+    content: '';
+    width: 58px; height: 9px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 999px;
+  }
+
+  /* pf-1 — blue */
+  .pf-1 .pf-notch {
+    background: linear-gradient(90deg, #1a5fd4 0%, #539dc0 100%);
+  }
+  .pf-1 {
+    border-color: rgba(83,157,192,0.45);
+    box-shadow:
+      0 0 0 1px rgba(83,157,192,0.15),
+      0 0 28px rgba(83,157,192,0.18),
+      0 28px 65px rgba(0,0,0,0.65);
+  }
+
+  /* pf-2 — pink */
+  .pf-2 .pf-notch {
+    background: linear-gradient(90deg, #c42455 0%, #f14573 100%);
+  }
+  .pf-2 {
+    border-color: rgba(241,69,115,0.45);
+    box-shadow:
+      0 0 0 1px rgba(241,69,115,0.15),
+      0 0 28px rgba(241,69,115,0.18),
+      0 28px 65px rgba(0,0,0,0.65);
+  }
+
+  /* pf-3 — yellow */
+  .pf-3 .pf-notch {
+    background: linear-gradient(90deg, #c98900 0%, #fec539 100%);
+  }
+  .pf-3 .pf-notch::after {
+    background: rgba(0,0,0,0.2); /* darker pill on yellow bg */
+  }
+  .pf-3 {
+    border-color: rgba(254,197,57,0.45);
+    box-shadow:
+      0 0 0 1px rgba(254,197,57,0.15),
+      0 0 28px rgba(254,197,57,0.18),
+      0 28px 65px rgba(0,0,0,0.65);
+  }
+
+  .pf-screen { overflow: hidden; border-radius: 0 0 32px 32px; }
+  .pf-screenshot { width: 100%; display: block; object-fit: cover; }
+
+  /* ---- Proof strip ---- */
+  /* ---- Section headers ---- */
+  .section-header {
+    text-align: center; max-width: 640px;
+    margin-inline: auto; margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .section-eyebrow {
+    font-family: "ElidoUpright", "Elido", sans-serif;
+    font-size: 0.78rem; font-weight: 400; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--vyc-yellow);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-h2 {
+    font-family: "VybeCheck", sans-serif;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 400; letter-spacing: -0.01em;
+    line-height: 1.15; color: var(--vyc-white);
+    margin-bottom: 0.85rem;
+  }
+
+  .section-sub {
+    font-size: 1rem; color: var(--vyc-muted); line-height: 1.7;
+  }
+
+  /* ---- Feature grid ---- */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .feature-card {
+    background: var(--vyc-surface);
+    border: 1px solid var(--vyc-border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    position: relative;
+    box-shadow: 0 2px 12px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.3);
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 16px 40px rgba(0,0,0,0.4);
+  }
+
+  /* Color accent — left border strip (mirrors match-card sensibility) */
+  .feature-card.fta-yellow { border-left: 3px solid #fec539; }
+  .feature-card.fta-yellow:hover { border-color: #fec539; box-shadow: 0 16px 40px rgba(254,197,57,0.10); }
+  .feature-card.fta-blue   { border-left: 3px solid #539dc0; }
+  .feature-card.fta-blue:hover   { border-color: #539dc0;  box-shadow: 0 16px 40px rgba(83,157,192,0.12); }
+  .feature-card.fta-pink   { border-left: 3px solid #f14573; }
+  .feature-card.fta-pink:hover   { border-color: #f14573;  box-shadow: 0 16px 40px rgba(241,69,115,0.10); }
+  .feature-card.fta-purple { border-left: 3px solid #63688c; }
+  .feature-card.fta-purple:hover { border-color: #63688c;  box-shadow: 0 16px 40px rgba(99,104,140,0.12); }
+
+  .feature-icon {
+    width: 44px; height: 44px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.1rem;
+  }
+
+  .feature-title {
+    font-size: 1rem; font-weight: 800; color: var(--vyc-white);
+    margin-bottom: 0.5rem; line-height: 1.3;
+  }
+
+  .feature-desc {
+    font-size: 0.88rem; color: var(--vyc-muted); line-height: 1.65;
+  }
+
+  /* ---- How it works ---- */
+  .how-section { background: var(--vyc-surface); }
+
+  .steps-grid {
+    display: flex; align-items: flex-start;
+    flex-wrap: wrap; gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 3rem;
+  }
+
+  .step-card {
+    flex: 1; min-width: 240px; max-width: 300px;
+    text-align: center;
+  }
+
+  .step-number {
+    font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em;
+    color: var(--vyc-yellow); margin-bottom: 1rem;
+  }
+  .step-card:nth-child(3) .step-number { color: var(--vyc-blue); }
+  .step-card:nth-child(5) .step-number { color: var(--vyc-pink); }
+
+  .step-icon-wrap {
+    width: 72px; height: 72px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-inline: auto; margin-bottom: 1.1rem;
+  }
+
+  .step-title {
+    font-size: 1.05rem; font-weight: 800; color: var(--vyc-white);
+    margin-bottom: 0.5rem;
+  }
+
+  .step-desc { font-size: 0.88rem; color: var(--vyc-muted); line-height: 1.65; }
+
+  .step-arrow {
+    align-self: center; padding-top: 1rem;
+    opacity: 0.4;
+    flex-shrink: 0;
+  }
+
+  .how-callout {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: rgba(254,197,57,0.07);
+    border: 1px solid rgba(254,197,57,0.2);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    max-width: 640px; margin-inline: auto;
+  }
+  .how-callout p { font-size: 0.9rem; color: var(--vyc-muted); line-height: 1.6; }
+  .how-callout strong { color: var(--vyc-white); }
+  .callout-icon { flex-shrink: 0; margin-top: 1px; }
+
+  /* ---- Credits ---- */
+  .credits-section { background: var(--vyc-bg); }
+
+  .credits-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .credits-desc {
+    font-size: 0.95rem; color: var(--vyc-muted);
+    line-height: 1.7; margin-bottom: 1.25rem;
+  }
+
+  .credits-why { display: flex; flex-direction: column; gap: 0.65rem; margin-top: 1.5rem; }
+  .why-item {
+    display: flex; align-items: center; gap: 0.65rem;
+    font-size: 0.9rem; color: var(--vyc-text); font-weight: 500;
+  }
+
+  .credits-table-wrap {
+    background: var(--vyc-surface);
+    border: 1px solid var(--vyc-border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-heading {
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--vyc-muted);
+    padding: 1.1rem 1.5rem;
+    border-bottom: 1px solid var(--vyc-border);
+  }
+
+  .credits-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .credits-table thead th {
+    text-align: left; padding: 0.7rem 1.5rem;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--vyc-muted);
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--vyc-border);
+  }
+  .credits-table tbody tr {
+    border-bottom: 1px solid var(--vyc-border);
+    transition: background 0.2s;
+  }
+  .credits-table tbody tr:last-child { border-bottom: none; }
+  .credits-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+  .credits-table td { padding: 0.85rem 1.5rem; color: var(--vyc-text); vertical-align: middle; }
+  .td-icon-wrap { display: flex; align-items: center; gap: 0.6rem; }
+
+  .credit-badge {
+    background: rgba(254,197,57,0.12);
+    color: var(--vyc-yellow);
+    font-size: 0.85rem; font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .credit-badge-free {
+    background: rgba(83,157,192,0.12);
+    color: var(--vyc-blue);
+  }
+
+  .credits-what {
+    background: rgba(254,197,57,0.06);
+    border: 1px solid rgba(254,197,57,0.18);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.35rem;
+    margin-block: 1.5rem;
+  }
+  .credits-what-title {
+    font-size: 0.95rem; font-weight: 800; color: var(--vyc-white);
+    margin-bottom: 0.5rem;
+  }
+  .credits-free-note {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.85rem; color: var(--vyc-muted);
+    margin-top: 0.85rem;
+  }
+  .credits-free-note strong { color: var(--vyc-yellow); }
+
+  /* ---- Pricing ---- */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+    align-items: start;
+  }
+
+  .pricing-card {
+    position: relative;
+    background: var(--vyc-surface);
+    border: 1.5px solid var(--vyc-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+  }
+
+  .pricing-card-popular {
+    border-color: var(--vyc-yellow);
+    box-shadow: 0 0 0 1px rgba(254,197,57,0.3), 0 20px 50px rgba(254,197,57,0.06);
+  }
+
+  .popular-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--vyc-yellow); color: #131313;
+    font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.9rem; border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .pricing-tier {
+    font-size: 1rem; font-weight: 800; color: var(--vyc-white);
+    margin-bottom: 0.35rem;
+  }
+
+  .pricing-price {
+    display: flex; align-items: baseline; gap: 0.2rem;
+    margin-bottom: 0.6rem;
+  }
+  .price-amount {
+    font-size: 2.5rem; font-weight: 900; letter-spacing: -0.04em;
+    color: var(--vyc-white);
+  }
+  .price-per { font-size: 0.9rem; color: var(--vyc-muted); }
+
+  .pricing-tagline { font-size: 0.85rem; color: var(--vyc-muted); line-height: 1.5; margin-bottom: 1.5rem; }
+
+  .pricing-features {
+    list-style: none; display: flex; flex-direction: column; gap: 0.7rem;
+    margin-bottom: 1.75rem;
+  }
+  .pricing-features li {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.88rem; color: var(--vyc-text);
+  }
+
+  .pricing-btn { width: 100%; }
+
+  /* ---- Packs ---- */
+  .packs-section { margin-top: 1rem; }
+  .packs-heading {
+    text-align: center; font-size: 0.82rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--vyc-muted); margin-bottom: 1.25rem;
+  }
+  .packs-grid {
+    display: flex; flex-direction: column;
+    gap: 1rem; max-width: 560px; margin-inline: auto;
+  }
+  .pack-card { background: var(--vyc-surface); border: 1px solid var(--vyc-border); border-radius: var(--radius-md); padding: 1.1rem 1.35rem; transition: border-color 0.2s; }
+  .pack-card:hover { border-color: rgba(254,197,57,0.3); }
+  .pack-popular { border-color: rgba(83,157,192,0.5); position: relative; padding-top: 1.75rem; }
+  .pack-popular .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--vyc-blue); color: #fff; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.25rem 0.85rem; border-radius: 999px; white-space: nowrap; }
+
+  .pack-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .pack-row-left { display: flex; flex-direction: column; gap: 0.2rem; }
+  .pack-name { font-size: 1rem; font-weight: 800; color: var(--vyc-white); }
+  .pack-credits { font-size: 0.88rem; color: var(--vyc-yellow); font-weight: 600; }
+  .pack-buy-btn { flex-shrink: 0; background: var(--vyc-blue); color: #fff; font-size: 1rem; font-weight: 800; padding: 0.6rem 1.35rem; border-radius: var(--radius-sm); text-decoration: none; transition: opacity 0.2s; }
+  .pack-buy-btn:hover { opacity: 0.85; }
+  .pack-buy-popular { background: var(--vyc-blue); box-shadow: 0 0 16px rgba(83,157,192,0.35); }
+
+  /* ---- FAQ ---- */
+  .faq-section { background: var(--vyc-surface); }
+
+  .faq-list {
+    max-width: 720px; margin-inline: auto;
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+
+  .faq-item {
+    background: var(--vyc-bg);
+    border: 1px solid var(--vyc-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(255,255,255,0.04), 0 4px 16px rgba(0,0,0,0.28);
+    transition: border-color 0.2s;
+  }
+  .faq-item[open] { border-color: rgba(254,197,57,0.3); }
+
+  .faq-question {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.1rem 1.35rem;
+    cursor: pointer; list-style: none;
+    font-size: 0.95rem; font-weight: 700; color: var(--vyc-white);
+    gap: 1rem;
+    transition: color 0.2s;
+  }
+  .faq-question::-webkit-details-marker { display: none; }
+  .faq-question:hover { color: var(--vyc-yellow); }
+  .faq-question:focus-visible { outline: 3px solid var(--vyc-yellow); outline-offset: 2px; }
+
+  .faq-chevron {
+    flex-shrink: 0; transition: transform 0.3s ease;
+    color: var(--vyc-muted);
+  }
+  .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+
+  .faq-answer {
+    padding: 0 1.35rem 1.25rem;
+    font-size: 0.9rem; color: var(--vyc-muted); line-height: 1.7;
+    border-top: 1px solid var(--vyc-border);
+  }
+  .faq-answer p { padding-top: 1rem; }
+
+  /* ---- CTA section ---- */
+  .cta-section { padding-bottom: clamp(5rem, 8vw, 8rem); }
+
+  .cta-card {
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, #1a0f30 0%, #09203a 45%, #200a18 100%);
+    border: 1px solid rgba(254,197,57,0.25);
+    padding: clamp(2.5rem, 6vw, 5rem);
+    position: relative; overflow: hidden;
+  }
+  .cta-card::before {
+    content: ''; position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(254,197,57,0.18), rgba(83,157,192,0.08) 50%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .cta-card::after {
+    content: ''; position: absolute;
+    bottom: -60px; left: -40px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(241,69,115,0.15), rgba(99,104,140,0.08) 55%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+
+  .cta-inner {
+    position: relative; z-index: 1;
+    max-width: 560px; margin-inline: auto; text-align: center;
+  }
+
+  .cta-h2 {
+    font-family: "VybeCheck", sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-weight: 400; letter-spacing: -0.01em;
+    color: var(--vyc-white); margin-bottom: 0.85rem;
+  }
+  .cta-sub { font-size: 1rem; color: var(--vyc-muted); line-height: 1.7; margin-bottom: 2rem; }
+
+  .cta-form {
+    display: flex; gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .cta-input {
+    flex: 1; min-width: 240px;
+    background: rgba(255,255,255,0.07);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-sm);
+    padding: 0.8rem 1.1rem;
+    font-size: 0.95rem; color: var(--vyc-text);
+    font-family: inherit;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .cta-input::placeholder { color: rgba(160,160,176,0.6); }
+  .cta-input:focus { border-color: var(--vyc-yellow); }
+
+  .cta-submit { flex-shrink: 0; }
+
+  .cta-toast {
+    display: none; align-items: center; justify-content: center; gap: 0.5rem;
+    background: var(--vyc-yellow); color: #131313;
+    font-weight: 700; font-size: 0.9rem;
+    padding: 0.75rem 1.5rem; border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+    animation: slide-up 0.3s ease;
+  }
+  .cta-toast.visible { display: flex; }
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .cta-privacy {
+    font-size: 0.78rem; color: rgba(160,160,176,0.7); line-height: 1.5;
+  }
+
+  /* ---- Flash cards ---- */
+  .flash-section {
+    padding-block: clamp(3rem, 6vw, 5rem);
+    background: var(--vyc-surface);
+    border-top: 1px solid var(--vyc-border);
+    border-bottom: 1px solid var(--vyc-border);
+    overflow: hidden;
+  }
+
+  .flash-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .flash-h2 {
+    font-family: "VybeCheck", sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 400; letter-spacing: -0.01em;
+    line-height: 1.2; color: var(--vyc-white);
+    max-width: 36ch; margin-inline: auto;
+  }
+
+  .flash-track-wrap {
+    position: relative;
+  }
+
+  .flash-track {
+    display: flex; gap: 1rem;
+    overflow-x: auto;
+    justify-content: safe center;
+    padding-inline: clamp(1.25rem, 5vw, 3rem);
+    padding-bottom: 1rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  .flash-track::-webkit-scrollbar { display: none; }
+
+  .flash-fade-left {
+    position: absolute; top: 0; left: 0; bottom: 1rem;
+    width: 80px;
+    background: linear-gradient(to left, transparent, var(--vyc-surface));
+    pointer-events: none;
+  }
+  .flash-fade-right {
+    position: absolute; top: 0; right: 0; bottom: 1rem;
+    width: 80px;
+    background: linear-gradient(to right, transparent, var(--vyc-surface));
+    pointer-events: none;
+  }
+
+  @keyframes flash-arrow-bob {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    50%       { transform: translateY(-50%) translateX(3px); }
+  }
+  @keyframes flash-arrow-bob-left {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    50%       { transform: translateY(-50%) translateX(-3px); }
+  }
+
+  .flash-arrow {
+    position: absolute; top: 50%; z-index: 10;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 50%;
+    color: rgba(255,255,255,0.75);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, opacity 0.25s;
+    opacity: 1;
+  }
+  .flash-arrow:hover {
+    background: rgba(255,255,255,0.16);
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
+  }
+  .flash-arrow:focus-visible { outline: 2px solid var(--vyc-yellow); outline-offset: 3px; }
+  .flash-arrow[disabled] { opacity: 0; pointer-events: none; }
+
+  .flash-arrow-prev {
+    left: 0.5rem;
+    animation: flash-arrow-bob-left 2.2s ease-in-out infinite;
+  }
+  .flash-arrow-next {
+    right: 0.5rem;
+    animation: flash-arrow-bob 2.2s ease-in-out infinite;
+  }
+
+  /* Base card */
+  .fc {
+    flex: 0 0 auto;
+    width: 180px; height: 200px;
+    border-radius: 20px;
+    padding: 1.25rem;
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    position: relative; overflow: hidden;
+    scroll-snap-align: start;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: default;
+  }
+  .fc:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+  .fc:active, .fc.fc-pressing {
+    transform: scale(0.95) translateY(2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  @media (hover: none) {
+    /* On touch devices, suppress hover lift so only press state fires */
+    .fc:hover { transform: none; box-shadow: none; }
+  }
+
+  /* Clickable card variant */
+  a.fc, button.fc {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    outline-offset: 3px;
+  }
+  button.fc {
+    font: inherit;
+    background: inherit;
+    text-align: left;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  a.fc::after, button.fc::after {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0);
+    transition: box-shadow 0.2s ease;
+    pointer-events: none;
+  }
+  a.fc:hover::after, button.fc:hover::after {
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,0.18);
+  }
+  a.fc:focus-visible, button.fc:focus-visible {
+    outline: 3px solid var(--vyc-yellow);
+  }
+
+  .fc-wide { width: 220px; }
+
+  /* Variants */
+  .fc-blue  { background: linear-gradient(140deg, #1a5fd4 0%, #2176e8 60%, #3a8ef5 100%); }
+  .fc-dark  { background: var(--vyc-surface); border: 1px solid var(--vyc-border); }
+  .fc-pink  { background: linear-gradient(140deg, #c42455 0%, #e03268 60%, #f14573 100%); }
+  .fc-purple { background: linear-gradient(140deg, #3a3d57 0%, #51567a 55%, #63688c 100%); }
+  .fc-ai-spaces {
+    background: linear-gradient(140deg, #c98900 0%, #fec539 60%, #ffe180 100%);
+  }
+  .fc-ai-spaces .fc-eyebrow { color: rgba(13,13,16,0.6); }
+  .fc-ai-spaces .fc-title   { color: #131313; }
+  .fc-ai-spaces .fc-sub     { color: rgba(13,13,16,0.55); }
+  .fc-ai-icon {
+    position: absolute; top: 1rem; right: 1rem; opacity: 0.65;
+  }
+
+  .fc-fade::after {
+    content: '';
+    position: absolute; top: 0; right: 0; bottom: 0;
+    width: 55%;
+    background: linear-gradient(to right, transparent, rgba(13,13,16,0.7));
+    pointer-events: none;
+  }
+
+  /* Typography inside cards */
+  .fc-eyebrow {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: rgba(255,255,255,0.6);
+    margin-bottom: 0.35rem;
+  }
+  .fc-eyebrow-sm {
+    font-size: 0.6rem; font-weight: 800; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgba(255,255,255,0.5);
+    margin-bottom: 0.25rem;
+  }
+  .fc-title {
+    font-size: 1.2rem; font-weight: 900; line-height: 1.15;
+    color: #ffffff; margin-bottom: 0.35rem;
+  }
+  .fc-sub {
+    font-size: 0.72rem; color: rgba(255,255,255,0.55); font-weight: 500;
+    line-height: 1.4;
+  }
+  .fc-sub-loud {
+    font-size: 0.72rem; font-weight: 900; letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;
+  }
+  .fc-big-stat {
+    font-size: 2rem; font-weight: 900; letter-spacing: -0.04em;
+    color: #ffffff; line-height: 1; margin-bottom: 0.2rem;
+  }
+
+  /* Avatars */
+  .fc-avatars {
+    display: flex; position: absolute; top: 1.1rem; left: 1.25rem;
+  }
+  .fc-av {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 2px solid var(--vyc-surface);
+    display: flex; align-items: center; justify-content: center;
+    margin-right: -8px; overflow: hidden;
+    flex-shrink: 0;
+  }
+  .fc-av-count {
+    background: rgba(255,255,255,0.12);
+    font-size: 0.55rem; font-weight: 800; color: white;
+    letter-spacing: -0.02em;
+  }
+
+  /* Icon containers */
+  .fc-icon-wrap {
+    position: absolute; top: 1rem; right: 1rem;
+    opacity: 0.85;
+  }
+  .fc-shape-wrap {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0.92;
+  }
+  .fc-coin {
+    position: absolute; top: 1rem; right: 1rem;
+  }
+  .fc-nudge-icon {
+    position: absolute; top: 1rem; right: 1rem;
+  }
+
+  /* Live dot */
+  .fc-live-dot {
+    position: absolute; top: 1.1rem; left: 1.25rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .fc-pulse {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #f14573;
+    box-shadow: 0 0 0 0 rgba(241,69,115,0.5);
+    animation: pulse-ring 1.6s ease-out infinite;
+    display: block;
+  }
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(241,69,115,0.5); }
+    70%  { box-shadow: 0 0 0 7px rgba(241,69,115,0); }
+    100% { box-shadow: 0 0 0 0 rgba(241,69,115,0); }
+  }
+  .fc-live-label {
+    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ---- Footer ---- */
+  .vyb-footer {
+    background: var(--vyc-bg);
+    border-top: 1px solid var(--vyc-border);
+    padding-block: 1.75rem;
+  }
+
+  .footer-inner {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 1rem 2rem;
+  }
+
+  .footer-logo {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.95rem; font-weight: 800; color: var(--vyc-white);
+  }
+
+  .footer-links {
+    display: flex; gap: 1.5rem; margin-left: auto;
+  }
+  .footer-links a {
+    color: var(--vyc-muted); font-size: 0.85rem; text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--vyc-text); }
+  .footer-links a:focus-visible { outline: 3px solid var(--vyc-yellow); outline-offset: 2px; }
+
+  .footer-byline { font-size: 0.8rem; color: var(--vyc-muted); }
+  .footer-brand-link {
+    color: var(--vyc-yellow); text-decoration: none; font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .footer-brand-link:hover { opacity: 0.8; }
+
+  /* ---- Trust item AI ---- */
+  .trust-item-ai { font-weight: 700; }
+
+  @keyframes store-notice-shimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+  @keyframes store-notice-bounce {
+    0%, 100% { transform: translateY(0); }
+    40%       { transform: translateY(-4px); }
+    60%       { transform: translateY(-2px); }
+  }
+  @keyframes store-icon-pop {
+    0%, 100% { transform: scale(1);    opacity: 0.75; }
+    50%       { transform: scale(1.35); opacity: 1; }
+  }
+
+  .hero-store-notice {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    margin-top: 1.4rem;
+    padding: 0.45rem 1rem;
+    background: linear-gradient(135deg, rgba(254,197,57,0.12), rgba(241,69,115,0.1), rgba(83,157,192,0.1));
+    border: 1.5px solid transparent;
+    background-clip: padding-box;
+    border-radius: 999px;
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--vyc-text);
+    letter-spacing: 0.02em;
+    position: relative;
+    animation: store-notice-bounce 3.5s ease-in-out infinite;
+    box-shadow: 0 0 0 1.5px rgba(254,197,57,0.3), 0 0 18px rgba(254,197,57,0.12);
+  }
+  .hero-store-notice::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 999px;
+    padding: 1.5px;
+    background: linear-gradient(90deg, #fec539, #f14573, #539dc0, #fec539);
+    background-size: 300% auto;
+    animation: store-notice-shimmer 4s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .store-notice-icon {
+    display: inline-flex; align-items: center;
+    color: var(--vyc-yellow);
+    animation: store-icon-pop 3.5s ease-in-out infinite;
+  }
+  .store-notice-icon:last-of-type {
+    color: var(--vyc-blue);
+    animation-delay: 0.6s;
+  }
+  .store-notice-text {
+    color: var(--vyc-white);
+    font-weight: 700;
+  }
+  .store-notice-badge {
+    font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--vyc-yellow);
+    color: #0d0d10;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    line-height: 1.4;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-store-notice { animation: none; }
+    .hero-store-notice::before { animation: none; }
+    .store-notice-icon { animation: none; }
+  }
+
+  /* ---- Flagship feature card ---- */
+  .feature-card-flagship {
+    grid-column: 1 / -1;
+    background: linear-gradient(130deg, rgba(254,197,57,0.13) 0%, rgba(254,197,57,0.05) 45%, rgba(83,157,192,0.04) 100%);
+    border: 1.5px solid rgba(254,197,57,0.45);
+    box-shadow:
+      0 0 0 1px rgba(254,197,57,0.12),
+      0 0 60px rgba(254,197,57,0.12),
+      0 20px 60px rgba(0,0,0,0.35);
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  /* Yellow glow stripe across the top */
+  .feature-card-flagship::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #fec539 25%, #ffe180 60%, transparent 100%);
+    z-index: 1;
+  }
+  .feature-card-flagship:hover {
+    border-color: rgba(254,197,57,0.7);
+    box-shadow:
+      0 0 0 1px rgba(254,197,57,0.2),
+      0 0 90px rgba(254,197,57,0.2),
+      0 28px 70px rgba(0,0,0,0.45);
+    transform: translateY(-4px);
+  }
+
+  .flagship-inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    padding: 2.25rem 2.5rem;
+  }
+
+  .flagship-top {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.1rem;
+  }
+  .flagship-icon-wrap {
+    width: 54px; height: 54px;
+    background: rgba(254,197,57,0.2);
+    border: 1px solid rgba(254,197,57,0.35);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fec539; flex-shrink: 0;
+  }
+  .flagship-badge {
+    display: inline-flex;
+    background: var(--vyc-yellow); color: #131313;
+    font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.9rem; border-radius: 999px;
+  }
+  .flagship-title {
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 900; letter-spacing: -0.03em; line-height: 1.15;
+    color: var(--vyc-white);
+    margin-bottom: 0.85rem;
+  }
+  .flagship-desc {
+    font-size: 0.97rem; color: var(--vyc-muted); line-height: 1.72;
+    max-width: 62ch;
+    margin-bottom: 1.25rem;
+  }
+  .flagship-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .flagship-cost {
+    background: rgba(254,197,57,0.18); color: var(--vyc-yellow);
+    font-size: 0.8rem; font-weight: 700;
+    padding: 0.3rem 0.75rem; border-radius: 999px;
+    border: 1px solid rgba(254,197,57,0.3);
+  }
+  .flagship-pill {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--vyc-border);
+    color: var(--vyc-muted);
+    font-size: 0.78rem; font-weight: 600;
+    padding: 0.3rem 0.75rem; border-radius: 999px;
+  }
+  .flagship-learn-more {
+    font-size: 0.9rem; font-weight: 700;
+    color: var(--vyc-yellow); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    transition: gap 0.2s ease, opacity 0.2s ease;
+  }
+  .flagship-learn-more:hover { gap: 0.6rem; opacity: 0.8; }
+
+  /* Decorative stat panel */
+  .flagship-visual {
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    width: 160px; flex-shrink: 0;
+  }
+  .flagship-glow-orb {
+    position: absolute;
+    width: 180px; height: 180px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(254,197,57,0.22) 0%, transparent 68%);
+    pointer-events: none;
+  }
+  .flagship-stat-stack {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 0;
+    text-align: center;
+    position: relative; z-index: 1;
+  }
+  .flagship-stat-item {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0.7rem 1.2rem;
+  }
+  .flagship-stat-val {
+    font-size: 1.55rem; font-weight: 900; letter-spacing: -0.04em;
+    color: var(--vyc-yellow); line-height: 1;
+  }
+  .flagship-stat-label {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--vyc-muted);
+    margin-top: 0.2rem;
+  }
+  .flagship-stat-divider {
+    width: 36px; height: 1px;
+    background: var(--vyc-border);
+  }
+
+  /* Collapse visual panel at smaller widths */
+  @media (max-width: 640px) {
+    .flagship-inner { grid-template-columns: 1fr; padding: 1.75rem; }
+    .flagship-visual { display: none; }
+  }
+
+  /* ---- Matching models section ---- */
+  .matching-section {
+    background: var(--vyc-bg);
+  }
+
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .match-card {
+    background: var(--vyc-surface);
+    border: 1px solid var(--vyc-border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    position: relative;
+    box-shadow: 0 2px 12px rgba(255,255,255,0.04), 0 4px 20px rgba(0,0,0,0.3);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .match-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 16px 40px rgba(0,0,0,0.4);
+  }
+  .mc-wide {
+    grid-column: 1 / -1;
+  }
+  .mc-wide-inner {
+    display: flex; gap: 2.5rem; align-items: center;
+  }
+
+  /* Color accent — left border strip */
+  .mc-blue  { border-left: 3px solid #539dc0; }
+  .mc-blue:hover  { border-color: #539dc0; box-shadow: 0 16px 40px rgba(83,157,192,0.12); }
+  .mc-yellow { border-left: 3px solid #fec539; }
+  .mc-yellow:hover { border-color: #fec539; box-shadow: 0 16px 40px rgba(254,197,57,0.10); }
+  .mc-pink  { border-left: 3px solid #f14573; }
+  .mc-pink:hover  { border-color: #f14573; box-shadow: 0 16px 40px rgba(241,69,115,0.10); }
+  .mc-purple { border-left: 3px solid #63688c; }
+  .mc-purple:hover { border-color: #63688c; box-shadow: 0 16px 40px rgba(99,104,140,0.12); }
+
+  .mc-number {
+    font-size: 0.62rem; font-weight: 900; letter-spacing: 0.12em;
+    color: var(--vyc-muted); margin-bottom: 0.85rem;
+  }
+  .mc-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 0.85rem;
+  }
+  .mc-blue  .mc-icon { background: rgba(83,157,192,0.15); color: #539dc0; }
+  .mc-yellow .mc-icon { background: rgba(254,197,57,0.15); color: #fec539; }
+  .mc-pink  .mc-icon { background: rgba(241,69,115,0.15); color: #f14573; }
+  .mc-purple .mc-icon { background: rgba(99,104,140,0.15); color: #63688c; }
+
+  .mc-title {
+    font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em;
+    color: var(--vyc-white); line-height: 1.3;
+    margin-bottom: 0.65rem;
+  }
+  .mc-desc {
+    font-size: 0.9rem; color: var(--vyc-muted); line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+  .mc-desc em { font-style: italic; color: var(--vyc-text); }
+  .mc-tags {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+  }
+  .mc-tags span {
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--vyc-border);
+    color: var(--vyc-muted);
+    padding: 0.2rem 0.6rem; border-radius: 999px;
+  }
+
+  /* Trend bar chart visual */
+  .mc-trend-visual {
+    display: flex; align-items: flex-end; gap: 6px;
+    height: 64px; flex-shrink: 0;
+  }
+  .mc-trend-bar {
+    width: 18px; border-radius: 4px 4px 0 0;
+    height: var(--h);
+    background: var(--c);
+    transition: opacity 0.2s;
+  }
+  .mc-trend-bar-now {
+    position: relative;
+  }
+  .mc-trend-bar-now::after {
+    content: 'now';
+    position: absolute; top: -18px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.55rem; font-weight: 800;
+    letter-spacing: 0.06em; color: #539dc0;
+  }
+
+  /* Trust callout */
+  .match-trust {
+    background: var(--vyc-surface);
+    border: 1px solid var(--vyc-border);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+  .match-x-notice {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1.25rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 0.5rem;
+    font-size: 0.8rem; font-weight: 600; color: var(--vyc-muted);
+    letter-spacing: 0.02em;
+  }
+  .match-x-notice svg { flex-shrink: 0; opacity: 0.7; }
+
+  .match-trust-heading {
+    font-size: 1rem; font-weight: 800; color: var(--vyc-white);
+    margin-bottom: 0.35rem;
+  }
+  .match-trust-sub {
+    font-size: 0.88rem; color: var(--vyc-muted); margin-bottom: 1.5rem;
+  }
+  .match-trust-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .mt-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+  }
+  .mt-icon {
+    width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 0.1rem;
+  }
+  .mt-icon-blue   { background: rgba(83,157,192,0.15); color: #539dc0; }
+  .mt-icon-yellow { background: rgba(254,197,57,0.15); color: #fec539; }
+  .mt-icon-pink   { background: rgba(241,69,115,0.15); color: #f14573; }
+  .mt-icon-purple { background: rgba(99,104,140,0.15); color: #63688c; }
+  .mt-label {
+    display: block; font-size: 0.88rem; font-weight: 700; color: var(--vyc-text);
+    line-height: 1.3; margin-bottom: 0.2rem;
+  }
+  .mt-eg {
+    display: block; font-size: 0.78rem; color: var(--vyc-muted); font-style: italic;
+  }
+
+  /* Table group headers & sub-text */
+  .table-group-header td {
+    font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--vyc-muted);
+    background: rgba(255,255,255,0.03);
+    padding: 0.5rem 0.85rem !important;
+    border-bottom: 1px solid var(--vyc-border);
+  }
+  .td-sub {
+    font-size: 0.72rem; color: var(--vyc-muted); margin-top: 0.15rem;
+    font-weight: 400;
+  }
+
+  /* ---- Spaces AI spotlight section ---- */
+  .spaces-ai-section {
+    padding-block: clamp(4rem, 8vw, 7rem);
+    background: linear-gradient(160deg, #0d0d14 0%, #0f1a24 50%, #130d10 100%);
+    border-top: 1px solid var(--vyc-border);
+    border-bottom: 1px solid var(--vyc-border);
+    overflow: hidden;
+    position: relative;
+  }
+  .spaces-ai-section::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, rgba(254,197,57,0.09) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .spaces-ai-section::after {
+    content: '';
+    position: absolute; bottom: -80px; left: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(83,157,192,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .spaces-ai-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+    position: relative; z-index: 1;
+  }
+
+  .spaces-ai-eyebrow { color: var(--vyc-yellow); margin-bottom: 0.85rem; }
+
+  .spaces-ai-h2 {
+    font-family: "VybeCheck", sans-serif;
+    font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+    font-weight: 400; letter-spacing: -0.01em; line-height: 1.15;
+    color: var(--vyc-white);
+    margin-bottom: 1.25rem;
+  }
+
+  .spaces-ai-desc {
+    font-size: 0.98rem; color: var(--vyc-muted); line-height: 1.75;
+    margin-bottom: 0.9rem;
+  }
+
+  .spaces-ai-points {
+    display: flex; flex-direction: column; gap: 0.65rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .sai-point {
+    display: flex; align-items: center; gap: 0.75rem;
+    font-size: 0.9rem; color: var(--vyc-text); font-weight: 500;
+  }
+  .sai-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .spaces-ai-cta { align-self: flex-start; }
+
+  /* Mockup UI */
+  .spaces-ai-right { display: flex; justify-content: center; align-items: center; }
+  .sai-mockup {
+    width: 100%; max-width: 360px;
+    background: var(--vyc-surface);
+    border: 1.5px solid rgba(254,197,57,0.28);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(254,197,57,0.08), 0 24px 60px rgba(0,0,0,0.5);
+  }
+  .sai-mock-header {
+    background: linear-gradient(90deg, #1a1208 0%, #221a06 100%);
+    border-bottom: 1px solid rgba(254,197,57,0.18);
+    padding: 0.85rem 1.25rem;
+    display: flex; align-items: center; gap: 0.65rem;
+  }
+  .sai-live-pip {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #f14573; flex-shrink: 0;
+    animation: pulse-ring 1.6s ease-out infinite;
+  }
+  .sai-mock-title { font-size: 0.82rem; font-weight: 700; color: var(--vyc-text); flex: 1; }
+  .sai-vybes-cost { font-size: 0.72rem; font-weight: 700; color: var(--vyc-yellow); white-space: nowrap; }
+
+  .sai-mock-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.85rem; }
+  .sai-mock-listening {
+    font-size: 0.78rem; color: var(--vyc-muted); font-style: italic;
+    display: flex; align-items: center; gap: 0.45rem;
+  }
+  .sai-mock-listening::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--vyc-blue); flex-shrink: 0;
+    animation: pulse-ring 2s ease-out infinite;
+  }
+
+  .sai-suggestion {
+    background: var(--vyc-bg);
+    border: 1px solid var(--vyc-border);
+    border-radius: var(--radius-md);
+    padding: 0.95rem 1rem;
+  }
+  .sai-suggestion-dim { opacity: 0.42; }
+  .sai-suggestion-label {
+    font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--vyc-yellow);
+    margin-bottom: 0.5rem;
+  }
+  .sai-suggestion-dim .sai-suggestion-label { color: var(--vyc-muted); }
+  .sai-suggestion-text {
+    font-size: 0.88rem; color: var(--vyc-text); line-height: 1.5;
+    margin-bottom: 0.85rem;
+  }
+  .sai-suggestion-dim .sai-suggestion-text { margin-bottom: 0; }
+  .sai-suggestion-actions { display: flex; gap: 0.5rem; }
+  .sai-btn-approve {
+    flex: 1; background: var(--vyc-yellow); color: #131313;
+    font-size: 0.8rem; font-weight: 800; border: none;
+    border-radius: var(--radius-sm); padding: 0.45rem 0.75rem;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .sai-btn-approve:hover { opacity: 0.85; }
+  .sai-btn-skip {
+    background: transparent;
+    border: 1px solid var(--vyc-border);
+    color: var(--vyc-muted); font-size: 0.8rem; font-weight: 600;
+    border-radius: var(--radius-sm); padding: 0.45rem 0.75rem;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .sai-btn-skip:hover { border-color: var(--vyc-muted); }
+
+  /* AI Spaces pricing table row */
+  .credits-table-row-ai td:first-child { line-height: 1.6; }
+  .td-ai-wrap {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-weight: 600;
+  }
+  .td-ai-note {
+    font-size: 0.7rem; color: var(--vyc-muted); margin-top: 0.15rem;
+    padding-left: 1.3rem;
+  }
+  .credit-badge-ai {
+    background: rgba(254,197,57,0.15) !important;
+    border: 1px solid rgba(254,197,57,0.35) !important;
+    color: var(--vyc-yellow) !important;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 768px) {
+    .nav-links, .nav-actions { display: none; }
+    .nav-burger { display: flex; }
+
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .hero-right {
+      order: -1;
+      height: 300px;
+      overflow: hidden;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .phone-cluster {
+      transform: scale(0.72);
+      transform-origin: top center;
+      height: 300px;
+      margin-top: -10px;
+    }
+    .hero-left {
+      padding-top: 1.5rem;
+    }
+
+    .credits-inner { grid-template-columns: 1fr; }
+    .spaces-ai-inner { grid-template-columns: 1fr; }
+    .spaces-ai-right { display: none; }
+    .match-grid { grid-template-columns: 1fr; }
+    .mc-wide-inner { flex-direction: column; gap: 1.5rem; }
+    .mc-trend-visual { display: none; }
+    .match-trust-grid { grid-template-columns: 1fr; }
+
+    .steps-grid { flex-direction: column; align-items: center; }
+    .step-arrow { transform: rotate(90deg); }
+
+    .proof-divider { display: none; }
+    .proof-tagline { margin-left: 0; text-align: left; flex-basis: 100%; }
+
+    .footer-links { margin-left: 0; flex-wrap: wrap; gap: 1rem; }
+    .footer-inner { flex-direction: column; align-items: flex-start; }
+    .footer-byline { order: 10; }
+
+    .cta-card { padding: clamp(1.75rem, 6vw, 3rem); }
+  }
+
+  /* Extra-small phones (320–480px) */
+  @media (max-width: 480px) {
+    .hero-right {
+      height: 240px;
+    }
+    .phone-cluster {
+      transform: scale(0.58);
+      transform-origin: top center;
+      height: 240px;
+      margin-top: -16px;
+    }
+
+    .hero-section { padding-block: 3rem 2rem; }
+    .hero-title { font-size: clamp(2rem, 10vw, 2.8rem); }
+
+    .feature-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .packs-grid   { grid-template-columns: 1fr 1fr; }
+
+    .section-h2 { font-size: clamp(1.5rem, 7vw, 2rem); }
+
+    .fc { width: 155px; height: 180px; }
+    .fc-wide { width: 185px; }
+
+    .cta-form { flex-direction: column; }
+    .cta-input { min-width: unset; width: 100%; }
+    .cta-submit { width: 100%; }
+
+    .faq-question { font-size: 0.88rem; }
+  }
+
+  /* ── Vybe Analysis card animations ── */
+  @keyframes fc-analysis-glow {
+    0%, 100% { box-shadow: 0 0 0 1px rgba(254,197,57,0.0),  0 8px 24px rgba(0,0,0,0.3); }
+    50%       { box-shadow: 0 0 0 1px rgba(254,197,57,0.22), 0 8px 32px rgba(254,197,57,0.10); }
+  }
+  @keyframes fc-radar-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes fc-center-heartbeat {
+    0%, 100% { transform: scale(1);   opacity: 0.9; }
+    40%       { transform: scale(1.7); opacity: 0.35; }
+    60%       { transform: scale(1.0); opacity: 0.9; }
+  }
+  @keyframes fc-live-tick {
+    0%, 100% { opacity: 1;    box-shadow: 0 0 5px rgba(254,197,57,0.7); }
+    50%       { opacity: 0.25; box-shadow: 0 0 2px rgba(254,197,57,0.1); }
+  }
+  @keyframes fc-arrow-nudge {
+    0%, 65%, 100% { transform: translateX(0); }
+    82%            { transform: translateX(4px); }
+  }
+
+  /* ── Vybe Analysis card layout ── */
+  .fc-analysis {
+    justify-content: space-between;
+    padding: 1rem 1.1rem 0.85rem;
+    animation: fc-analysis-glow 3s ease-in-out infinite;
+  }
+  .fc-analysis-header .fc-title {
+    margin-bottom: 0;
+  }
+  .fc-analysis-radar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    margin: 0.3rem 0;
+  }
+  .fc-radar-rotate {
+    transform-origin: 56px 56px;
+    animation: fc-radar-spin 14s linear infinite;
+  }
+  .fc-radar-outer {
+    transform-origin: 56px 56px;
+    animation: fc-radar-spin 22s linear infinite reverse;
+  }
+  .fc-center-dot {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fc-center-heartbeat 1.9s ease-in-out infinite;
+  }
+  .fc-analysis-live {
+    display: inline-block;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #fec539;
+    box-shadow: 0 0 5px rgba(254,197,57,0.7);
+    vertical-align: middle;
+    margin-left: 3px;
+    position: relative; top: -1px;
+    animation: fc-live-tick 1.3s ease-in-out infinite;
+  }
+  .fc-explore-arrow {
+    display: inline-block;
+    animation: fc-arrow-nudge 2.4s ease-in-out infinite;
+  }
+  .fc-analysis-footer {
+    display: flex;
+    justify-content: center;
+  }
+  .fc-explore-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 0.22rem 0.6rem;
+    transition: color 0.2s, background 0.2s, border-color 0.2s;
+  }
+  button.fc-analysis:hover .fc-explore-pill {
+    color: #fec539;
+    background: rgba(254,197,57,0.1);
+    border-color: rgba(254,197,57,0.28);
+  }
+
+  /* ── All flash cards: always-on idle animations matching Card 1 ── */
+  @keyframes fc-icon-float {
+    0%, 100% { transform: translateY(0px)  scale(1);    }
+    50%       { transform: translateY(-6px) scale(1.07); }
+  }
+  @keyframes fc-coin-wobble {
+    0%, 100% { transform: rotate(-7deg) scale(1);    }
+    50%       { transform: rotate(7deg)  scale(1.14); }
+  }
+  @keyframes fc-av-bob {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-5px); }
+  }
+  @keyframes fc-stat-breathe {
+    0%, 100% { opacity: 1;    transform: scale(1);    }
+    50%       { opacity: 0.72; transform: scale(0.95); }
+  }
+  @keyframes fc-boost-flash {
+    0%, 100% { color: rgba(255,255,255,0.9); letter-spacing: 0.12em; }
+    50%       { color: var(--vyc-yellow);     letter-spacing: 0.20em; }
+  }
+  @keyframes fc-ai-idle-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* All cards use the same yellow brand glow as Card 1 (fc-analysis-glow) */
+  .fc-blue      { animation: fc-analysis-glow 3s ease-in-out infinite; }
+  .fc-dark      { animation: fc-analysis-glow 3s ease-in-out infinite; }
+  .fc-pink      { animation: fc-analysis-glow 3s ease-in-out infinite; }
+  .fc-ai-spaces { animation: fc-analysis-glow 3s ease-in-out infinite; }
+
+  /* Card 2 (Vybe Creator — fc-blue): icon floats */
+  .fc-blue .fc-icon-wrap {
+    animation: fc-icon-float 3.2s ease-in-out infinite;
+  }
+
+  /* Card 3 (Top Vybers — fc-dark w/ avatars): avatars bob staggered */
+  .fc-avatars .fc-av:nth-child(1) { animation: fc-av-bob 3s ease-in-out infinite; }
+  .fc-avatars .fc-av:nth-child(2) { animation: fc-av-bob 3s ease-in-out infinite 0.55s; }
+  .fc-avatars .fc-av:nth-child(3) { animation: fc-av-bob 3s ease-in-out infinite 1.1s; }
+  .fc-avatars .fc-av:nth-child(4) { animation: fc-av-bob 3s ease-in-out infinite 1.6s; }
+
+  /* Card 4 (Buy Vybes — fc-pink): coin wobbles + "BOOST NOW" flashes */
+  .fc-pink .fc-coin { animation: fc-coin-wobble 2.8s ease-in-out infinite; }
+  .fc-pink .fc-sub-loud { animation: fc-boost-flash 2.8s ease-in-out infinite; }
+
+  /* Card 5 (Live Session — fc-dark): big stat breathes */
+  .fc-big-stat { animation: fc-stat-breathe 2.4s ease-in-out infinite; }
+
+  /* Card 6 (AI Spaces): icon rotates slowly */
+  .fc-ai-spaces .fc-ai-icon {
+    transform-origin: center;
+    animation: fc-ai-idle-spin 20s linear infinite;
+  }
+
+  /* Stagger the card glows so they don't all peak at the same moment */
+  .fc-blue      { animation-delay: 0.4s; }
+  .fc-dark      { animation-delay: 1.0s; }
+  .fc-pink      { animation-delay: 1.6s; }
+  .fc-ai-spaces { animation-delay: 2.2s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fc-blue, .fc-dark, .fc-pink, .fc-ai-spaces,
+    .fc-blue .fc-icon-wrap,
+    .fc-avatars .fc-av,
+    .fc-pink .fc-coin, .fc-pink .fc-sub-loud,
+    .fc-big-stat, .fc-ai-spaces .fc-ai-icon { animation: none; }
+  }
+
+  /* ============================================================
+     HEADING + TITLE ANIMATIONS
+     ============================================================ */
+
+  /* --- Keyframes --- */
+  @keyframes txt-shimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+  @keyframes txt-glow-yellow {
+    0%, 100% { text-shadow: 0 0 0px transparent; }
+    50%       { text-shadow: 0 0 24px rgba(254,197,57,0.55), 0 0 50px rgba(254,197,57,0.2); }
+  }
+  @keyframes eyebrow-dot-blink {
+    0%, 100% { opacity: 0.35; transform: scale(0.75); }
+    50%       { opacity: 1;    transform: scale(1.3); }
+  }
+  @keyframes letter-breathe {
+    0%, 100% { letter-spacing: -0.03em; }
+    50%       { letter-spacing: 0.01em; }
+  }
+  @keyframes slide-up-in {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- Hero h1: dramatic brand-color shimmer sweep + entrance --- */
+  .hero-h1 {
+    background: linear-gradient(
+      90deg,
+      #fff   0%,
+      #fec539 18%,
+      #fff   36%,
+      #f14573 54%,
+      #fff   72%,
+      #539dc0 88%,
+      #fff   100%
+    );
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation:
+      txt-shimmer  60s linear      infinite,
+      slide-up-in  7s  ease       both;
+  }
+
+  /* --- Section eyebrows: blinking live dot + subtle yellow glow --- */
+  .section-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--vyc-yellow);
+    margin-right: 0.45em;
+    vertical-align: middle;
+    position: relative; top: -1px;
+    animation: eyebrow-dot-blink 17s ease-in-out infinite;
+  }
+  .section-eyebrow {
+    animation: txt-glow-yellow 35s ease-in-out infinite;
+  }
+
+  /* --- Section h2: slow white→yellow→white shimmer (readable, tasteful) --- */
+  .section-h2 {
+    background: linear-gradient(
+      90deg,
+      #fff   0%,
+      #e0e0e0 28%,
+      #fec539 50%,
+      #e0e0e0 72%,
+      #fff   100%
+    );
+    background-size: 280% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: txt-shimmer 80s linear infinite;
+  }
+
+  /* --- Flash-cards section h2: all three brand colors parade --- */
+  .flash-h2 {
+    background: linear-gradient(
+      90deg,
+      #fff   0%,
+      #fec539 16%,
+      #fff   32%,
+      #f14573 50%,
+      #fff   66%,
+      #539dc0 83%,
+      #fff   100%
+    );
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: txt-shimmer 45s linear infinite;
+  }
+
+  /* --- Spaces AI h2: blue→pink sweep --- */
+  .spaces-ai-h2 {
+    background: linear-gradient(
+      90deg,
+      #fff   0%,
+      #539dc0 25%,
+      #fff   50%,
+      #f14573 75%,
+      #fff   100%
+    );
+    background-size: 280% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: txt-shimmer 50s linear infinite;
+  }
+
+  /* --- CTA h2: yellow glow pulse + letter-spacing breathe --- */
+  .cta-h2 {
+    animation:
+      txt-glow-yellow  28s  ease-in-out infinite,
+      letter-breathe   45s  ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fc-analysis { animation: none; }
+    .fc-radar-rotate, .fc-radar-outer { animation: none; }
+    .fc-center-dot { animation: none; }
+    .fc-analysis-live { animation: none; }
+    .fc-explore-arrow { animation: none; }
+    /* Heading animations */
+    .hero-h1       { animation: none; -webkit-text-fill-color: var(--vyc-white); background: none; color: var(--vyc-white); }
+    .section-h2    { animation: none; -webkit-text-fill-color: var(--vyc-white); background: none; color: var(--vyc-white); }
+    .flash-h2      { animation: none; -webkit-text-fill-color: var(--vyc-white); background: none; color: var(--vyc-white); }
+    .spaces-ai-h2  { animation: none; -webkit-text-fill-color: var(--vyc-white); background: none; color: var(--vyc-white); }
+    .section-eyebrow { animation: none; }
+    .section-eyebrow::before { animation: none; }
+    .cta-h2        { animation: none; }
+  }
+
+  /* 
+     VYBE ANALYSIS MODAL
+   */
+  .vam-dialog {
+    position: fixed; inset: 0;
+    width: min(92vw, 480px);
+    max-height: 92dvh;
+    margin: auto;
+    padding: 0;
+    background: transparent;
+    border: none;
+    overflow: visible;
+  }
+  .vam-dialog::backdrop {
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(6px);
+  }
+  @keyframes vam-in {
+    from { opacity:0; transform: scale(0.94) translateY(16px); }
+    to   { opacity:1; transform: scale(1)   translateY(0); }
+  }
+  @keyframes vam-dots-in {
+    from { opacity:0; } to { opacity:1; }
+  }
+  .vam {
+    background: #13141a;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 1.25rem;
+    overflow: hidden; overflow-y: auto;
+    max-height: 92dvh;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+    animation: vam-in 0.32s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .vam-header {
+    position: relative; display: flex; align-items: center;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .vam-title-row { display: flex; align-items: center; gap: 0.55rem; }
+  .vam-eyebrow {
+    font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em;
+    text-transform: uppercase; color: rgba(255,255,255,0.45);
+  }
+  .vam-demo-badge {
+    font-size: 0.58rem; font-weight: 900; letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 0.18rem 0.5rem;
+    background: rgba(254,197,57,0.12); color: #fec539;
+    border: 1px solid rgba(254,197,57,0.28); border-radius: 999px;
+  }
+  .vam-close {
+    position: absolute; top: 50%; right: 1rem; transform: translateY(-50%);
+    display: flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%; color: rgba(255,255,255,0.55);
+    cursor: pointer; transition: background 0.2s, color 0.2s;
+  }
+  .vam-close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+  .vam-close:focus-visible { outline: 2px solid var(--vyc-yellow); outline-offset: 2px; }
+
+  /* Match row */
+  .vam-match-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 1.25rem 0.4rem; gap: 0.4rem;
+  }
+  .vam-match-side { display: flex; align-items: center; gap: 0.55rem; flex: 1; }
+  .vam-match-them { justify-content: flex-end; }
+  .vam-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .vam-avatar-you  { background: rgba(254,197,57,0.15); border: 2px solid #fec539; }
+  .vam-avatar-them { background: rgba(241,69,115,0.15); border: 2px solid #f14573; }
+  .vam-match-info { display: flex; flex-direction: column; }
+  .vam-match-info-r { text-align: right; }
+  .vam-match-name { font-size: 0.9rem; font-weight: 800; color: #fff; line-height: 1.25; }
+  .vam-match-handle {
+    display: flex; align-items: center; gap: 3px;
+    font-size: 0.68rem; color: rgba(255,255,255,0.38); font-weight: 500;
+  }
+  .vam-handle-r { justify-content: flex-end; }
+  .vam-match-score-block {
+    display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;
+  }
+  .vam-arrow-you  { font-size: 1.15rem; color: #fec539; line-height: 1; }
+  .vam-arrow-them { font-size: 1.15rem; color: #f14573; line-height: 1; }
+  .vam-score-display { display: flex; align-items: baseline; gap: 1px; }
+  .vam-score-big {
+    font-size: 2.6rem; font-weight: 900; letter-spacing: -0.05em; color: #fec539; line-height: 1;
+  }
+  .vam-score-denom { font-size: 1rem; font-weight: 600; color: rgba(255,255,255,0.38); }
+
+  /* Match description + divider */
+  .vam-match-desc {
+    text-align: center;
+    font-size: 0.75rem; color: rgba(255,255,255,0.4); font-weight: 500;
+    padding: 0.2rem 1.5rem 0.85rem; line-height: 1.5;
+  }
+  .vam-divider { height: 1px; background: rgba(255,255,255,0.07); }
+
+  /* Radar */
+  .vam-chart-wrap {
+    padding: 1.25rem 1.25rem 0.75rem;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .vam-svg { width: 100%; max-width: 280px; height: auto; }
+  .vam-label {
+    font-size: 8.5px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; fill: rgba(255,255,255,0.35);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .vam-ring { transition: opacity 0.4s; }
+  .vam-dialog.vam-animated #vam-poly-you {
+    animation: vam-draw-you 1s cubic-bezier(0.4,0,0.2,1) 0.1s forwards;
+  }
+  .vam-dialog.vam-animated #vam-poly-match {
+    animation: vam-draw-match 0.9s cubic-bezier(0.4,0,0.2,1) 0.35s forwards;
+  }
+  .vam-dialog.vam-animated #vam-dots-you  { animation: vam-dots-in 0.3s ease 1.05s forwards; }
+  .vam-dialog.vam-animated #vam-dots-match { animation: vam-dots-in 0.3s ease 1.2s  forwards; }
+  @keyframes vam-draw-you   { from { stroke-dashoffset:530; } to { stroke-dashoffset:0; } }
+  @keyframes vam-draw-match { from { stroke-dashoffset:490; } to { stroke-dashoffset:0; } }
+
+  /* Legend + stats */
+  .vam-legend {
+    display: flex; align-items: center; gap: 0.75rem; margin-top: 0.65rem;
+  }
+  .vam-leg {
+    display: flex; align-items: center; gap: 0.35rem;
+    font-size: 0.76rem; font-weight: 600; color: rgba(255,255,255,0.55);
+  }
+  .vam-leg-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--lc); }
+  .vam-leg-dash { color: rgba(255,255,255,0.2); font-size: 0.95rem; line-height: 1; }
+  .vam-stats-line {
+    margin-top: 0.55rem;
+    font-size: 0.71rem; color: rgba(255,255,255,0.35); font-weight: 400;
+    text-align: center; line-height: 1.5;
+  }
+  .vam-stats-line strong { color: rgba(255,255,255,0.65); font-weight: 700; }
+
+  /* Insights two-column */
+  .vam-insights {
+    display: grid; grid-template-columns: 1fr 1px 1fr;
+    padding: 1rem 1.25rem 1rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+  }
+  .vam-insights-divider { background: rgba(255,255,255,0.07); margin: 0 0.75rem; }
+  .vam-insights-col { padding: 0 0.4rem; }
+  .vam-insights-col:first-child { padding-left: 0; }
+  .vam-insights-col:last-child  { padding-right: 0; }
+  .vam-insights-heading {
+    font-size: 0.6rem; font-weight: 900; letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 0.6rem;
+  }
+  .vam-insights-heading--yellow { color: #fec539; }
+  .vam-insights-heading--pink   { color: #f14573; }
+  .vam-insights-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.45rem; }
+  .vam-insight-item {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.75);
+  }
+  .vam-insight-icon { flex-shrink: 0; }
+
+  /* Breakdown button */
+  .vam-breakdown-wrap { padding: 0 1.25rem 1.1rem; display: flex; justify-content: center; }
+  .vam-breakdown-btn {
+    font: inherit; font-size: 0.63rem; font-weight: 800; letter-spacing: 0.1em;
+    text-transform: uppercase; color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px; padding: 0.45rem 1.2rem; cursor: default;
+  }
+
+  /* ============================================================
+     LIGHT THEME — DEPTH, COMPOSITION & ANIMATION OVERRIDES
+     ============================================================ */
+
+  /* ── Nav: frosted lavender-white glass ── */
+  html[data-theme="light"] #vyb-nav {
+    background: rgba(244, 244, 250, 0.92);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 4px 20px rgba(70,72,122,0.07);
+  }
+  html[data-theme="light"] .nav-links a:hover {
+    background: rgba(70,72,122,0.07);
+  }
+  html[data-theme="light"] .nav-mobile {
+    box-shadow: 0 8px 28px rgba(70,72,122,0.1);
+  }
+
+  /* ── Hero radials: more presence on white ── */
+  html[data-theme="light"] .hero-section::before {
+    background: radial-gradient(circle, rgba(43,127,168,0.18) 0%, transparent 60%);
+  }
+  html[data-theme="light"] .hero-section::after {
+    background: radial-gradient(circle, rgba(70,72,122,0.13) 0%, transparent 60%);
+  }
+  html[data-theme="light"] .hero-right::before {
+    background: radial-gradient(circle, rgba(201,137,0,0.24) 0%, transparent 65%);
+  }
+  html[data-theme="light"] .hero-right::after {
+    background: radial-gradient(circle, rgba(212,32,86,0.18) 0%, transparent 65%);
+  }
+
+  /* ── Heading shimmers: swap #fff neutral → deep charcoal ── */
+  html[data-theme="light"] .hero-h1 {
+    background: linear-gradient(
+      90deg,
+      #111116  0%,
+      #c98900  18%,
+      #111116  36%,
+      #d42056  54%,
+      #111116  72%,
+      #2b7fa8  88%,
+      #111116  100%
+    );
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  html[data-theme="light"] .section-h2 {
+    background: linear-gradient(
+      90deg,
+      #111116  0%,
+      #2d2d44  28%,
+      #c98900  50%,
+      #2d2d44  72%,
+      #111116  100%
+    );
+    background-size: 280% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  html[data-theme="light"] .flash-h2 {
+    background: linear-gradient(
+      90deg,
+      #111116 0%, #c98900 16%, #111116 32%,
+      #d42056 50%, #111116 66%, #2b7fa8 83%, #111116 100%
+    );
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  html[data-theme="light"] .spaces-ai-h2 {
+    background: linear-gradient(
+      90deg,
+      #111116  0%,
+      #2b7fa8  25%,
+      #111116  50%,
+      #d42056  75%,
+      #111116  100%
+    );
+    background-size: 280% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  /* ── Hero badge ── */
+  html[data-theme="light"] .hero-badge {
+    background: rgba(201,137,0,0.1);
+    border-color: rgba(201,137,0,0.35);
+  }
+
+  /* ── Flash arrows: visible against white surface ── */
+  html[data-theme="light"] .flash-arrow {
+    background: rgba(70,72,122,0.08);
+    border-color: rgba(70,72,122,0.18);
+    color: rgba(70,72,122,0.7);
+  }
+  html[data-theme="light"] .flash-arrow:hover {
+    background: rgba(70,72,122,0.15);
+    border-color: rgba(70,72,122,0.32);
+    color: #46487a;
+  }
+  html[data-theme="light"] .flash-section {
+    border-color: rgba(70,72,122,0.12);
+  }
+
+  /* ── fc-dark cards: restore dark surface (content text is white) ── */
+  html[data-theme="light"] .fc-dark {
+    background: linear-gradient(140deg, #1e2136 0%, #282c49 100%);
+    border-color: rgba(255,255,255,0.06);
+    box-shadow: 0 6px 24px rgba(30,33,54,0.22);
+  }
+
+  /* ── Feature card depth ── */
+  html[data-theme="light"] .feature-card {
+    box-shadow: 0 2px 8px rgba(70,72,122,0.07), 0 4px 16px rgba(70,72,122,0.09);
+  }
+  html[data-theme="light"] .feature-card:not([class*="fta-"]):hover {
+    box-shadow: 0 10px 32px rgba(70,72,122,0.18);
+  }
+  /* Per-accent coloured ring shadows — base state */
+  html[data-theme="light"] .feature-card.fta-yellow {
+    box-shadow: 0 0 0 1px rgba(201,137,0,0.13), 0 4px 18px rgba(201,137,0,0.11), 0 8px 32px rgba(201,137,0,0.07);
+  }
+  html[data-theme="light"] .feature-card.fta-blue {
+    box-shadow: 0 0 0 1px rgba(43,127,168,0.13), 0 4px 18px rgba(43,127,168,0.11), 0 8px 32px rgba(43,127,168,0.07);
+  }
+  html[data-theme="light"] .feature-card.fta-pink {
+    box-shadow: 0 0 0 1px rgba(212,32,86,0.12), 0 4px 18px rgba(212,32,86,0.10), 0 8px 32px rgba(212,32,86,0.07);
+  }
+  html[data-theme="light"] .feature-card.fta-purple {
+    box-shadow: 0 0 0 1px rgba(70,72,122,0.14), 0 4px 18px rgba(70,72,122,0.12), 0 8px 32px rgba(70,72,122,0.07);
+  }
+  /* Per-accent coloured ring shadows — hover intensify */
+  html[data-theme="light"] .feature-card.fta-yellow:hover {
+    box-shadow: 0 0 0 1px rgba(201,137,0,0.22), 0 8px 36px rgba(201,137,0,0.18), 0 16px 48px rgba(201,137,0,0.10);
+  }
+  html[data-theme="light"] .feature-card.fta-blue:hover {
+    box-shadow: 0 0 0 1px rgba(43,127,168,0.22), 0 8px 36px rgba(43,127,168,0.18), 0 16px 48px rgba(43,127,168,0.10);
+  }
+  html[data-theme="light"] .feature-card.fta-pink:hover {
+    box-shadow: 0 0 0 1px rgba(212,32,86,0.20), 0 8px 36px rgba(212,32,86,0.16), 0 16px 48px rgba(212,32,86,0.09);
+  }
+  html[data-theme="light"] .feature-card.fta-purple:hover {
+    box-shadow: 0 0 0 1px rgba(70,72,122,0.24), 0 8px 36px rgba(70,72,122,0.18), 0 16px 48px rgba(70,72,122,0.10);
+  }
+  html[data-theme="light"] .feature-card-flagship {
+    background: linear-gradient(130deg, rgba(201,137,0,0.1) 0%, rgba(201,137,0,0.03) 45%, rgba(43,127,168,0.06) 100%);
+    box-shadow: 0 0 0 1px rgba(201,137,0,0.16), 0 4px 20px rgba(201,137,0,0.13), 0 10px 36px rgba(201,137,0,0.08);
+  }
+
+  /* ── How section: inset separators ── */
+  html[data-theme="light"] .how-section {
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.07), inset 0 -1px 0 rgba(0,0,0,0.07);
+  }
+
+  /* ── Product features section: lavender-cream tint ── */
+  html[data-theme="light"] #product {
+    background: linear-gradient(160deg,
+      rgba(237,236,249,0.72) 0%,
+      rgba(244,244,250,0.55) 45%,
+      rgba(240,246,251,0.72) 100%
+    );
+    box-shadow: inset 0 1px 0 rgba(70,72,122,0.08), inset 0 -1px 0 rgba(70,72,122,0.08);
+  }
+
+  /* ── Credits table: row states visible on white ── */
+  html[data-theme="light"] .credits-table thead th {
+    background: rgba(70,72,122,0.03);
+  }
+  html[data-theme="light"] .credits-table tbody tr:hover {
+    background: rgba(70,72,122,0.04);
+  }
+  html[data-theme="light"] .table-group-header td {
+    background: rgba(70,72,122,0.05);
+  }
+  html[data-theme="light"] .credits-table-wrap {
+    box-shadow: 0 2px 18px rgba(70,72,122,0.09);
+  }
+
+  /* ── Match cards ── */
+  html[data-theme="light"] .match-card {
+    box-shadow: 0 2px 10px rgba(70,72,122,0.08);
+  }
+  html[data-theme="light"] .match-card:not([class*="mc-"]):hover {
+    box-shadow: 0 10px 28px rgba(70,72,122,0.14);
+  }
+  /* Per-accent coloured ring shadows — base state */
+  html[data-theme="light"] .match-card.mc-blue {
+    box-shadow: 0 0 0 1px rgba(43,127,168,0.13), 0 4px 18px rgba(43,127,168,0.11), 0 8px 32px rgba(43,127,168,0.07);
+  }
+  html[data-theme="light"] .match-card.mc-yellow {
+    box-shadow: 0 0 0 1px rgba(201,137,0,0.13), 0 4px 18px rgba(201,137,0,0.11), 0 8px 32px rgba(201,137,0,0.07);
+  }
+  html[data-theme="light"] .match-card.mc-pink {
+    box-shadow: 0 0 0 1px rgba(212,32,86,0.12), 0 4px 18px rgba(212,32,86,0.10), 0 8px 32px rgba(212,32,86,0.07);
+  }
+  html[data-theme="light"] .match-card.mc-purple {
+    box-shadow: 0 0 0 1px rgba(70,72,122,0.14), 0 4px 18px rgba(70,72,122,0.12), 0 8px 32px rgba(70,72,122,0.07);
+  }
+  /* Per-accent coloured ring shadows — hover intensify */
+  html[data-theme="light"] .match-card.mc-blue:hover {
+    box-shadow: 0 0 0 1px rgba(43,127,168,0.22), 0 10px 36px rgba(43,127,168,0.18), 0 18px 48px rgba(43,127,168,0.10);
+  }
+  html[data-theme="light"] .match-card.mc-yellow:hover {
+    box-shadow: 0 0 0 1px rgba(201,137,0,0.22), 0 10px 36px rgba(201,137,0,0.18), 0 18px 48px rgba(201,137,0,0.10);
+  }
+  html[data-theme="light"] .match-card.mc-pink:hover {
+    box-shadow: 0 0 0 1px rgba(212,32,86,0.20), 0 10px 36px rgba(212,32,86,0.16), 0 18px 48px rgba(212,32,86,0.09);
+  }
+  html[data-theme="light"] .match-card.mc-purple:hover {
+    box-shadow: 0 0 0 1px rgba(70,72,122,0.24), 0 10px 36px rgba(70,72,122,0.18), 0 18px 48px rgba(70,72,122,0.10);
+  }
+  html[data-theme="light"] .match-x-notice {
+    background: rgba(70,72,122,0.06);
+    border-color: rgba(70,72,122,0.14);
+  }
+  html[data-theme="light"] .mc-tags span {
+    background: rgba(70,72,122,0.06);
+  }
+  html[data-theme="light"] .match-trust {
+    box-shadow: 0 2px 14px rgba(70,72,122,0.08);
+  }
+
+  /* ── Spaces AI section: soft tricolor gradient (not dark) ── */
+  html[data-theme="light"] .spaces-ai-section {
+    background: linear-gradient(160deg, #eeeffb 0%, #f0f6fb 50%, #fbeff4 100%);
+  }
+  html[data-theme="light"] .spaces-ai-section::before {
+    background: radial-gradient(circle, rgba(201,137,0,0.16) 0%, transparent 65%);
+  }
+  html[data-theme="light"] .spaces-ai-section::after {
+    background: radial-gradient(circle, rgba(43,127,168,0.14) 0%, transparent 65%);
+  }
+  html[data-theme="light"] .sai-mockup {
+    box-shadow: 0 8px 44px rgba(70,72,122,0.15);
+  }
+
+  /* ── FAQ section ── */
+  html[data-theme="light"] .faq-section {
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.07), inset 0 -1px 0 rgba(0,0,0,0.07);
+  }
+  html[data-theme="light"] .faq-item {
+    background: #f8f8ff;
+    box-shadow: 0 2px 10px rgba(70,72,122,0.07);
+  }
+
+  /* ── Pricing & packs ── */
+  html[data-theme="light"] .pricing-card {
+    box-shadow: 0 2px 14px rgba(70,72,122,0.09);
+  }
+  html[data-theme="light"] .pack-card {
+    box-shadow: 0 1px 8px rgba(70,72,122,0.07);
+  }
+
+  /* ── CTA card: warm coloured ambient glow + structural depth ── */
+  html[data-theme="light"] .cta-card {
+    box-shadow:
+      0 0 0 1px rgba(201,137,0,0.18),
+      0 6px 32px rgba(201,137,0,0.14),
+      0 16px 56px rgba(212,32,86,0.09),
+      0 28px 72px rgba(0,0,0,0.20);
+  }
+
+  /* ── Footer: closed base ── */
+  html[data-theme="light"] .vyb-footer {
+    background: #ebebf5;
+    border-top-color: rgba(70,72,122,0.16);
+    box-shadow: inset 0 1px 0 rgba(70,72,122,0.12);
+  }
+
+  /* ── fc-purple (Vybe Match): deepen the card so white text stays readable ── */
+  html[data-theme="light"] .fc-purple {
+    background: linear-gradient(140deg, #1e2038 0%, #2d3052 55%, #3b3f6a 100%);
+    box-shadow: 0 6px 28px rgba(30,32,56,0.28);
+  }
+
+  /* Bump the ghosted-white text layers up to fully visible ── */
+  html[data-theme="light"] .fc-purple .fc-eyebrow-sm {
+    color: rgba(255,255,255,0.75);
+  }
+  html[data-theme="light"] .fc-explore-pill {
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.28);
+  }
+  html[data-theme="light"] button.fc-analysis:hover .fc-explore-pill {
+    color: #fec539;
+    background: rgba(254,197,57,0.18);
+    border-color: rgba(254,197,57,0.45);
+  }
+
+  /* ── CTA card: hardcoded dark bg — force white text ── */
+  html[data-theme="light"] .cta-h2 {
+    color: #ffffff;
+  }
+  html[data-theme="light"] .cta-sub {
+    color: rgba(255,255,255,0.68);
+  }
+  html[data-theme="light"] .cta-input {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.22);
+    color: #ffffff;
+  }
+  html[data-theme="light"] .cta-input::placeholder {
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ── Spaces AI mockup: dark header strip stays hardcoded dark — force white text ── */
+  html[data-theme="light"] .sai-mock-title {
+    color: #ffffff;
+  }
+  html[data-theme="light"] .sai-vybes-cost {
+    color: #fec539;
+  }
+
+  /* ── Flagship pills: ghost bg becomes invisible on light surface — use tinted fill ── */
+  html[data-theme="light"] .flagship-pill {
+    background: rgba(70,72,122,0.06);
+    border-color: rgba(70,72,122,0.18);
+  }
+
+  /* ================================================================
+     ICON / GRAPHIC ANIMATIONS
+     ================================================================ */
+
+  @keyframes light-aurora {
+    0%   { background-position: 0%   50%; }
+    25%  { background-position: 80%  20%; }
+    50%  { background-position: 100% 80%; }
+    75%  { background-position: 20% 100%; }
+    100% { background-position: 0%   50%; }
+  }
+
+  @keyframes icon-bob {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-5px); }
+  }
+  @keyframes icon-breathe {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.18); }
+  }
+  @keyframes icon-card-pop {
+    0%   { transform: scale(1)    rotate(0deg); }
+    40%  { transform: scale(1.24) rotate(-8deg); }
+    70%  { transform: scale(1.1)  rotate(4deg);  }
+    100% { transform: scale(1)    rotate(0deg); }
+  }
+  @keyframes icon-wiggle {
+    0%   { transform: rotate(0deg);   }
+    20%  { transform: rotate(-12deg); }
+    50%  { transform: rotate(10deg);  }
+    75%  { transform: rotate(-5deg);  }
+    100% { transform: rotate(0deg);   }
+  }
+  @keyframes icon-star-spin {
+    0%   { transform: rotate(0deg)   scale(1);   }
+    50%  { transform: rotate(180deg) scale(1.15); }
+    100% { transform: rotate(360deg) scale(1);   }
+  }
+
+  /* — Hero trust item icons: staggered breathe — */
+  .trust-item svg { animation: icon-breathe 3s ease-in-out infinite; }
+  .trust-item:nth-child(2) svg { animation-delay: 0.55s; }
+  .trust-item:nth-child(3) svg { animation-delay: 1.1s; }
+  .trust-item:nth-child(4) svg { animation-delay: 1.65s; }
+
+  /* — Feature card icons: pop on card hover — */
+  .feature-card:hover .feature-icon { animation: icon-card-pop 0.45s ease-out forwards; }
+
+  /* — Flagship card AI sun icon: slow spin — */
+  .flagship-icon-wrap svg {
+    transform-origin: center;
+    animation: fc-ai-idle-spin 16s linear infinite;
+  }
+
+  /* — How it works: step icons bob at staggered cadence — */
+  .step-icon-wrap { animation: icon-bob 4s ease-in-out infinite; }
+  .step-card:nth-child(3) .step-icon-wrap { animation-delay: 0.85s; }
+  .step-card:nth-child(5) .step-icon-wrap { animation-delay: 1.7s; }
+
+  /* — How callout info icon: breathes — */
+  .callout-icon svg { animation: icon-breathe 3.5s ease-in-out infinite; }
+
+  /* — Match card icons: pop on card hover — */
+  .match-card:hover .mc-icon { animation: icon-card-pop 0.45s ease-out forwards; }
+
+  /* — Match trust grid icons: bob with stagger — */
+  .mt-icon { animation: icon-bob 3.5s ease-in-out infinite; }
+  .mt-item:nth-child(2) .mt-icon { animation-delay: 0.6s; }
+  .mt-item:nth-child(3) .mt-icon { animation-delay: 1.2s; }
+  .mt-item:nth-child(4) .mt-icon { animation-delay: 1.8s; }
+
+  /* — Credits table AI icon: slow spin — */
+  .td-ai-wrap svg {
+    transform-origin: center;
+    animation: fc-ai-idle-spin 18s linear infinite;
+  }
+
+  /* — Credits free-note star: slow spin — */
+  .credits-free-note svg {
+    display: inline-block;
+    animation: icon-star-spin 5s ease-in-out infinite;
+  }
+
+  /* — Credits why-item checkmarks: pop on hover — */
+  .why-item:hover svg { animation: icon-card-pop 0.4s ease-out forwards; }
+
+  /* — CTA privacy shield: breathes — */
+  .cta-privacy svg { animation: icon-breathe 4s ease-in-out infinite; }
+
+  /* — Theme toggle icons: wiggle on toggle hover — */
+  .tt-track:hover ~ * .tt-moon svg,
+  .tt-track:hover ~ * .tt-sun svg,
+  label:hover .tt-moon svg,
+  label:hover .tt-sun svg { animation: icon-wiggle 0.45s ease-out forwards; }
+
+  /* — On mobile, fixed-attachment can cause jank — use scroll instead — */
+  @media (max-width: 767px) {
+    html[data-theme="light"] {
+      background-attachment: scroll;
+    }
+  }
+
+  /* — Reduced-motion kill-switch — */
+  @media (prefers-reduced-motion: reduce) {
+    html[data-theme="light"] { animation: none; }
+    .trust-item svg,
+    .feature-card:hover .feature-icon,
+    .flagship-icon-wrap svg,
+    .step-icon-wrap,
+    .callout-icon svg,
+    .match-card:hover .mc-icon,
+    .mt-icon,
+    .td-ai-wrap svg,
+    .credits-free-note svg,
+    .why-item:hover svg,
+    .cta-privacy svg { animation: none; }
+  }
+</style>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+  // Mobile menu
+  const burger = document.getElementById('nav-burger');
+  const mobileMenu = document.getElementById('nav-mobile');
+
+  if (burger && mobileMenu) {
+    burger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', String(isOpen));
+      mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+    });
+
+    // Close on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+      });
+    });
+  }
+
+  // Email form — submits to Cloudflare KV waitlist API
+  const form = document.getElementById('cta-form');
+  const toast = document.getElementById('cta-toast');
+
+  if (form && toast) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = form.querySelector('input[type="email"]');
+      if (!input || !input.value) return;
+
+      const btn = form.querySelector('button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.textContent = 'Joining…'; }
+
+      try {
+        const res = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: input.value }),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        form.style.display = 'none';
+        if (!res.ok && data.error === 'waitlist_full') {
+          toast.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17L4 12" stroke="#131313" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> The waitlist is full — follow us on X for launch updates.';
+        }
+        toast.classList.add('visible');
+        toast.setAttribute('aria-hidden', 'false');
+      } catch {
+        // Network error fallback — show optimistic success
+        form.style.display = 'none';
+        toast.classList.add('visible');
+        toast.setAttribute('aria-hidden', 'false');
+      }
+    });
+  }
+
+  // Vybe Analysis modal
+  const vamDialog  = document.getElementById('vybe-analysis-modal');
+  const vamOpen    = document.getElementById('open-vam');
+  const vamClose   = document.getElementById('close-vam');
+
+  function openVam() {
+    if (!vamDialog) return;
+    vamDialog.showModal();
+    // Trigger animations on next frame so the dialog is visible first
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => vamDialog.classList.add('vam-animated'));
+    });
+  }
+  function closeVam() {
+    if (!vamDialog) return;
+    vamDialog.classList.remove('vam-animated');
+    vamDialog.close();
+  }
+
+  vamOpen?.addEventListener('click', openVam);
+  vamClose?.addEventListener('click', closeVam);
+  // Close on backdrop click
+  vamDialog?.addEventListener('click', (e) => {
+    if (e.target === vamDialog) closeVam();
+  });
+
+  // Flash cards — touch press feedback
+  // Distinguishes a tap (add .fc-pressing) from a scroll drag (no feedback)
+  const flashCards = document.querySelectorAll('.fc');
+  flashCards.forEach(card => {
+    let startX = 0, startY = 0, didScroll = false;
+    card.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      didScroll = false;
+      card.classList.add('fc-pressing');
+    }, { passive: true });
+    card.addEventListener('touchmove', e => {
+      const dx = Math.abs(e.touches[0].clientX - startX);
+      const dy = Math.abs(e.touches[0].clientY - startY);
+      if (dx > 6 || dy > 6) {
+        didScroll = true;
+        card.classList.remove('fc-pressing');
+      }
+    }, { passive: true });
+    card.addEventListener('touchend', () => {
+      card.classList.remove('fc-pressing');
+    }, { passive: true });
+    card.addEventListener('touchcancel', () => {
+      card.classList.remove('fc-pressing');
+    }, { passive: true });
+  });
+
+  // Flash carousel arrows
+  const track    = document.querySelector('.flash-track');
+  const btnPrev  = document.getElementById('flash-prev');
+  const btnNext  = document.getElementById('flash-next');
+
+  if (track && btnPrev && btnNext) {
+    const SCROLL_BY = 220; // ~one card width + gap
+
+    const updateArrows = () => {
+      btnPrev.disabled = track.scrollLeft <= 4;
+      btnNext.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+    };
+
+    btnPrev.addEventListener('click', () => {
+      track.scrollBy({ left: -SCROLL_BY, behavior: 'smooth' });
+    });
+    btnNext.addEventListener('click', () => {
+      track.scrollBy({ left: SCROLL_BY, behavior: 'smooth' });
+    });
+
+    track.addEventListener('scroll', updateArrows, { passive: true });
+    updateArrows(); // set initial state
+  }
+
+  // ---- Theme toggle ----
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('vyc-theme', theme);
+    // Keep both toggles aria-label in sync
+    const label = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+    document.querySelectorAll('.theme-toggle').forEach(btn => btn.setAttribute('aria-label', label));
+  }
+
+  document.querySelectorAll('.theme-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const current = document.documentElement.dataset.theme || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  });
+
+  // Set initial aria-label to match loaded theme
+  (function(){
+    const t = document.documentElement.dataset.theme || 'dark';
+    const label = t === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+    document.querySelectorAll('.theme-toggle').forEach(btn => btn.setAttribute('aria-label', label));
+  })();
+
+  // Nav active state on scroll (optional enhancement)
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          link.removeAttribute('aria-current');
+          if (link.getAttribute('href') === '#' + entry.target.id) {
+            link.setAttribute('aria-current', 'page');
+          }
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(sec => observer.observe(sec));
+</script>
+
+</body>
+</html>
+
